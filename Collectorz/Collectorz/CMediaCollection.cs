@@ -72,20 +72,6 @@ namespace Collectorz
                 #endregion
                 #region Media (Movie & Series)
                 media.Title = XMLMovie.XMLReadSubnode("title").XMLReadInnerText("");
-
-                // check for multiple Instances per Language
-                if (media.Title.Contains("(L"))
-                {
-                    string movieLanguages = media.Title.RightOfLast("(L").LeftOf(")");
-                    foreach (string movieLanguage in movieLanguages._Split(" ", null, false))
-                        media.MediaLanguages.Add(movieLanguage);
-
-                    media.Title = media.Title.Replace("(L" + movieLanguages + ")", "").Trim();
-                }
-
-                if (media.MediaLanguages.Count == 0)
-                    media.MediaLanguages.Add("de");
-
                 media.Year = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("year").XMLReadSubnode("displayname").XMLReadInnerText("");
                 media.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(media.Title + " (" + media.Year + ")"))).Replace("?", "").Replace("-", "").Replace(":", "").Trim();
                 media.TitleSort = XMLMovie.XMLReadSubnode("titlesort").XMLReadInnerText("");
@@ -111,6 +97,7 @@ namespace Collectorz
                     media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
                     media.PlayCount = (XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
                     media.PlayDate = XMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
+                    media.Title = media.overrideMediaStreamData(media.Title);
 
                     this.MovieCollection.Add(((CMovie)media));
                 }

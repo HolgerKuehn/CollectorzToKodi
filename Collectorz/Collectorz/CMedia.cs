@@ -787,6 +787,27 @@ namespace Collectorz
 
             title = title.Replace("(F" + this.Rating + ")", "");
 
+            // check for multiple Instances per Language
+            if (this.Title.Contains("(L"))
+            {
+                // reset list if a new definition is available
+                this.mediaLanguages = new List<string>();
+
+                string movieLanguages = this.Title.RightOfLast("(L").LeftOf(")");
+                foreach (string movieLanguage in movieLanguages._Split(" ", null, false))
+                    this.MediaLanguages.Add(movieLanguage);
+
+                this.Title = this.Title.Replace("(L" + movieLanguages + ")", "").Trim();
+            }
+
+            // inherit Series-data
+            if (this.MediaLanguages.Count == 0 && this.GetType().ToString().Contains("CEpsiode"))
+                this.MediaLanguages = ((CEpisode)this).Series.MediaLanguages;
+
+            // or set to default
+            if (this.MediaLanguages.Count == 0)
+                this.MediaLanguages.Add("de");
+
             return title.Trim();
         }
         public void writeStreamData(StreamWriter swrNFO)
