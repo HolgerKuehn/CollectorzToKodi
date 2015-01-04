@@ -208,6 +208,7 @@ namespace Collectorz
             this.IsSpecial = episode.IsSpecial;
             this.Season = episode.Season;
             this.DisplaySeason = episode.DisplaySeason;
+            this.MediaLanguages = episode.MediaLanguages;
         }
         public string overrideSeason(string title, bool countEpisode = false)
         {
