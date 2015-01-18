@@ -245,6 +245,14 @@ namespace Collectorz
         public abstract CMedia clone(CConstants.ServerList server, bool isSpecial = false);
         public void clonePerLanguage(string isoCodeToBeReplaced, string isoCodeForReplacemant)
         {
+            // check for target-language
+            bool episodeContainsTargetLanguage = false;
+
+            foreach (string mediaLanguage in this.MediaLanguages)
+                if (mediaLanguage == isoCodeForReplacemant)
+                    episodeContainsTargetLanguage = true;
+                        
+            // replace all associated languages
             this.MediaLanguages = null;
 
             this.Title = this.Title.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
@@ -260,6 +268,9 @@ namespace Collectorz
 
             foreach (CVideoFile videoFile in this.VideoFiles)
             {
+                if (!episodeContainsTargetLanguage)
+                    videoFile.Filename = "";
+
                 videoFile.Filename = videoFile.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 videoFile.Filename = videoFile.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 

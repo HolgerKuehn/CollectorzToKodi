@@ -11,14 +11,14 @@ namespace Collectorz
         private List<CMovie> movieCollection;
         private List<CSeries> seriesCollection;
         #endregion
-        #region Contructor
+        #region Constructor
         public CMediaCollection()
         {
             movieCollection = this.MovieCollection;
             seriesCollection = this.SeriesCollection;
         }
         #endregion
-        #region Properties (Singelton)
+        #region Properties (Singleton)
         public List<CMovie> MovieCollection
         {
             get
@@ -50,7 +50,7 @@ namespace Collectorz
             CMedia media = null;
             foreach (XmlNode XMLMovie in CXML.XMLReadFile(EingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
-                #region Typ ermitteln und Media-Object anlegen
+                #region evaluate Type and create media-object
                 foreach (XmlNode XMLUserDefinedValue in XMLMovie.XMLReadSubnode("userdefinedvalues").XMLReadSubnodes("userdefinedvalue"))
                 {
                     if (XMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText("") == "XBMC Movie")
@@ -105,11 +105,11 @@ namespace Collectorz
                 #region Series
                 if (XMLMovieIsSeries)
                 {
-                    // Releasdate und Anzahl Episoden aus Serie
+                    // releasdate and number episodes in series
                     media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
                     ((CSeries)media).NumberOfTotalEpisodes = (int)Int32.Parse(XMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(""));
 
-                    // Episoden
+                    // episodes
                     foreach (XmlNode XMLSeriesDisc in XMLMovie.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
                     {
                         CEpisode seriesDiscEpisode = new CEpisode();

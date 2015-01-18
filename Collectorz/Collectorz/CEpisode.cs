@@ -122,7 +122,8 @@ namespace Collectorz
                 {
                     CVideoFile videoFile = this.VideoFiles.ElementAt(i);
 
-                    swrSH.WriteLine("/bin/ln -s \"" + videoFile.URLLocalFilesystem + "\" \"" + videoFile.Filename + "\"");
+                    if (videoFile.Filename != "")
+                        swrSH.WriteLine("/bin/ln -s \"" + videoFile.URLLocalFilesystem + "\" \"" + videoFile.Filename + "\"");
                 }
 
                 // SubTitles
