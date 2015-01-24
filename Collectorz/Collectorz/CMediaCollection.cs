@@ -178,7 +178,7 @@ namespace Collectorz
                     seriesClone.clonePerLanguage(series.MediaLanguages[0], seriesLanguage);
 
                     foreach (CEpisode episodeClone in seriesClone.Episodes)
-                        episodeClone.clonePerLanguage(series.MediaLanguages[0], seriesLanguage);
+                        episodeClone.clonePerLanguage(episodeClone.MediaLanguages[0], seriesLanguage);
 
                     seriesCollectionPerLanguage.Add(seriesClone);
                 }
