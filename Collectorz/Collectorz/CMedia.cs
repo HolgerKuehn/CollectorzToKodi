@@ -243,7 +243,7 @@ namespace Collectorz
         public abstract void writeSH(StreamWriter swrSH);
         public abstract CMedia clone();
         public abstract CMedia clone(CConstants.ServerList server, bool isSpecial = false);
-        public void clonePerLanguage(string isoCodeToBeReplaced, string isoCodeForReplacemant)
+        public void clonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
         {
             // check for target-language
             bool episodeContainsTargetLanguage = false;
@@ -253,29 +253,33 @@ namespace Collectorz
                     episodeContainsTargetLanguage = true;
                         
             // replace all associated languages
-            this.MediaLanguages = null;
+            this.MediaLanguages = new List<string>();
+            this.MediaLanguages.Add(isoCodeForReplacemant);
 
-            this.Title = this.Title.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-            this.Title = this.Title.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+            foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
+            { 
+                this.Title = this.Title.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Title = this.Title.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-            this.TitleSort = this.TitleSort.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-            this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                this.TitleSort = this.TitleSort.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-            this.Filename = this.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-            this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                this.Filename = this.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-            this.IMDbId = this.IMDbId.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                this.IMDbId = this.IMDbId.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-            foreach (CVideoFile videoFile in this.VideoFiles)
-            {
-                if (!episodeContainsTargetLanguage)
-                    videoFile.Filename = "";
+                foreach (CVideoFile videoFile in this.VideoFiles)
+                {
+                    if (!episodeContainsTargetLanguage)
+                        videoFile.Filename = "";
 
-                videoFile.Filename = videoFile.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                videoFile.Filename = videoFile.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                    videoFile.Filename = videoFile.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                    videoFile.Filename = videoFile.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-                videoFile.URL = videoFile.URL.ReplaceAll(isoCodeToBeReplaced + videoFile.Extention, isoCodeForReplacemant + videoFile.Extention);
-                videoFile.URLLocalFilesystem = videoFile.URLLocalFilesystem.ReplaceAll(isoCodeToBeReplaced + videoFile.Extention, isoCodeForReplacemant + videoFile.Extention);
+                    videoFile.URL = videoFile.URL.ReplaceAll(isoCodeToBeReplaced + videoFile.Extention, isoCodeForReplacemant + videoFile.Extention);
+                    videoFile.URLLocalFilesystem = videoFile.URLLocalFilesystem.ReplaceAll(isoCodeToBeReplaced + videoFile.Extention, isoCodeForReplacemant + videoFile.Extention);
+                }
             }
         }
         public virtual void readImages(XmlNode XMLNode)
@@ -327,7 +331,7 @@ namespace Collectorz
             //or
             //TV\showfolder\season-all-banner.(jpg/png)
 
-            //Fanart
+            //Fan art
 
             //Movies in Folders:
 
@@ -498,36 +502,11 @@ namespace Collectorz
             this.writeImagesToNFO(swrNFO, CConstants.ImageType.CoverFront);
             this.writeImagesToNFO(swrNFO, CConstants.ImageType.SeasonCover);
 
-            // Fanart
+            // fan art
             swrNFO.WriteLine("    <fanart>");
             this.writeImagesToNFO(swrNFO, CConstants.ImageType.Backdrop);
             this.writeImagesToNFO(swrNFO, CConstants.ImageType.SeasonBackdrop);
             swrNFO.WriteLine("    </fanart>");
-
-            //        
-            //<thumb type="season" season="1">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season01-poster.jpg</thumb>
-            //<thumb type="season" season="2">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season02-poster.jpg</thumb>
-            //<thumb type="season" season="3">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season03-poster.jpg</thumb>
-            //<thumb type="season" season="4">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season04-poster.jpg</thumb>
-            //<thumb type="season" season="5">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season05-poster.jpg</thumb>
-            //<thumb type="season" season="6">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season06-poster.jpg</thumb>
-            //<thumb type="season" season="7">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season07-poster.jpg</thumb>
-            //<thumb type="season" season="8">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season08-poster.jpg</thumb>
-            //<thumb type="season" season="9">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season09-poster.jpg</thumb>
-            //<thumb type="season" season="10">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season10-poster.jpg</thumb>
-            //<fanart>
-            //<thumb>smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season01-fanart.jpg</thumb>
-            //    <thumb type="season" season="1">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season01-fanart.jpg</thumb>
-            //<thumb type="season" season="2">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season02-fanart.jpg</thumb>
-            //<thumb type="season" season="3">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season03-fanart.jpg</thumb>
-            //<thumb type="season" season="4">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season04-fanart.jpg</thumb>
-            //<thumb type="season" season="5">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season05-fanart.jpg</thumb>
-            //<thumb type="season" season="6">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season06-fanart.jpg</thumb>
-            //<thumb type="season" season="7">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season07-fanart.jpg</thumb>
-            //<thumb type="season" season="8">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season08-fanart.jpg</thumb>
-            //<thumb type="season" season="9">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season09-fanart.jpg</thumb>
-            //<thumb type="season" season="10">smb://JOUSETSUSOOCHI/XBMC/Serien/Smallville (2001)/season10-fanart.jpg</thumb>
-            //</fanart>
         }
         public virtual void writeImagesToSH(StreamWriter swrSH)
         {

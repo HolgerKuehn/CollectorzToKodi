@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,6 +51,7 @@
     <Compile Include="CAudioStream.cs" />
     <Compile Include="CImageFile.cs" />
     <Compile Include="CEpisode.cs" />
+    <Compile Include="CConfiguration.cs" />
     <Compile Include="CSeries.cs" />
     <Compile Include="CMovie.cs" />
     <Compile Include="CMedia.cs" />
@@ -60,18 +62,40 @@
     <Compile Include="CMediaCollection.cs" />
     <Compile Include="CProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerList.Designer.cs">
+    <Compile Include="Properties\SettingsServer.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>ServerList.settings</DependentUpon>
+      <DependentUpon>SettingsServer.settings</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Properties\SettingsKodi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>SettingsKodi.settings</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Properties\SettingsMovieCollector.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>SettingsMovieCollector.settings</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ServerList.settings">
+    <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>ServerList.Designer.cs</LastGenOutput>
+      <LastGenOutput>SettingsServer.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\SettingsKodi.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SettingsKodi.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\SettingsMovieCollector.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SettingsMovieCollector.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

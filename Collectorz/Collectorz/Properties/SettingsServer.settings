@@ -1,0 +1,19 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsServer">
+  <Profiles />
+  <Settings>
+    <Setting Name="NumberOfServer" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="ListOfServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SHIRYOUSOOCHI,EIZOUSOOCHI,JOUSETSUSOOCHI</Value>
+    </Setting>
+    <Setting Name="DriveMappingOfServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P,U,V</Value>
+    </Setting>
+    <Setting Name="MappingType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UNIX
+</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

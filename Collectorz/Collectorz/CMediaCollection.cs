@@ -161,7 +161,9 @@ namespace Collectorz
                 foreach (string movieLanguage in movie.MediaLanguages)
                 {
                     CMovie movieClone = (CMovie)movie.clone();
-                    movieClone.clonePerLanguage(movie.MediaLanguages[0], movieLanguage);
+                    List<string> mediaLanguagesToBeReplaced = new List<string>();
+                    mediaLanguagesToBeReplaced.Add(movie.MediaLanguages[0]);
+                    movieClone.clonePerLanguage(mediaLanguagesToBeReplaced, movieLanguage);
                     movieCollectionPerLanguage.Add(movieClone);
                 }
 
@@ -175,11 +177,21 @@ namespace Collectorz
                 foreach (string seriesLanguage in series.MediaLanguages)
                 {
                     CSeries seriesClone = (CSeries)series.clone();
-                    seriesClone.clonePerLanguage(series.MediaLanguages[0], seriesLanguage);
+                    List<string> mediaLanguagesToBeReplaced;
+
+                    mediaLanguagesToBeReplaced = new List<string>();
+                    mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                    seriesClone.clonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
+
 
                     foreach (CEpisode episodeClone in seriesClone.Episodes)
-                        episodeClone.clonePerLanguage(episodeClone.MediaLanguages[0], seriesLanguage);
+                    {
+                        mediaLanguagesToBeReplaced = new List<string>();
+                        mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                        mediaLanguagesToBeReplaced.Add(episodeClone.MediaLanguages[0]); // and episode data, when available languages change during series
 
+                        episodeClone.clonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage); 
+                    }
                     seriesCollectionPerLanguage.Add(seriesClone);
                 }
 
