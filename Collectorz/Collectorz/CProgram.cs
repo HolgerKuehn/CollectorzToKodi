@@ -11,8 +11,15 @@ using System.Configuration;
 
 namespace Collectorz
 {
+    /// <summary>
+    /// <para>Main class of Collectorz converter, managing main program flow</para>
+    /// </summary>
     public class CProgram
     {
+        /// <summary>
+        /// <para>Entry-point for command-line-tool</para>
+        /// </summary>
+        /// <returns>Error Code 1, if no valid file was assigned</returns>
         static int Main()
         {
             string[] Arguments = Environment.GetCommandLineArgs();

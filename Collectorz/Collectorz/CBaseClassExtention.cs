@@ -9,6 +9,10 @@ using System.Xml;
 
 namespace Collectorz
 {
+    /// <summary>
+    /// extension class for XML-type-variables 
+    /// </summary>
+    [global::System.Runtime.CompilerServices.CompilerGenerated]
     public static class CXML
     {
         #region XML-Files
@@ -200,6 +204,11 @@ namespace Collectorz
         #endregion
         #endregion
     }
+
+    /// <summary>
+    /// extension class for String-type-variables 
+    /// </summary>
+    [global::System.Runtime.CompilerServices.CompilerGenerated]
     public static class CString
     {
         #region Variablen

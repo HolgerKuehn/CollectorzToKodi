@@ -35,7 +35,7 @@ namespace Collectorz
             // Video-Files from Discs and override MediaStreamData
             foreach (XmlNode XMLMovieDisc in XMLMedia.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
             {
-                this.overrideMediaStreamData(XMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(""));
+                string discTitle = this.overrideMediaStreamData(XMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(""));
 
                 foreach (XmlNode XMLEpisode in XMLMovieDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                 {
@@ -43,6 +43,7 @@ namespace Collectorz
                     k++;
 
                     videoFile.Description = XMLEpisode.XMLReadSubnode("title").XMLReadInnerText("");
+                    videoFile.overrideSpecial(discTitle);
                     videoFile.overrideSpecial(this.overrideMediaStreamData(videoFile.Description));
                     videoFile.URL = XMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText("");
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
