@@ -1,15 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsCollectorz">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsMovieCollector">
   <Profiles />
   <Settings>
     <Setting Name="Specials" Type="System.String" Scope="User">
       <Value Profile="(Default)">(Special)</Value>
     </Setting>
     <Setting Name="MPAARating" Type="System.String" Scope="User">
-      <Value Profile="(Default)">(F&lt;MPAARating)&gt;)</Value>
+      <Value Profile="(Default)">(F&lt;MPAARating&gt;)</Value>
     </Setting>
     <Setting Name="Season" Type="System.String" Scope="User">
       <Value Profile="(Default)">(S&lt;Season&gt;)</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(L&lt;Language&gt;)</Value>
     </Setting>
   </Settings>
 </SettingsFile>

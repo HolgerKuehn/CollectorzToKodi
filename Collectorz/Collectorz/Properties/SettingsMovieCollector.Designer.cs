@@ -37,7 +37,7 @@ namespace Collectorz.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("(F<MPAARating)>)")]
+        [global::System.Configuration.DefaultSettingValueAttribute("(F<MPAARating>)")]
         public string MPAARating {
             get {
                 return ((string)(this["MPAARating"]));
@@ -56,6 +56,18 @@ namespace Collectorz.Properties {
             }
             set {
                 this["Season"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(L<Language>)")]
+        public string Language {
+            get {
+                return ((string)(this["Language"]));
+            }
+            set {
+                this["Language"] = value;
             }
         }
     }

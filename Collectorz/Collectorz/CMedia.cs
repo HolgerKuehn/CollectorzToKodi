@@ -64,7 +64,8 @@ namespace Collectorz
             actors = new List<CPerson>();
             videoFiles = new List<CVideoFile>();
             filename = "";
-            videoCodec = CConstants.VideoCodec.TV;
+            // Parameter
+            videoCodec = CConstants.VideoCodec.H265;
             videoDefinition = CConstants.VideoDefinition.SD;
             videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_16_9;
             audioStreams = new List<CAudioStream>();

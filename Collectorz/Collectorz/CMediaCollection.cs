@@ -8,41 +8,66 @@ namespace Collectorz
     public class CMediaCollection
     {
         #region Attributes
+        /// <summary>
+        /// stores configuration for MediaCollection
+        /// </summary>
+        private CConfiguration configuration;
+
+        /// <summary>
+        /// stores MediaCollection for movies
+        /// </summary>
         private List<CMovie> movieCollection;
+
+        /// <summary>
+        /// stores MediaCollection for series
+        /// </summary>
         private List<CSeries> seriesCollection;
         #endregion
         #region Constructor
+        /// <summary>
+        /// initializes MediaCollection and Configuration
+        /// </summary>
         public CMediaCollection()
         {
-            movieCollection = this.MovieCollection;
-            seriesCollection = this.SeriesCollection;
+            configuration = new CConfiguration();
+            movieCollection = new List<CMovie>();
+            seriesCollection = new List<CSeries>();
         }
         #endregion
-        #region Properties (Singleton)
-        public List<CMovie> MovieCollection
-        {
-            get
-            {
-                if (movieCollection == null)
-                    movieCollection = new List<CMovie>();
+        #region Properties
 
-                return movieCollection;
-            }
+        /// <summary>
+        /// <returns>current configuration used by MediaCollection</returns>
+        /// </summary>
+        public CConfiguration Configuration
+        {
+            get { return configuration; }
             set { }
         }
+
+        /// <summary>
+        /// <returns>current MovieCollection used by MediaCollection</returns>
+        /// </summary>
+        public List<CMovie> MovieCollection
+        {
+            get { return movieCollection; }
+            set { }
+        }
+
+        /// <summary>
+        /// <returns>current SeriesCollection used by MediaCollection</returns>
+        /// </summary>
         public List<CSeries> SeriesCollection
         {
-            get
-            {
-                if (seriesCollection == null)
-                    seriesCollection = new List<CSeries>();
-
-                return seriesCollection;
-            }
+            get { return seriesCollection; }
             set { }
         }
         #endregion
         #region Functions
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="EingabeXML"></param>
         public void readXML(string EingabeXML)
         {
             bool XMLMovieIsMovie = false;

@@ -28,6 +28,7 @@ namespace Collectorz
                 Console.Write("Dateiname wurde nicht übergeben.");
                 return 1;
             }
+            
 
             CMediaCollection MediaCollection = new CMediaCollection();
             MediaCollection.readXML(Arguments[1]);
@@ -72,3 +73,5 @@ namespace Collectorz
 // Folder per Season
     // fanart.jpg
     // all other files accordingly
+
+// check in Links, if Season exists
