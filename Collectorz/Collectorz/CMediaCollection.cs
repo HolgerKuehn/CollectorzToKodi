@@ -5,6 +5,9 @@ using System.Xml;
 
 namespace Collectorz
 {
+    /// <summary>
+    /// provides methods to handle the complete media-collection (e.g. movies and series) from MovieCollector
+    /// </summary>
     public class CMediaCollection
     {
         #region Attributes
@@ -65,9 +68,14 @@ namespace Collectorz
         #endregion
         #region Functions
         /// <summary>
-        /// 
+        /// reads the MovieCollectoz XML export into MediaCollection
         /// </summary>
-        /// <param name="EingabeXML"></param>
+        /// <remarks>
+        ///     <para>requires userdefined field:</para>
+        ///     <para>"XBMC Movie" - true if entry is to be interpreted as a movie</para>
+        ///     <para>"XBMC Series" - true if entry is to be interpreted as a series</para>
+        /// </remarks>
+        /// <param name="EingabeXML">File that was used while export from MovieCollector - complete local path</param>
         public void readXML(string EingabeXML)
         {
             bool XMLMovieIsMovie = false;
@@ -123,7 +131,11 @@ namespace Collectorz
                     media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
                     media.PlayCount = (XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
                     media.PlayDate = XMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
-                    
+
+                    if (media.hasSpecials() && media.Set == "")
+                    {
+                        media.Set = media.Title;
+                    }
                     this.MovieCollection.Add(((CMovie)media));
                 }
                 #endregion
@@ -222,7 +234,30 @@ namespace Collectorz
 
             return seriesCollectionPerLanguage;
         }
-        public List<CMovie> listMovieCollectionPerServer(CConstants.ServerList server, bool isSpecial = false)
+        public List<CMovie> listMovieCollectionPerServer(CConstants.ServerList server)
+        {
+            List<CMovie> movieCollectionPerServer = new List<CMovie>();
+            
+            foreach (CMovie movie in listMovieCollectionPerServer(server, false))
+            {
+                if (movie != null)
+                    movieCollectionPerServer.Add(movie);
+            }
+            
+            foreach (CMovie movie in listMovieCollectionPerServer(server, true))
+            {
+                if (movie != null) { 
+                    movie.Title = movie.Title + " (Specials)";
+                    movie.TitleSort = movie.TitleSort + " (Specials)";
+                    movie.TitleOriginal = movie.TitleOriginal + " (Specials)";
+                    movie.Filename = movie.Filename + " (Specials)";
+                    movieCollectionPerServer.Add(movie);
+                }
+            }
+
+            return movieCollectionPerServer;
+        }
+        public List<CMovie> listMovieCollectionPerServer(CConstants.ServerList server, bool isSpecial)
         {
             List<CMovie> movieCollectionPerServer = new List<CMovie>();
             foreach (CMovie movie in this.clonePerLanguage(this.MovieCollection))

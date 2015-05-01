@@ -874,6 +874,17 @@ namespace Collectorz
             swrNFO.WriteLine("        </streamdetails>");
             swrNFO.WriteLine("    </fileinfo>");
         }
+        public bool hasSpecials()
+        {
+            bool hasSpecials = false;
+
+            foreach (CVideoFile videoFile in this.VideoFiles)
+            {
+                hasSpecials = hasSpecials || videoFile.IsSpecial;
+            }
+
+            return hasSpecials;
+        }
         #endregion
     }
 }

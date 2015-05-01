@@ -80,6 +80,7 @@ namespace Collectorz
             set { kodiSkin = Properties.SettingsKodi.Default.Skin; }
         }
         #endregion
+
         #region MovieCollector
         /// <summary>
         /// <para>string used to mark specials</para>
