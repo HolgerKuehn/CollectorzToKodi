@@ -100,7 +100,7 @@ namespace Collectorz
                     media = new CSeries();
 
                 if (media == null)
-                    throw new NotImplementedException("Media not defined as Movie nor Series.");
+                    continue; // TODO: ### write error log
 
                 #endregion
                 #region Media (Movie & Series)

@@ -89,13 +89,14 @@ namespace Collectorz
 
             this.URLLocalFilesystem = CMediaFile.convertFilename(this.URL);
 
-            if (this.URLLocalFilesystem.Contains(".m2ts")) this.Extention = ".m2ts";
-            else if (this.URLLocalFilesystem.Contains(".m4v")) this.Extention = ".m4v";
-            else if (this.URLLocalFilesystem.Contains(".vob")) this.Extention = ".vob";
-            else if (this.URLLocalFilesystem.Contains(".de.srt")) this.Extention = ".de.srt";
-            else if (this.URLLocalFilesystem.Contains(".en.srt")) this.Extention = ".en.srt";
-            else if (this.URLLocalFilesystem.Contains(".jp.srt")) this.Extention = ".jp.srt";
-            else if (this.URLLocalFilesystem.Contains(".jpg")) this.Extention = ".jpg";
+            if (this.URLLocalFilesystem.ToLower().Contains(".m2ts")) this.Extention = ".m2ts";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".m4v")) this.Extention = ".m4v";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".vob")) this.Extention = ".vob";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".de.srt")) this.Extention = ".de.srt";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".en.srt")) this.Extention = ".en.srt";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".jp.srt")) this.Extention = ".jp.srt";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".jpg")) this.Extention = ".jpg";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".png")) this.Extention = ".png";
 
             if (!this.Filename.Contains(this.Extention))
                 this.Filename = this.Filename + this.Extention;
