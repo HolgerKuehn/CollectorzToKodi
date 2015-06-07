@@ -6,23 +6,23 @@
         private bool isSpecial;
         #endregion
         #region Constructor
-        public CVideoFile()
-            : base()
+        public CVideoFile(CConfiguration configuration)
+            : base(configuration)
         {
-            isSpecial = false;
+            this.isSpecial = false;
         }
         #endregion
         #region Properties
         public bool IsSpecial
         {
-            get { return isSpecial; }
-            set { isSpecial = value; }
+            get { return this.isSpecial; }
+            set { this.isSpecial = value; }
         }
         #endregion
         #region Functions
         public override CMediaFile clone()
         {
-            CVideoFile videoFileClone = new CVideoFile();
+            CVideoFile videoFileClone = new CVideoFile(this.Configuration);
             videoFileClone.IsSpecial = this.IsSpecial;
             videoFileClone.Description = this.Description;
             videoFileClone.URL = this.URL;

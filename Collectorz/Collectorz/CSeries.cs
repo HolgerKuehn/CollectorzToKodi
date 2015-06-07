@@ -16,8 +16,8 @@ namespace Collectorz
         private List<int> numberOfEpisodesPerSeason;
         #endregion
         #region Constructor
-        public CSeries()
-            : base()
+        public CSeries(CConfiguration configuration)
+            : base(configuration)
         {
             episodes = new List<CEpisode>();
             numberOfTotaLEpisodes = 0;
@@ -31,38 +31,38 @@ namespace Collectorz
         #region Properties
         public List<CEpisode> Episodes
         {
-            get { return episodes; }
-            set { episodes = value; }
+            get { return this.episodes; }
+            set { this.episodes = value; }
         }
         public int NumberOfTotalEpisodes
         {
-            get { return numberOfTotaLEpisodes; }
-            set { numberOfTotaLEpisodes = value; }
+            get { return this.numberOfTotaLEpisodes; }
+            set { this.numberOfTotaLEpisodes = value; }
         }
         public int NumberOfEpisodes
         {
-            get { return numberOfEpisodes; }
-            set { numberOfEpisodes = value; }
+            get { return this.numberOfEpisodes; }
+            set { this.numberOfEpisodes = value; }
         }
         public int NumberOfSpecials
         {
-            get { return numberOfSpecials; }
-            set { numberOfSpecials = value; }
+            get { return this.numberOfSpecials; }
+            set { this.numberOfSpecials = value; }
         }
         public List<int> NumberOfEpisodesPerSeason
         {
-            get { return numberOfEpisodesPerSeason; }
-            set { numberOfEpisodesPerSeason = value; }
+            get { return this.numberOfEpisodesPerSeason; }
+            set { this.numberOfEpisodesPerSeason = value; }
         }
         #endregion
-        #region Functios
+        #region Functions
         public override void readVideoFiles(XmlNode XMLMedia)
         {
             throw new NotImplementedException();
         }
-        public override void writeNFO(string AusgabeNFO)
+        public override void writeNFO()
         {
-            using (StreamWriter swrNFO = new StreamWriter(AusgabeNFO.Replace("Filme.xml", this.Filename + ".nfo"), false, Encoding.UTF8, 512))
+            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
                 swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
                 swrNFO.WriteLine("<tvshow>");
@@ -128,7 +128,7 @@ namespace Collectorz
         }
         public override CMedia clone()
         {
-            CSeries seriesClone = new CSeries();
+            CSeries seriesClone = new CSeries(this.Configuration);
             seriesClone.Title = this.Title;
             seriesClone.TitleSort = this.TitleSort;
             seriesClone.TitleOriginal = this.TitleOriginal;
@@ -178,10 +178,10 @@ namespace Collectorz
 
             return seriesClone;
         }
-        public override CMedia clone(CConstants.ServerList server, bool isSpecial = false)
+        public override CMedia clone(int server, bool isSpecial = false)
         {
             bool cloneSeries = false;
-            foreach (CConstants.ServerList serverList in this.Server)
+            foreach (int serverList in this.Server)
                 if (serverList.Equals(server))
                     cloneSeries = true;
 
@@ -189,7 +189,7 @@ namespace Collectorz
 
             if (cloneSeries)
             {
-                seriesClone = new CSeries();
+                seriesClone = new CSeries(this.Configuration);
                 seriesClone.Title = this.Title;
                 seriesClone.TitleSort = this.TitleSort;
                 seriesClone.TitleOriginal = this.TitleOriginal;

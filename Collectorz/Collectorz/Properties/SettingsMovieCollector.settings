@@ -17,5 +17,8 @@
     <Setting Name="Movies" Type="System.String" Scope="User">
       <Value Profile="(Default)">(Movie)</Value>
     </Setting>
+    <Setting Name="LocalPathToXMLExport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P:\Collectorz.com\nfo-Konverter\nfoConverter\nfoConverter\bin\Filme.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

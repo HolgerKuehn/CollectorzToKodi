@@ -11,26 +11,26 @@ namespace Collectorz
         #region Constructor
         public CPerson()
         {
-            name = "";
-            role = "";
-            thumb = "";
+            this.name = "";
+            this.role = "";
+            this.thumb = "";
         }
         #endregion
         #region Properties
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return this.name; }
+            set { this.name = value; }
         }
         public string Role
         {
-            get { return role; }
-            set { role = value; }
+            get { return this.role; }
+            set { this.role = value; }
         }
         public string Thumb
         {
-            get { return thumb; }
-            set { thumb = value; }
+            get { return this.thumb; }
+            set { this.thumb = value; }
         }
         #endregion
     }

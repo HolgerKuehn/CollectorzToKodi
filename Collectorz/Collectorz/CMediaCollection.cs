@@ -15,12 +15,10 @@ namespace Collectorz
         /// stores configuration for MediaCollection
         /// </summary>
         private CConfiguration configuration;
-
         /// <summary>
         /// stores MediaCollection for movies
         /// </summary>
         private List<CMovie> movieCollection;
-
         /// <summary>
         /// stores MediaCollection for series
         /// </summary>
@@ -30,39 +28,36 @@ namespace Collectorz
         /// <summary>
         /// initializes MediaCollection and Configuration
         /// </summary>
-        public CMediaCollection()
+        public CMediaCollection(CConfiguration configuration)
         {
-            configuration = new CConfiguration();
-            movieCollection = new List<CMovie>();
-            seriesCollection = new List<CSeries>();
+            this.configuration = configuration;
+            this.movieCollection = new List<CMovie>();
+            this.seriesCollection = new List<CSeries>();
         }
         #endregion
         #region Properties
-
         /// <summary>
         /// <returns>current configuration used by MediaCollection</returns>
         /// </summary>
         public CConfiguration Configuration
         {
-            get { return configuration; }
+            get { return this.configuration; }
             set { }
         }
-
         /// <summary>
         /// <returns>current MovieCollection used by MediaCollection</returns>
         /// </summary>
         public List<CMovie> MovieCollection
         {
-            get { return movieCollection; }
+            get { return this.movieCollection; }
             set { }
         }
-
         /// <summary>
         /// <returns>current SeriesCollection used by MediaCollection</returns>
         /// </summary>
         public List<CSeries> SeriesCollection
         {
-            get { return seriesCollection; }
+            get { return this.seriesCollection; }
             set { }
         }
         #endregion
@@ -71,7 +66,7 @@ namespace Collectorz
         /// reads the MovieCollectoz XML export into MediaCollection
         /// </summary>
         /// <remarks>
-        ///     <para>requires userdefined field:</para>
+        ///     <para>requires user defined field:</para>
         ///     <para>"XBMC Movie" - true if entry is to be interpreted as a movie</para>
         ///     <para>"XBMC Series" - true if entry is to be interpreted as a series</para>
         /// </remarks>
@@ -94,10 +89,10 @@ namespace Collectorz
                 }
 
                 if (XMLMovieIsMovie)
-                    media = new CMovie();
+                    media = new CMovie(this.Configuration);
 
                 if (XMLMovieIsSeries)
-                    media = new CSeries();
+                    media = new CSeries(this.Configuration);
 
                 if (media == null)
                     continue; // TODO: ### write error log
@@ -142,21 +137,21 @@ namespace Collectorz
                 #region Series
                 if (XMLMovieIsSeries)
                 {
-                    // releasdate and number episodes in series
+                    // releasedate and number episodes in series
                     media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
                     ((CSeries)media).NumberOfTotalEpisodes = (int)Int32.Parse(XMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(""));
 
                     // episodes
                     foreach (XmlNode XMLSeriesDisc in XMLMovie.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
                     {
-                        CEpisode seriesDiscEpisode = new CEpisode();
+                        CEpisode seriesDiscEpisode = new CEpisode(this.Configuration);
                         seriesDiscEpisode.Series = ((CSeries)media);
                         seriesDiscEpisode.extractSeriesData((CSeries)media);
                         seriesDiscEpisode.overrideSeason(seriesDiscEpisode.overrideMediaStreamData(XMLSeriesDisc.XMLReadSubnode("title").XMLReadInnerText("")), false);
 
                         foreach (XmlNode XMLEpisode in XMLSeriesDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                         {
-                            CEpisode episode = new CEpisode();
+                            CEpisode episode = new CEpisode(this.Configuration);
 
                             // reset Episode-Attributes to Disc-Attributes
                             episode.extractSeriesData(seriesDiscEpisode);
@@ -234,7 +229,7 @@ namespace Collectorz
 
             return seriesCollectionPerLanguage;
         }
-        public List<CMovie> listMovieCollectionPerServer(CConstants.ServerList server)
+        public List<CMovie> listMovieCollectionPerServer(int server)
         {
             List<CMovie> movieCollectionPerServer = new List<CMovie>();
             
@@ -257,13 +252,13 @@ namespace Collectorz
 
             return movieCollectionPerServer;
         }
-        public List<CMovie> listMovieCollectionPerServer(CConstants.ServerList server, bool isSpecial)
+        public List<CMovie> listMovieCollectionPerServer(int server, bool isSpecial)
         {
             List<CMovie> movieCollectionPerServer = new List<CMovie>();
             foreach (CMovie movie in this.clonePerLanguage(this.MovieCollection))
             {
                 bool addMovie = false;
-                foreach (CConstants.ServerList serverList in movie.Server)
+                foreach (int serverList in movie.Server)
                     if (serverList.Equals(server))
                         addMovie = true;
 
@@ -276,14 +271,14 @@ namespace Collectorz
 
             return movieCollectionPerServer;
         }
-        public List<CSeries> listSeriesCollectionPerServer(CConstants.ServerList server)
+        public List<CSeries> listSeriesCollectionPerServer(int server)
         {
             List<CSeries> seriesCollectionPerServer = new List<CSeries>();
 
             foreach (CSeries series in this.clonePerLanguage(this.SeriesCollection))
             {
                 bool addSeries = false;
-                foreach (CConstants.ServerList serverList in series.Server)
+                foreach (int serverList in series.Server)
                     if (serverList.Equals(server))
                         addSeries = true;
 

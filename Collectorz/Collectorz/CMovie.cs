@@ -7,17 +7,22 @@ namespace Collectorz
 {
     public class CMovie : CMedia
     {
+        #region Constructor
+        public CMovie(CConfiguration configuration)
+            : base(configuration)
+        {}
+        #endregion
         #region Functions
         public override void readVideoFiles(XmlNode XMLMedia)
         {
             int k = 0;
 
-            // Videofiles from Link-List
+            // videofiles from Link-List
             foreach (XmlNode XMLVideodatei in XMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
                 if (XMLVideodatei.XMLReadSubnode("urltype").XMLReadInnerText("") == "Movie" && !XMLVideodatei.XMLReadSubnode("description").XMLReadInnerText("").Contains("Untertitel."))
                 {
-                    CVideoFile videoFile = new CVideoFile();
+                    CVideoFile videoFile = new CVideoFile(this.Configuration);
                     k++;
 
                     videoFile.Description = XMLVideodatei.XMLReadSubnode("description").XMLReadInnerText("");
@@ -39,7 +44,7 @@ namespace Collectorz
 
                 foreach (XmlNode XMLEpisode in XMLMovieDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                 {
-                    CVideoFile videoFile = new CVideoFile();
+                    CVideoFile videoFile = new CVideoFile(this.Configuration);
                     k++;
 
                     videoFile.Description = XMLEpisode.XMLReadSubnode("title").XMLReadInnerText("");
@@ -54,9 +59,9 @@ namespace Collectorz
                 }
             }
         }
-        public override void writeNFO(string AusgabeNFO)
+        public override void writeNFO()
         {
-            using (StreamWriter swrNFO = new StreamWriter(AusgabeNFO.Replace("Filme.xml", this.Filename + ".nfo"), false, Encoding.UTF8, 512))
+            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
                 swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
                 swrNFO.WriteLine("<movie>");
@@ -132,7 +137,7 @@ namespace Collectorz
         }
         public override CMedia clone()
         {
-            CMovie movieClone = new CMovie();
+            CMovie movieClone = new CMovie(this.Configuration);
             movieClone.Title = this.Title;
             movieClone.TitleSort = this.TitleSort;
             movieClone.TitleOriginal = this.TitleOriginal;
@@ -168,13 +173,13 @@ namespace Collectorz
 
             return movieClone;
         }
-        public override CMedia clone(CConstants.ServerList server, bool isSpecial = false)
+        public override CMedia clone(int server, bool isSpecial = false)
         {
             bool cloneMovie = false;
             bool hasSpecials = false;
 
             // check if Movie is on requested Server
-            foreach (CConstants.ServerList serverList in this.Server)
+            foreach (int serverList in this.Server)
                 if (serverList.Equals(server))
                     cloneMovie = true;
 
@@ -190,7 +195,7 @@ namespace Collectorz
 
             if (cloneMovie && hasSpecials == isSpecial)
             {
-                movieClone = new CMovie();
+                movieClone = new CMovie(this.Configuration);
                 movieClone.Title = this.Title;
                 movieClone.TitleSort = this.TitleSort;
                 movieClone.TitleOriginal = this.TitleOriginal;

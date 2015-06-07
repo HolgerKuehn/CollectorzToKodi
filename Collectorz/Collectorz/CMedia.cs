@@ -9,6 +9,7 @@ namespace Collectorz
     public abstract class CMedia
     {
         #region Attributes
+        private CConfiguration configuration;
         private string title;
         private string titleSort;
         private string titleOriginal;
@@ -31,211 +32,218 @@ namespace Collectorz
         private List<CPerson> actors;
         private List<CVideoFile> videoFiles;
         private string filename;
-        private List<CConstants.ServerList> server;
-        private CConstants.VideoCodec videoCodec;
-        private CConstants.VideoDefinition videoDefinition;
-        private CConstants.VideoAspectRatio videoAspectRatio;
+        private List<int> server;
+        private CConfiguration.VideoCodec videoCodec;
+        private CConfiguration.VideoDefinition videoDefinition;
+        private CConfiguration.VideoAspectRatio videoAspectRatio;
         private List<CAudioStream> audioStreams;
         private List<CSubTitleFile> subTitleStreams;
         private List<string> mediaLanguages;
         #endregion
         #region Constructor
-        public CMedia()
+        public CMedia(CConfiguration configuration)
         {
-            title = "";
-            titleSort = "";
-            titleOriginal = "";
-            set = "";
-            rating = "";
-            year = "";
-            airdate = "";
-            plot = "";
-            runTime = "";
-            images = new List<CImageFile>();
-            mPAA = "";
-            playCount = "0";
-            playDate = "";
-            iMDbId = "";
-            country = "";
-            genres = new List<string>();
-            studios = new List<string>();
-            directors = new List<CPerson>();
-            writers = new List<CPerson>();
-            actors = new List<CPerson>();
-            videoFiles = new List<CVideoFile>();
-            filename = "";
+            this.configuration = configuration;
+            this.title = "";
+            this.titleSort = "";
+            this.titleOriginal = "";
+            this.set = "";
+            this.rating = "";
+            this.year = "";
+            this.airdate = "";
+            this.plot = "";
+            this.runTime = "";
+            this.images = new List<CImageFile>();
+            this.mPAA = "";
+            this.playCount = "0";
+            this.playDate = "";
+            this.iMDbId = "";
+            this.country = "";
+            this.genres = new List<string>();
+            this.studios = new List<string>();
+            this.directors = new List<CPerson>();
+            this.writers = new List<CPerson>();
+            this.actors = new List<CPerson>();
+            this.videoFiles = new List<CVideoFile>();
+            this.filename = "";
+            
             // Parameter
-            videoCodec = CConstants.VideoCodec.H265;
-            videoDefinition = CConstants.VideoDefinition.SD;
-            videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_16_9;
-            audioStreams = new List<CAudioStream>();
-            subTitleStreams = new List<CSubTitleFile>();
-            mediaLanguages = new List<string>();
+            this.videoCodec = CConfiguration.VideoCodec.H265;
+            this.videoDefinition = CConfiguration.VideoDefinition.SD;
+            this.videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_16_9;
+            this.audioStreams = new List<CAudioStream>();
+            this.subTitleStreams = new List<CSubTitleFile>();
+            this.mediaLanguages = new List<string>();
         }
         #endregion
         #region Properties
+        public CConfiguration Configuration
+        {
+            get { return this.configuration; }
+            set { this.configuration = value; }
+        }
         public string Title
         {
-            get { return title; }
-            set { title = value; }
+            get { return this.title; }
+            set { this.title = value; }
         }
         public string TitleSort
         {
-            get { return titleSort; }
-            set { titleSort = value; }
+            get { return this.titleSort; }
+            set { this.titleSort = value; }
         }
         public string TitleOriginal
         {
-            get { return titleOriginal; }
-            set { titleOriginal = value; }
+            get { return this.titleOriginal; }
+            set { this.titleOriginal = value; }
         }
         public string Set
         {
-            get { return set; }
-            set { set = value; }
+            get { return this.set; }
+            set { this.set = value; }
         }
         public string Rating
         {
-            get { return rating; }
-            set { rating = value; }
+            get { return this.rating; }
+            set { this.rating = value; }
         }
         public string Year
         {
-            get { return year; }
-            set { year = value; }
+            get { return this.year; }
+            set { this.year = value; }
         }
         public string Airdate
         {
-            get { return airdate; }
-            set { airdate = value; }
+            get { return this.airdate; }
+            set { this.airdate = value; }
         }
         public string Plot
         {
-            get { return plot; }
-            set { plot = value; }
+            get { return this.plot; }
+            set { this.plot = value; }
         }
         public string RunTime
         {
-            get { return runTime; }
-            set { runTime = value; }
+            get { return this.runTime; }
+            set { this.runTime = value; }
         }
         public List<CImageFile> Images
         {
-            get { return images; }
-            set { images = value; }
+            get { return this.images; }
+            set { this.images = value; }
         }
         public string MPAA
         {
-            get { return mPAA; }
-            set { mPAA = value; }
+            get { return this.mPAA; }
+            set { this.mPAA = value; }
         }
         public string PlayCount
         {
-            get { return playCount; }
-            set { playCount = value; }
+            get { return this.playCount; }
+            set { this.playCount = value; }
         }
         public string PlayDate
         {
-            get { return playDate; }
-            set { playDate = value; }
+            get { return this.playDate; }
+            set { this.playDate = value; }
         }
         public string IMDbId
         {
-            get { return iMDbId; }
-            set { iMDbId = value; }
+            get { return this.iMDbId; }
+            set { this.iMDbId = value; }
         }
         public string Country
         {
-            get { return country; }
-            set { country = value; }
+            get { return this.country; }
+            set { this.country = value; }
         }
         public List<String> Genres
         {
-            get { return genres; }
-            set { genres = value; }
+            get { return this.genres; }
+            set { this.genres = value; }
         }
         public List<string> Studios
         {
-            get { return studios; }
-            set { studios = value; }
+            get { return this.studios; }
+            set { this.studios = value; }
         }
         public List<CPerson> Directors
         {
-            get { return directors; }
-            set { directors = value; }
+            get { return this.directors; }
+            set { this.directors = value; }
         }
         public List<CPerson> Writers
         {
-            get { return writers; }
-            set { writers = value; }
+            get { return this.writers; }
+            set { this.writers = value; }
         }
         public List<CPerson> Actors
         {
-            get { return actors; }
-            set { actors = value; }
+            get { return this.actors; }
+            set { this.actors = value; }
         }
         public List<CVideoFile> VideoFiles
         {
-            get { return videoFiles; }
-            set { videoFiles = value; }
+            get { return this.videoFiles; }
+            set { this.videoFiles = value; }
         }
         public string Filename
         {
-            get { return filename; }
-            set { filename = value; }
+            get { return this.filename; }
+            set { this.filename = value; }
         }
-        public List<CConstants.ServerList> Server
+        public List<int> Server
         {
             get
             {
-                if (server == null)
-                    server = new List<CConstants.ServerList>();
+                if (this.server == null)
+                    this.server = new List<int>();
 
-                return server;
+                return this.server;
             }
-            set { server = value; }
+            set { this.server = value; }
         }
-        public CConstants.VideoCodec VideoCodec
+        public CConfiguration.VideoCodec VideoCodec
         {
-            get { return videoCodec; }
-            set { videoCodec = value; }
+            get { return this.videoCodec; }
+            set { this.videoCodec = value; }
         }
-        public CConstants.VideoDefinition VideoDefinition
+        public CConfiguration.VideoDefinition VideoDefinition
         {
-            get { return videoDefinition; }
-            set { videoDefinition = value; }
+            get { return this.videoDefinition; }
+            set { this.videoDefinition = value; }
         }
-        public CConstants.VideoAspectRatio VideoAspectRatio
+        public CConfiguration.VideoAspectRatio VideoAspectRatio
         {
-            get { return videoAspectRatio; }
-            set { videoAspectRatio = value; }
+            get { return this.videoAspectRatio; }
+            set { this.videoAspectRatio = value; }
         }
         public List<CAudioStream> AudioStreams
         {
             get
             {
-                if (audioStreams == null)
-                    audioStreams = new List<CAudioStream>();
+                if (this.audioStreams == null)
+                    this.audioStreams = new List<CAudioStream>();
 
-                return audioStreams;
+                return this.audioStreams;
             }
-            set { audioStreams = value; }
+            set { this.audioStreams = value; }
         }
         public List<CSubTitleFile> SubTitleStreams
         {
             get
             {
-                if (subTitleStreams == null)
-                    subTitleStreams = new List<CSubTitleFile>();
+                if (this.subTitleStreams == null)
+                    this.subTitleStreams = new List<CSubTitleFile>();
 
-                return subTitleStreams;
+                return this.subTitleStreams;
             }
-            set { subTitleStreams = value; }
+            set { this.subTitleStreams = value; }
         }
         public List<string> MediaLanguages
         {
-            get { return mediaLanguages; }
-            set { mediaLanguages = value; }
+            get { return this.mediaLanguages; }
+            set { this.mediaLanguages = value; }
         }
         #endregion
         #region Functions
@@ -243,7 +251,7 @@ namespace Collectorz
         public abstract void writeNFO(string AusgabeNFO);
         public abstract void writeSH(StreamWriter swrSH);
         public abstract CMedia clone();
-        public abstract CMedia clone(CConstants.ServerList server, bool isSpecial = false);
+        public abstract CMedia clone(int server, bool isSpecial = false);
         public void clonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
         {
             // check for target-language
@@ -259,13 +267,13 @@ namespace Collectorz
 
             foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
             { 
-                this.Title = this.Title.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Title = this.Title.ReplaceAll("(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.Title = this.Title.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-                this.TitleSort = this.TitleSort.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.TitleSort = this.TitleSort.ReplaceAll("(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-                this.Filename = this.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Filename = this.Filename.ReplaceAll("(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
                 this.IMDbId = this.IMDbId.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
@@ -275,7 +283,7 @@ namespace Collectorz
                     if (!episodeContainsTargetLanguage)
                         videoFile.Filename = "";
 
-                    videoFile.Filename = videoFile.Filename.ReplaceAll("(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConstants.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                    videoFile.Filename = videoFile.Filename.ReplaceAll("(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + CConfiguration.covertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                     videoFile.Filename = videoFile.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
                     videoFile.URL = videoFile.URL.ReplaceAll(isoCodeToBeReplaced + videoFile.Extention, isoCodeForReplacemant + videoFile.Extention);
@@ -363,52 +371,52 @@ namespace Collectorz
             CImageFile image;
 
             // Cover-Front-Image
-            image = new CImageFile();
+            image = new CImageFile(this.Configuration);
             image.Media = this;
             // image.Filename = image.Media.Filename + "-coverfront";
             image.Filename = "cover";
             image.URL = XMLNode.XMLReadSubnode("coverfront").XMLReadInnerText("");
             image.convertFilename();
-            image.ImageType = CConstants.ImageType.CoverFront;
+            image.ImageType = CConfiguration.ImageType.CoverFront;
 
             if (image.URL != "")
                 image.Media.Images.Add(image);
 
 
             // Cover-Back-Image
-            image = new CImageFile();
+            image = new CImageFile(this.Configuration);
             image.Media = this;
             //image.Filename = image.Media.Filename + "-coverback";
             image.Filename = "coverback";
             image.URL = XMLNode.XMLReadSubnode("coverback").XMLReadInnerText("");
             image.convertFilename();
-            image.ImageType = CConstants.ImageType.CoverBack;
+            image.ImageType = CConfiguration.ImageType.CoverBack;
 
             if (image.URL != "")
                 image.Media.Images.Add(image);
 
 
             // Poster-Image
-            image = new CImageFile();
+            image = new CImageFile(this.Configuration);
             image.Media = this;
             //image.Filename = image.Media.Filename + "-poster";
             image.Filename = "poster";
             image.URL = XMLNode.XMLReadSubnode("poster").XMLReadInnerText("");
             image.convertFilename();
-            image.ImageType = CConstants.ImageType.Poster;
+            image.ImageType = CConfiguration.ImageType.Poster;
 
             if (image.URL != "")
                 image.Media.Images.Add(image);
 
 
             // Backdrop-Image
-            image = new CImageFile();
+            image = new CImageFile(this.Configuration);
             image.Media = this;
             //image.Filename = image.Media.Filename + "-fanart";
             image.Filename = "fanart";
             image.URL = XMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText("");
             image.convertFilename();
-            image.ImageType = CConstants.ImageType.Backdrop;
+            image.ImageType = CConfiguration.ImageType.Backdrop;
 
             if (image.URL != "")
                 image.Media.Images.Add(image);
@@ -421,7 +429,7 @@ namespace Collectorz
             {
                 if ((XMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText("") == "Image"))
                 {
-                    CImageFile imageFile = new CImageFile();
+                    CImageFile imageFile = new CImageFile(this.Configuration);
                     imageFile.Media = this;
 
                     imageFile.Description = imageFile.overrideSeason(XMLImageFile.XMLReadSubnode("description").XMLReadInnerText(""));
@@ -433,24 +441,24 @@ namespace Collectorz
                         (imageFile.Description.Contains("ExtraCover") && imageFile.Media.GetType().ToString().Contains("CSeries")))
                     {
                         numberOfExtraBackdrop++;
-                        imageFile.ImageType = CConstants.ImageType.ExtraBackdrop;
+                        imageFile.ImageType = CConfiguration.ImageType.ExtraBackdrop;
                         imageFile.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
                     }
                     // Extra-Cover only for movies
                     else if (imageFile.Description.Contains("ExtraCover") && !imageFile.Media.GetType().ToString().Contains("CSeries"))
                     {
                         numberOfExtraCover++;
-                        imageFile.ImageType = CConstants.ImageType.ExtraCover;
+                        imageFile.ImageType = CConfiguration.ImageType.ExtraCover;
                         imageFile.Filename = "thumb" + ("0000" + numberOfExtraCover.ToString()).Substring(numberOfExtraCover.ToString().Length);
                     }
                     else if (imageFile.Description.Contains("Backdrop"))
                     {
-                        imageFile.ImageType = CConstants.ImageType.SeasonBackdrop;
+                        imageFile.ImageType = CConfiguration.ImageType.SeasonBackdrop;
                         imageFile.Filename = "fanart";
                     }
                     else if (imageFile.Description.Contains("Cover"))
                     {
-                        imageFile.ImageType = CConstants.ImageType.SeasonCover;
+                        imageFile.ImageType = CConfiguration.ImageType.SeasonCover;
                         imageFile.Filename = "cover";
                     }
 
@@ -470,7 +478,7 @@ namespace Collectorz
                 }
             }
         }
-        private void writeImagesToNFO(StreamWriter swrNFO, CConstants.ImageType imageType)
+        private void writeImagesToNFO(StreamWriter swrNFO, CConfiguration.ImageType imageType)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
@@ -478,18 +486,18 @@ namespace Collectorz
 
                 if (imageFile.Filename != "" && imageFile.ImageType == imageType)
                 {
-                    if (imageFile.ImageType == CConstants.ImageType.CoverFront || imageFile.ImageType == CConstants.ImageType.Backdrop)
+                    if (imageFile.ImageType == CConfiguration.ImageType.CoverFront || imageFile.ImageType == CConfiguration.ImageType.Backdrop)
                     {
-                        if (imageFile.ImageType == CConstants.ImageType.Backdrop)
+                        if (imageFile.ImageType == CConfiguration.ImageType.Backdrop)
                             swrNFO.Write("    ");
 
                         swrNFO.WriteLine("    <thumb>smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
                     }
 
 
-                    if (imageFile.ImageType == CConstants.ImageType.SeasonCover || imageFile.ImageType == CConstants.ImageType.SeasonBackdrop)
+                    if (imageFile.ImageType == CConfiguration.ImageType.SeasonCover || imageFile.ImageType == CConfiguration.ImageType.SeasonBackdrop)
                     {
-                        if (imageFile.ImageType == CConstants.ImageType.SeasonBackdrop)
+                        if (imageFile.ImageType == CConfiguration.ImageType.SeasonBackdrop)
                             swrNFO.Write("    ");
 
                         swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CSeries") ? "Serien" : "Filme") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" : "") + imageFile.Filename + "</thumb>");
@@ -500,13 +508,13 @@ namespace Collectorz
         public virtual void writeImagesToNFO(StreamWriter swrNFO)
         {
             // Cover-Thumb
-            this.writeImagesToNFO(swrNFO, CConstants.ImageType.CoverFront);
-            this.writeImagesToNFO(swrNFO, CConstants.ImageType.SeasonCover);
+            this.writeImagesToNFO(swrNFO, CConfiguration.ImageType.CoverFront);
+            this.writeImagesToNFO(swrNFO, CConfiguration.ImageType.SeasonCover);
 
             // fan art
             swrNFO.WriteLine("    <fanart>");
-            this.writeImagesToNFO(swrNFO, CConstants.ImageType.Backdrop);
-            this.writeImagesToNFO(swrNFO, CConstants.ImageType.SeasonBackdrop);
+            this.writeImagesToNFO(swrNFO, CConfiguration.ImageType.Backdrop);
+            this.writeImagesToNFO(swrNFO, CConfiguration.ImageType.SeasonBackdrop);
             swrNFO.WriteLine("    </fanart>");
         }
         public virtual void writeImagesToSH(StreamWriter swrSH)
@@ -515,20 +523,20 @@ namespace Collectorz
             {
                 CImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConstants.ImageType.unknown)
+                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConfiguration.ImageType.unknown)
                 {
-                    if (!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != "" && imageFile.Season != "-1" && imageFile.ImageType != CConstants.ImageType.ExtraBackdrop && imageFile.ImageType != CConstants.ImageType.ExtraCover)
+                    if (!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != "" && imageFile.Season != "-1" && imageFile.ImageType != CConfiguration.ImageType.ExtraBackdrop && imageFile.ImageType != CConfiguration.ImageType.ExtraCover)
                         swrSH.WriteLine("cd \"Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "\"");
 
-                    if (imageFile.ImageType == CConstants.ImageType.ExtraBackdrop)
+                    if (imageFile.ImageType == CConfiguration.ImageType.ExtraBackdrop)
                         swrSH.WriteLine("cd \"extrafanart\"");
 
-                    if (imageFile.ImageType == CConstants.ImageType.ExtraCover)
+                    if (imageFile.ImageType == CConfiguration.ImageType.ExtraCover)
                         swrSH.WriteLine("cd \"extrathumbs\"");
 
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
 
-                    if ((!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != "" && imageFile.Season != "-1") || imageFile.ImageType == CConstants.ImageType.ExtraBackdrop || imageFile.ImageType == CConstants.ImageType.ExtraCover)
+                    if ((!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != "" && imageFile.Season != "-1") || imageFile.ImageType == CConfiguration.ImageType.ExtraBackdrop || imageFile.ImageType == CConfiguration.ImageType.ExtraCover)
                         swrSH.WriteLine("cd ..");
                 }
             }
@@ -633,10 +641,10 @@ namespace Collectorz
                 i++;
             }
         }
-        public void addServer(CConstants.ServerList serverList)
+        public void addServer(int serverList)
         {
             bool addServer = true;
-            foreach (CConstants.ServerList currentServerList in this.Server)
+            foreach (int currentServerList in this.Server)
                 if (currentServerList.Equals(serverList))
                     addServer = false;
 
@@ -651,8 +659,8 @@ namespace Collectorz
         }
         private void readVideoStreamData(XmlNode XMLMedia)
         {
-            CConstants.VideoAspectRatio videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_16_9;
-            CConstants.VideoDefinition videoDefinition = CConstants.VideoDefinition.SD;
+            CConfiguration.VideoAspectRatio videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_16_9;
+            CConfiguration.VideoDefinition videoDefinition = CConfiguration.VideoDefinition.SD;
 
             // VideoAspectRatio
             List<XmlNode> XMLVideoAspectRatios = XMLMedia.XMLReadSubnode("ratios").XMLReadSubnodes("ratio");
@@ -661,23 +669,23 @@ namespace Collectorz
                 XmlNode XMLVideoAspectRatio = XMLVideoAspectRatios.ElementAt(0);
 
                 if (XMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Fullscreen (4:3)"))
-                    videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_4_3;
+                    videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_4_3;
 
                 if (XMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Widescreen (16:9)"))
-                    videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_16_9;
+                    videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_16_9;
 
                 if (XMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Theatrical Widescreen (21:9)"))
-                    videoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_21_9;
+                    videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_21_9;
             }
 
             // VideoDefinition
             XmlNode XMLVideoDefinition = XMLMedia.XMLReadSubnode("condition");
 
             if (XMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("SD"))
-                videoDefinition = CConstants.VideoDefinition.SD;
+                videoDefinition = CConfiguration.VideoDefinition.SD;
 
             if (XMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("HD"))
-                videoDefinition = CConstants.VideoDefinition.HD;
+                videoDefinition = CConfiguration.VideoDefinition.HD;
 
 
             // Werte übertragen
@@ -707,7 +715,7 @@ namespace Collectorz
         {
             foreach (XmlNode XMLSubTitle in XMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
             {
-                CSubTitleFile subTitleStream = new CSubTitleFile();
+                CSubTitleFile subTitleStream = new CSubTitleFile(this.Configuration);
                 subTitleStream.Media = this;
 
                 string displayname = XMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText("");
@@ -723,48 +731,48 @@ namespace Collectorz
         public string overrideMediaStreamData(string title)
         {
             if (title.Contains("(TV)"))
-                this.VideoCodec = CConstants.VideoCodec.TV;
+                this.VideoCodec = CConfiguration.VideoCodec.TV;
 
             title = title.Replace("(TV)", "");
 
             if (title.Contains("(BluRay)"))
-                this.VideoCodec = CConstants.VideoCodec.BluRay;
+                this.VideoCodec = CConfiguration.VideoCodec.BluRay;
 
             title = title.Replace("(BluRay)", "");
 
             if (title.Contains("(H264)"))
-                this.VideoCodec = CConstants.VideoCodec.H264;
+                this.VideoCodec = CConfiguration.VideoCodec.H264;
 
             title = title.Replace("(H264)", "");
 
             if (title.Contains("(H265)"))
-                this.VideoCodec = CConstants.VideoCodec.H265;
+                this.VideoCodec = CConfiguration.VideoCodec.H265;
 
             title = title.Replace("(H265)", "");
 
 
             if (title.Contains("(SD)"))
-                this.VideoDefinition = CConstants.VideoDefinition.SD;
+                this.VideoDefinition = CConfiguration.VideoDefinition.SD;
 
             title = title.Replace("(SD)", "");
 
             if (title.Contains("(HD)"))
-                this.VideoDefinition = CConstants.VideoDefinition.HD;
+                this.VideoDefinition = CConfiguration.VideoDefinition.HD;
 
             title = title.Replace("(HD)", "");
 
             if (title.Contains("(4:3)"))
-                this.VideoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_4_3;
+                this.VideoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_4_3;
 
             title = title.Replace("(4:3)", "");
 
             if (title.Contains("(16:9)"))
-                this.VideoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_16_9;
+                this.VideoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_16_9;
 
             title = title.Replace("(16:9)", "");
 
             if (title.Contains("(21:9)"))
-                this.VideoAspectRatio = CConstants.VideoAspectRatio.AspectRatio_21_9;
+                this.VideoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio_21_9;
 
             title = title.Replace("(21:9)", "");
 
@@ -785,7 +793,7 @@ namespace Collectorz
                 this.mediaLanguages = new List<string>();
 
                 string movieLanguages = title.RightOfLast("(L").LeftOf(")");
-                foreach (string movieLanguage in movieLanguages._Split(" ", null, false))
+                foreach (string movieLanguage in movieLanguages.Split(" ", null, false))
                     this.MediaLanguages.Add(movieLanguage);
 
                 title = title.Replace("(L" + movieLanguages + ")", "").Trim();
@@ -814,36 +822,36 @@ namespace Collectorz
             swrNFO.WriteLine("            <video>");
 
             // VideoCodec
-            if (this.VideoCodec.Equals(CConstants.VideoCodec.TV))
+            if (this.VideoCodec.Equals(CConfiguration.VideoCodec.TV))
                 swrNFO.WriteLine("                <codec>tv</codec>");
 
-            if (this.VideoCodec.Equals(CConstants.VideoCodec.BluRay))
+            if (this.VideoCodec.Equals(CConfiguration.VideoCodec.BluRay))
                 swrNFO.WriteLine("                <codec>bluray</codec>");
 
-            if (this.VideoCodec.Equals(CConstants.VideoCodec.H264))
+            if (this.VideoCodec.Equals(CConfiguration.VideoCodec.H264))
                 swrNFO.WriteLine("                <codec>h264</codec>");
 
-            if (this.VideoCodec.Equals(CConstants.VideoCodec.H265))
+            if (this.VideoCodec.Equals(CConfiguration.VideoCodec.H265))
                 swrNFO.WriteLine("                <codec>hevc</codec>");
 
             // AspectRatio
-            if (this.VideoAspectRatio.Equals(CConstants.VideoAspectRatio.AspectRatio_4_3))
+            if (this.VideoAspectRatio.Equals(CConfiguration.VideoAspectRatio.AspectRatio_4_3))
                 swrNFO.WriteLine("                <aspect>1.33</aspect>");
 
-            if (this.VideoAspectRatio.Equals(CConstants.VideoAspectRatio.AspectRatio_16_9))
+            if (this.VideoAspectRatio.Equals(CConfiguration.VideoAspectRatio.AspectRatio_16_9))
                 swrNFO.WriteLine("                <aspect>1.78</aspect>");
 
-            if (this.VideoAspectRatio.Equals(CConstants.VideoAspectRatio.AspectRatio_21_9))
+            if (this.VideoAspectRatio.Equals(CConfiguration.VideoAspectRatio.AspectRatio_21_9))
                 swrNFO.WriteLine("                <aspect>2.33</aspect>");
 
             // VideoDefinition
-            if (this.VideoDefinition.Equals(CConstants.VideoDefinition.SD))
+            if (this.VideoDefinition.Equals(CConfiguration.VideoDefinition.SD))
             {
                 swrNFO.WriteLine("                <width>768</width>");
                 swrNFO.WriteLine("                <height>576</height>");
             }
 
-            if (this.VideoDefinition.Equals(CConstants.VideoDefinition.HD))
+            if (this.VideoDefinition.Equals(CConfiguration.VideoDefinition.HD))
             {
                 swrNFO.WriteLine("                <width>1920</width>");
                 swrNFO.WriteLine("                <height>1080</height>");

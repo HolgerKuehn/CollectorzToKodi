@@ -458,7 +458,7 @@ namespace Collectorz
         #endregion
         #region High-Level Erweiterungen
         // Erweiterung: durch ein Trennzeichen getrennte Bestandteile eines Textes in eine Liste einfügen
-        #region public static List<string> _Split(this string Text, string Delimeter = "\n", string OmitCharacters = null, bool AddEmptyEntries = true)
+        #region public static List<string> Split(this string Text, string Delimeter = "\n", string OmitCharacters = null, bool AddEmptyEntries = true)
         /// <summary>
         ///     durch ein Trennzeichen getrennte Bestandteile eines Textes in eine Liste einfügen
         /// </summary>
@@ -466,7 +466,7 @@ namespace Collectorz
         /// <param name="Delimeter">Trennzeichen (Standardwert: "\n")</param>
         /// <param name="OmitCharacters">am Anfang und Ende eines Bestandteiles zu ignorierende Zeichen (Standardwert: "null")</param>
         /// <param name="AddEmptyEntries">fügt Bestandteile auch dann hinzu, wenn diese leer sind (Standardwert: "true")</param>
-        public static List<string> _Split(this string Text, string Delimeter = "\n", string OmitCharacters = null, bool AddEmptyEntries = true)
+        public static List<string> Split(this string Text, string Delimeter = "\n", string OmitCharacters = null, bool AddEmptyEntries = true)
         {
             if (Text == null || Delimeter == null) return null;
             string[] ResultArray = Text.Split(new string[] { Delimeter }, StringSplitOptions.None);

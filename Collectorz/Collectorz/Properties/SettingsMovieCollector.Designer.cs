@@ -82,5 +82,17 @@ namespace Collectorz.Properties {
                 this["Movies"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("P:\\Collectorz.com\\nfo-Konverter\\nfoConverter\\nfoConverter\\bin\\Filme.xml")]
+        public string LocalPathToXMLExport {
+            get {
+                return ((string)(this["LocalPathToXMLExport"]));
+            }
+            set {
+                this["LocalPathToXMLExport"] = value;
+            }
+        }
     }
 }

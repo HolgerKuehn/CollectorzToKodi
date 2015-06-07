@@ -15,5 +15,17 @@
       <Value Profile="(Default)">UNIX
 </Value>
     </Setting>
+    <Setting Name="LocalPathOfServerForMediaStorage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video</Value>
+    </Setting>
+    <Setting Name="MovieDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Filme</Value>
+    </Setting>
+    <Setting Name="SeriesDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Serien</Value>
+    </Setting>
+    <Setting Name="LocalPathOfServerForMediaPublication" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

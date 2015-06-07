@@ -16,6 +16,47 @@ namespace Collectorz
     /// </summary>
     public class CConfiguration
     {
+        #region Enums
+        public enum VideoCodec
+        {
+            TV,
+            BluRay,
+            H264,
+            H265
+        }
+        public enum ListOfServerTypes
+        {
+            NumberToName,
+            NumberToDriveLetter,
+            NumberToLocalPath,
+            DriveLetterToName,
+            NameToDriveLetter
+        }
+        public enum VideoAspectRatio
+        {
+            AspectRatio_4_3,
+            AspectRatio_16_9,
+            AspectRatio_21_9
+        };
+        public enum VideoDefinition
+        {
+            SD,
+            HD
+        };
+        public enum ImageType
+        {
+            unknown,
+            CoverFront,
+            CoverBack,
+            Poster,
+            Backdrop,
+            SeasonCover,
+            SeasonBackdrop,
+            EpisodeCover,
+            ExtraBackdrop,
+            ExtraCover
+        }
+        #endregion
         #region Attributes
         #region Kodi
         /// <summary>
@@ -62,6 +103,30 @@ namespace Collectorz
         /// <returns>string used to mark multi-language-media<returns>
         /// </summary>
         private string movieCollectorLanguage;
+        /// <summary>
+        /// <para>local path to Collectorz-XML-Export including Filename and extension</para>
+        /// <remarks>
+        ///     <para>filename needs to end with ".xml"</para>
+        /// </remarks>
+        /// <returns>local path to Collectorz-XML-Export including Filename and extension<returns>
+        /// </summary>
+        private string movieCollectorLocalPathToXMLExport;
+        /// <summary>
+        /// <para>local path to Collectorz-XML-Export excluding Filename and extension</para>
+        /// <remarks>
+        ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
+        /// </remarks>
+        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension<returns>
+        /// </summary>
+        private string movieCollectorLocalPathToXMLExportPath;
+        /// <summary>
+        /// <para>Filename and extension excluding path to Collectorz-XML-Export</para>
+        /// <remarks>
+        ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
+        /// </remarks>
+        /// <returns>Filename and extension excluding path to Collectorz-XML-Export<returns>
+        /// </summary>
+        private string movieCollectorLocalPathToXMLExportFile;
         #endregion
         #region Server
         /// <summary>
@@ -81,13 +146,37 @@ namespace Collectorz
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of associated drive-letters used for server names</returns>
         /// </summary>
-        private List<string> serverDriveMappingOfServer;
+        private List<string> serverDriveMappingOfServers;
+        /// <summary>
+        /// <para>list of local paths used on the associated server names to store media</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names to store media</returns>
+        /// </summary>
+        private List<string> serverLocalPathOfServerForMediaStorage;
+        /// <summary>
+        /// <para>list of local paths used on the associated server names to store media</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names to store media</returns>
+        /// </summary>
+        private List<string> serverLocalPathOfServerForMediaStorage; // MediaPublication
         /// <summary>
         /// <para>type of mapping used during deployment</para>
         /// <remarks>supported values: UNIX (Windows will be added later)</remarks>
         /// <returns>type of mapping used during deployment</returns>
         /// </summary>
         private string serverMappingType;
+        /// <summary>
+        /// <para>directory used to publish movies to Kodi</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>directory used to publish movies to Kodi</returns>
+        /// </summary>
+        private string serverMovieDirectory;
+        /// <summary>
+        /// <para>directory used to publish series to Kodi</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>directory used to publish series to Kodi</returns>
+        /// </summary>
+        private string serverSeriesDirectory;
         #endregion
         #region Dictionaries
         /// <summary>
@@ -95,7 +184,7 @@ namespace Collectorz
         /// <remarks>Dictionary used to combine associated drive-letters and server names</remarks>
         /// <returns>list of server names</returns>
         /// </summary>
-        private List<Dictionary<string, string>> listOfServers;
+        private List<Dictionary<string, string>> serverListsOfServers;
         #endregion
         #endregion
         #region Constructor
@@ -105,37 +194,44 @@ namespace Collectorz
         public CConfiguration()
         {
             #region Kodi
-            kodiSkin = Properties.SettingsKodi.Default.Skin;
+            this.kodiSkin = Properties.SettingsKodi.Default.Skin;
             #endregion
             #region MovieCollector
-            movieCollectorSpecials = Properties.SettingsMovieCollector.Default.Specials;
-            movieCollectorMovies = Properties.SettingsMovieCollector.Default.Movies;
-            movieCollectorMPAARating = Properties.SettingsMovieCollector.Default.MPAARating;
-            movieCollectorSeason = Properties.SettingsMovieCollector.Default.Season;
-            movieCollectorLanguage = Properties.SettingsMovieCollector.Default.Language;
+            this.movieCollectorSpecials = Properties.SettingsMovieCollector.Default.Specials;
+            this.movieCollectorMovies = Properties.SettingsMovieCollector.Default.Movies;
+            this.movieCollectorMPAARating = Properties.SettingsMovieCollector.Default.MPAARating;
+            this.movieCollectorSeason = Properties.SettingsMovieCollector.Default.Season;
+            this.movieCollectorLanguage = Properties.SettingsMovieCollector.Default.Language;
+            
+            this.movieCollectorLocalPathToXMLExport = Properties.SettingsMovieCollector.Default.LocalPathToXMLExport;
+            this.movieCollectorLocalPathToXMLExportFile = this.movieCollectorLocalPathToXMLExport.RightOfLast("\\");
+            this.movieCollectorLocalPathToXMLExportPath = this.movieCollectorLocalPathToXMLExport.LeftOfLast("\\") + "\\";
             #endregion
             #region Server
-            serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer;
-            serverListOfServers = Properties.SettingsServer.Default.ListOfServer._Split(",");
-            serverDriveMappingOfServer = Properties.SettingsServer.Default.DriveMappingOfServer._Split(",");
-            serverMappingType = Properties.SettingsServer.Default.MappingType;
+            this.serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer;
+            this.serverListOfServers = Properties.SettingsServer.Default.ListOfServer.Split(",");
+            this.serverDriveMappingOfServers = Properties.SettingsServer.Default.DriveMappingOfServer.Split(",");
+            this.serverLocalPathOfServerForMediaStorage = Properties.SettingsServer.Default.LocalPathOfServerForMediaStorage.Split(",");
+            this.serverMappingType = Properties.SettingsServer.Default.MappingType;
+            this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory;
+            this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory;
             #endregion
             #region Dictionaries
-            listOfServers = new List<Dictionary<string, string>>();
-            listOfServers.Add(new Dictionary<string, string>()); // conversion number       to name
-            listOfServers.Add(new Dictionary<string, string>()); // conversion number       to drive-letter
-            listOfServers.Add(new Dictionary<string, string>()); // conversion drive-letter to name
-            listOfServers.Add(new Dictionary<string, string>()); // conversion name         to drive-letter
-            
-            for (int i = 0; i < ServerNumberOfServer; i++)
+            List<Dictionary<string, string>> listOfServers = new List<Dictionary<string, string>>();
+            int i = 0;
+            for (i = 0; i < 5 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
+                listOfServers.Add(new Dictionary<string, string>());
+
+            for (i = 0; i < this.ServerNumberOfServers; i++)
             {
-                listOfServers[0].Add(i.ToString(), ServerListOfServers[i]);                  // conversion number       to name
-                listOfServers[1].Add(i.ToString(), ServerDriveMappingOfServer[i]);           // conversion number       to drive-letter
-                listOfServers[2].Add(ServerDriveMappingOfServer[i], ServerListOfServers[i]); // conversion drive-letter to name
-                listOfServers[3].Add(ServerListOfServers[i], ServerDriveMappingOfServer[i]); // conversion name         to drive-letter
+                listOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(), ServerListOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(), ServerDriveMappingOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToLocalPath].Add(i.ToString(), ServerLocalPathOfServerForMediaStorage[i]);
+                listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(ServerDriveMappingOfServers[i], ServerListOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(ServerListOfServers[i], ServerDriveMappingOfServers[i]);
             }
 
-            ListOfServers = listOfServers;
+            this.serverListsOfServers = listOfServers;
             #endregion
         }
         #endregion
@@ -149,8 +245,8 @@ namespace Collectorz
         /// </summary>
         public string KodiSkin
         {
-            get { return kodiSkin; }
-            set { kodiSkin = Properties.SettingsKodi.Default.Skin; }
+            get { return this.kodiSkin; }
+            set { }
         }
         #endregion
         #region MovieCollector
@@ -161,8 +257,8 @@ namespace Collectorz
         /// </summary>
         public string MovieCollectorSpecials
         {
-            get { return movieCollectorSpecials; }
-            set { movieCollectorSpecials = Properties.SettingsMovieCollector.Default.Specials; }
+            get { return this.movieCollectorSpecials; }
+            set { }
         }
         /// <summary>
         /// <para>string used to mark movies in series</para>
@@ -171,8 +267,8 @@ namespace Collectorz
         /// </summary>
         public string MovieCollectorMovies
         {
-            get { return movieCollectorMovies; }
-            set { movieCollectorMovies = Properties.SettingsMovieCollector.Default.Movies; }
+            get { return this.movieCollectorMovies; }
+            set { }
         }
         /// <summary>
         /// <para>string used to mark different MPAA-Rating from MovieData</para>
@@ -184,8 +280,8 @@ namespace Collectorz
         /// </summary>
         public string MovieCollectorMPAARating
         {
-            get { return movieCollectorMPAARating; }
-            set { movieCollectorMPAARating = Properties.SettingsMovieCollector.Default.MPAARating; }
+            get { return this.movieCollectorMPAARating; }
+            set { }
         }
         /// <summary>
         /// <para>string used to define the Season Episode should be shown in</para>
@@ -196,8 +292,8 @@ namespace Collectorz
         /// </summary>
         public string MovieCollectorSeason
         {
-            get { return movieCollectorSeason; }
-            set { movieCollectorSeason = Properties.SettingsMovieCollector.Default.Season; }
+            get { return this.movieCollectorSeason; }
+            set { }
         }
         /// <summary>
         /// <para>string used to define the available languages in this media</para>
@@ -210,8 +306,44 @@ namespace Collectorz
         /// </summary>
         public string MovieCollectorLanguage
         {
-            get { return movieCollectorLanguage; }
-            set { movieCollectorLanguage = Properties.SettingsMovieCollector.Default.Movies; }
+            get { return this.movieCollectorLanguage; }
+            set { }
+        }
+        /// <summary>
+        /// <para>local path to Collectorz-XML-Export including Filename and extension</para>
+        /// <remarks>
+        ///     <para>filename needs to end with ".xml"</para>
+        /// </remarks>
+        /// <returns>local path to Collectorz-XML-Export including Filename and extension<returns>
+        /// </summary>
+        public string MovieCollectorLocalPathToXMLExport
+        {
+            get { return this.movieCollectorLocalPathToXMLExport; }
+            set { }
+        }
+        /// <summary>
+        /// <para>local path to Collectorz-XML-Export excluding Filename and extension</para>
+        /// <remarks>
+        ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
+        /// </remarks>
+        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension<returns>
+        /// </summary>
+        public string MovieCollectorLocalPathToXMLExportPath
+        {
+            get { return this.movieCollectorLocalPathToXMLExportPath; }
+            set { }
+        }
+        /// <summary>
+        /// <para>Filename and extension excluding path to Collectorz-XML-Export</para>
+        /// <remarks>
+        ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
+        /// </remarks>
+        /// <returns>Filename and extension excluding path to Collectorz-XML-Export<returns>
+        /// </summary>
+        public string MovieCollectorLocalPathToXMLExportFile
+        {
+            get { return this.movieCollectorLocalPathToXMLExportFile; }
+            set { }
         }
         #endregion
         #region Server
@@ -220,30 +352,40 @@ namespace Collectorz
         /// <remarks>needs to be a valid number equal or above 1</remarks>
         /// <returns>number of server</returns>
         /// </summary>
-        public int ServerNumberOfServer
+        public int ServerNumberOfServers
         {
-            get { return serverNumberOfServers; }
-            set { serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer; }
+            get { return this.serverNumberOfServers; }
+            set { }
         }
         /// <summary>
         /// <para>list of server names to store media</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of server names</returns>
         /// </summary>
-        public List<string> ServerListOfServers
+        private List<string> ServerListOfServers
         {
-            get { return serverListOfServers; }
-            set { serverListOfServers = Properties.SettingsServer.Default.ListOfServer._Split(","); }
+            get { return this.serverListOfServers; }
+            set { }
         }
         /// <summary>
         /// <para>list of associated drive-letters for server names to store media</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of associated drive-letters used for server names</returns>
         /// </summary>
-        public List<string> ServerDriveMappingOfServer
+        private List<string> ServerDriveMappingOfServers
         {
-            get { return serverDriveMappingOfServer; }
-            set { serverDriveMappingOfServer = Properties.SettingsServer.Default.DriveMappingOfServer._Split(","); }
+            get { return this.serverDriveMappingOfServers; }
+            set { }
+        }
+        /// <summary>
+        /// <para>list of local paths used on the associated server names to store media</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names to store media</returns>
+        /// </summary>
+        private List<string> ServerLocalPathOfServerForMediaStorage
+        {
+            get { return this.serverLocalPathOfServerForMediaStorage; }
+            set { }
         }
         /// <summary>
         /// <para>type of mapping used during deployment</para>
@@ -252,8 +394,28 @@ namespace Collectorz
         /// </summary>
         public string ServerMappingType
         {
-            get { return serverMappingType; }
-            set { serverMappingType = Properties.SettingsServer.Default.MappingType; }
+            get { return this.serverMappingType; }
+            set { }
+        }
+        /// <summary>
+        /// <para>directory used to publish movies to Kodi</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>directory used to publish movies to Kodi</returns>
+        /// </summary>
+        public string ServerMovieDirectory
+        {
+            get { return this.serverMovieDirectory; }
+            set { }
+        }
+        /// <summary>
+        /// <para>directory used to publish series to Kodi</para>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>directory used to publish series to Kodi</returns>
+        /// </summary>
+        public string ServerSeriesDirectory
+        {
+            get { return this.serverSeriesDirectory; }
+            set { }
         }
         #endregion
         #region Dictionaries
@@ -262,12 +424,24 @@ namespace Collectorz
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of server names</returns>
         /// </summary>
-        public List<Dictionary<string, string>> ListOfServers
+        public List<Dictionary<string, string>> ServerListsOfServers
         {
-            get { return listOfServers; }
-            set { listOfServers = value; }
+            get { return this.serverListsOfServers; }
+            set { }
         }
         #endregion
+        #endregion
+        #region Methods
+        public static string covertLanguageIsoCodeToDescription(string isoCode)
+        {
+            switch (isoCode)
+            {
+                case "de": return "deutsch";
+                case "en": return "englisch";
+                case "jp": return "japanisch";
+                default: return "deutsch";
+            }
+        }
         #endregion
     }
 }

@@ -17,53 +17,53 @@ namespace Collectorz
         private CSeries series;
         #endregion
         #region Constructor
-        public CEpisode()
-            : base()
+        public CEpisode(CConfiguration configuration)
+            : base(configuration)
         {
-            season = "";
-            episode = "";
-            displaySeason = "";
-            displayEpisode = "";
-            series = null;
-            isSpecial = false;
+            this.season = "";
+            this.episode = "";
+            this.displaySeason = "";
+            this.displayEpisode = "";
+            this.series = null;
+            this.isSpecial = false;
         }
         #endregion
         #region Properties
         public string Season
         {
-            get { return season; }
-            set { season = value; }
+            get { return this.season; }
+            set { this.season = value; }
         }
         public string DisplaySeason
         {
-            get { return displaySeason; }
-            set { displaySeason = value; }
+            get { return this.displaySeason; }
+            set { this.displaySeason = value; }
         }
         public string Episode
         {
-            get { return episode; }
-            set { episode = value; }
+            get { return this.episode; }
+            set { this.episode = value; }
         }
         public string DisplayEpisode
         {
-            get { return displayEpisode; }
-            set { displayEpisode = value; }
+            get { return this.displayEpisode; }
+            set { this.displayEpisode = value; }
         }
         public CSeries Series
         {
-            get { return series; }
-            set { series = value; }
+            get { return this.series; }
+            set { this.series = value; }
         }
         public bool IsSpecial
         {
-            get { return isSpecial; }
-            set { isSpecial = value; }
+            get { return this.isSpecial; }
+            set { this.isSpecial = value; }
         }
         #endregion
-        #region Functios
+        #region Functions
         public override void readVideoFiles(XmlNode XMLMedia)
         {
-            CVideoFile videoFile = new CVideoFile();
+            CVideoFile videoFile = new CVideoFile(this.Configuration);
 
             videoFile.IsSpecial = this.IsSpecial;
             this.Filename = this.Series.Filename + " S" + ("0000" + this.Season).Substring(this.Season.Length) + " E" + ("0000" + this.Episode.ToString()).Substring(this.Episode.ToString().Length);
@@ -75,9 +75,9 @@ namespace Collectorz
 
             this.VideoFiles.Add(videoFile);
         }
-        public override void writeNFO(string AusgabeNFO)
+        public override void writeNFO()
         {
-            using (StreamWriter swrNFO = new StreamWriter(AusgabeNFO.Replace("Filme.xml", this.Filename + ".nfo"), false, Encoding.UTF8, 512))
+            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath +  this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
                 swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
                 swrNFO.WriteLine("<episodedetails>");
@@ -142,7 +142,7 @@ namespace Collectorz
         }
         public override CMedia clone()
         {
-            CEpisode episodeClone = new CEpisode();
+            CEpisode episodeClone = new CEpisode(this.Configuration);
             episodeClone.Title = this.Title;
             episodeClone.TitleSort = this.TitleSort;
             episodeClone.TitleOriginal = this.TitleOriginal;
@@ -185,7 +185,7 @@ namespace Collectorz
 
             return (CMedia)episodeClone;
         }
-        public override CMedia clone(CConstants.ServerList server, bool isSpecial = false)
+        public override CMedia clone(int server, bool isSpecial = false)
         {
             throw new NotImplementedException();
         }
@@ -254,13 +254,13 @@ namespace Collectorz
             CImageFile image;
 
             // Image
-            image = new CImageFile();
+            image = new CImageFile(this.Configuration);
             image.Media = this;
             image.Season = ((CEpisode)image.Media).Season;
             image.Filename = image.Media.Filename;
             image.URL = XMLNode.XMLReadSubnode("largeimage").XMLReadInnerText("");
             image.convertFilename();
-            image.ImageType = CConstants.ImageType.EpisodeCover;
+            image.ImageType = CConfiguration.ImageType.EpisodeCover;
 
             if (image.URL != "")
                 image.Media.Images.Add(image);
@@ -272,7 +272,7 @@ namespace Collectorz
             {
                 CImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != "" && imageFile.ImageType == CConstants.ImageType.EpisodeCover)
+                if (imageFile.Filename != "" && imageFile.ImageType == CConfiguration.ImageType.EpisodeCover)
                     if (!imageFile.URL.Contains("http://"))
                         swrNFO.WriteLine("    <thumb>smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + ((CEpisode)imageFile.Media).Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
                     else
@@ -285,7 +285,7 @@ namespace Collectorz
             {
                 CImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConstants.ImageType.unknown)
+                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConfiguration.ImageType.unknown)
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
             }
         }

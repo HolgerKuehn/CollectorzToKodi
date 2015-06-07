@@ -3,33 +3,33 @@
     public class CImageFile : CMediaFile
     {
         #region Attributes
-        private CConstants.ImageType imageType;
+        private CConfiguration.ImageType imageType;
         private string season;
         #endregion
         #region Constructor
-        public CImageFile()
-            : base()
+        public CImageFile(CConfiguration configuration)
+            : base(configuration)
         {
-            imageType = CConstants.ImageType.unknown;
-            season = "";
+            this.imageType = CConfiguration.ImageType.unknown;
+            this.season = "";
         }
         #endregion
         #region Properties
-        public CConstants.ImageType ImageType
+        public CConfiguration.ImageType ImageType
         {
-            get { return imageType; }
-            set { imageType = value; }
+            get { return this.imageType; }
+            set { this.imageType = value; }
         }
         public string Season
         {
-            get { return season; }
-            set { season = value; }
+            get { return this.season; }
+            set { this.season = value; }
         }
         #endregion
         #region Functions
         public override CMediaFile clone()
         {
-            CImageFile imageFileClone = new CImageFile();
+            CImageFile imageFileClone = new CImageFile(this.Configuration);
             imageFileClone.ImageType = this.ImageType;
             imageFileClone.Season = this.Season;
             imageFileClone.Description = this.Description;

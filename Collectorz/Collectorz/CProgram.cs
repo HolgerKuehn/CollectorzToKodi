@@ -29,15 +29,15 @@ namespace Collectorz
                 return 1;
             }
             
-
-            CMediaCollection MediaCollection = new CMediaCollection();
+            CConfiguration configuration = new CConfiguration();
+            CMediaCollection MediaCollection = new CMediaCollection(configuration);
             MediaCollection.readXML(Arguments[1]);
 
-            for (int i = 0; i < CConstants.NumberOfServer; i++)
+            for (int i = 0; i < configuration.ServerNumberOfServers; i++)
             {
-                CConstants.ServerList server = (CConstants.ServerList)i;
+                int server = (int)i;
 
-                using (StreamWriter swrSH = new StreamWriter(Arguments[1].Replace("Filme.xml", "NFO" + server + "Win.sh"), false, Encoding.UTF8, 512))
+                using (StreamWriter swrSH = new StreamWriter(configuration.MovieCollectorLocalPathToXMLExportPath + "NFO" + server + "Win.sh", false, Encoding.UTF8, 512))
                 {
                     // SH-Dateiheader
                     swrSH.WriteLine("#!/bin/bash");
@@ -48,7 +48,7 @@ namespace Collectorz
 
                     foreach (CMovie movie in MediaCollection.listMovieCollectionPerServer(server))
                     {
-                        movie.writeNFO(Arguments[1]);
+                        movie.writeNFO();
                         movie.writeSH(swrSH);
                     }
 
@@ -58,7 +58,7 @@ namespace Collectorz
 
                     foreach (CSeries series in MediaCollection.listSeriesCollectionPerServer(server))
                     {
-                        series.writeNFO(Arguments[1]);
+                        series.writeNFO();
                         series.writeSH(swrSH);
                     }
                 }

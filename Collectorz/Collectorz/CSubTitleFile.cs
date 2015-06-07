@@ -8,23 +8,23 @@ namespace Collectorz
         private string language;
         #endregion
         #region Constructor
-        public CSubTitleFile()
-            : base()
+        public CSubTitleFile(CConfiguration configuration)
+            : base(configuration)
         {
-            language = "Deutsch";
+            this.language = "Deutsch";
         }
         #endregion
         #region Properties
         public string Language
         {
-            get { return language; }
-            set { language = value; }
+            get { return this.language; }
+            set { this.language = value; }
         }
         #endregion
         #region Functions
         public override CMediaFile clone()
         {
-            CSubTitleFile subTitleFileClone = new CSubTitleFile();
+            CSubTitleFile subTitleFileClone = new CSubTitleFile(this.Configuration);
             subTitleFileClone.Language = this.Language;
             subTitleFileClone.Description = this.Description;
             subTitleFileClone.URL = this.URL;

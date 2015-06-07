@@ -4,99 +4,105 @@ namespace Collectorz
     public abstract class CMediaFile
     {
         #region Attributes
+        private CConfiguration configuration;
         private string description;
         private string uRL;
         private string uRLLocalFilesystem;
         private string filename;
         private string extention;
         private CMedia media;
-        private CConstants.ServerList server;
+        private int server;
         #endregion
         #region Constructor
-        public CMediaFile()
+        public CMediaFile(CConfiguration configuration)
         {
-            description = "";
-            uRL = "";
-            uRLLocalFilesystem = "";
-            filename = "";
-            extention = "";
-            media = null;
+            this.configuration = configuration;
+            this.description = "";
+            this.uRL = "";
+            this.uRLLocalFilesystem = "";
+            this.filename = "";
+            this.extention = "";
+            this.media = null;
         }
         #endregion
         #region Properties
+        public CConfiguration Configuration
+        {
+            get { return this.configuration; }
+            set { this.configuration = value; }
+        }
         public string Description
         {
-            get { return description; }
-            set { description = value; }
+            get { return this.description; }
+            set { this.description = value; }
         }
         public string URL
         {
-            get { return uRL; }
-            set { uRL = value; }
+            get { return this.uRL; }
+            set { this.uRL = value; }
         }
         public string URLLocalFilesystem
         {
-            get { return uRLLocalFilesystem; }
-            set { uRLLocalFilesystem = value; }
+            get { return this.uRLLocalFilesystem; }
+            set { this.uRLLocalFilesystem = value; }
         }
         public string Filename
         {
-            get { return filename; }
-            set { filename = value; }
+            get { return this.filename; }
+            set { this.filename = value; }
         }
         public string Extention
         {
-            get { return extention; }
-            set { extention = value; }
+            get { return this.extention; }
+            set { this.extention = value; }
         }
         public CMedia Media
         {
-            get { return media; }
-            set { media = value; }
+            get { return this.media; }
+            set { this.media = value; }
         }
-        public CConstants.ServerList Server
+        public int Server
         {
-            get { return server; }
-            set { server = value; }
+            get { return this.server; }
+            set { this.server = value; }
         }
         #endregion
         #region Functions
         public abstract CMediaFile clone();
-        public static string convertFilename(string URL)
-        {
-            URL = URL.Replace("\\", "/");
-            URL = URL.Replace("U:", "/share/Video");
-            URL = URL.Replace("V:", "/share/Video");
-            URL = URL.Replace("P:", "/share/XBMC/SHIRYOUSOOCHI/Programme");
-
-            return URL;
-        }
         public string convertFilename()
         {
-            if (this.URL.Contains("U:\\"))
-            {
-                this.Media.Server.Add(CConstants.ServerList.EIZOUSOOCHI);
-                this.Server = CConstants.ServerList.EIZOUSOOCHI;
-            }
-            else if (this.URL.Contains("V:\\"))
-            {
-                this.Media.Server.Add(CConstants.ServerList.JOUSETSUSOOCHI);
-                this.Server = CConstants.ServerList.JOUSETSUSOOCHI;
-            }
+            this.URLLocalFilesystem = this.URL;
 
+            for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++ )
+            {
+                string driveLetter;
+                string localPath;
+                this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToDriveLetter].TryGetValue(i.ToString(), out driveLetter);
+                this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPath].TryGetValue(i.ToString(), out localPath);
+                
+                // determine used servers from assigned driveLetters
+                if (this.URL.Contains(driveLetter))
+                {
+                    this.Media.Server.Add(i);
+                    this.Server = i;
+                }
+
+                // and replace them for local paths
+                this.URLLocalFilesystem = this.URLLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
+            }
+        
             if (this.Media.GetType().ToString().Contains("CEpisode"))
                 ((CEpisode)this.Media).Series.addServer(this.Server);
 
-            this.URLLocalFilesystem = CMediaFile.convertFilename(this.URL);
 
-            if (this.URLLocalFilesystem.ToLower().Contains(".m2ts")) this.Extention = ".m2ts";
-            else if (this.URLLocalFilesystem.ToLower().Contains(".m4v")) this.Extention = ".m4v";
-            else if (this.URLLocalFilesystem.ToLower().Contains(".vob")) this.Extention = ".vob";
+            if      (this.URLLocalFilesystem.ToLower().Contains(".m2ts"))   this.Extention = ".m2ts";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".m4v"))    this.Extention = ".m4v";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".vob"))    this.Extention = ".vob";
             else if (this.URLLocalFilesystem.ToLower().Contains(".de.srt")) this.Extention = ".de.srt";
             else if (this.URLLocalFilesystem.ToLower().Contains(".en.srt")) this.Extention = ".en.srt";
             else if (this.URLLocalFilesystem.ToLower().Contains(".jp.srt")) this.Extention = ".jp.srt";
-            else if (this.URLLocalFilesystem.ToLower().Contains(".jpg")) this.Extention = ".jpg";
-            else if (this.URLLocalFilesystem.ToLower().Contains(".png")) this.Extention = ".png";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".jpg"))    this.Extention = ".jpg";
+            else if (this.URLLocalFilesystem.ToLower().Contains(".png"))    this.Extention = ".png";
 
             if (!this.Filename.Contains(this.Extention))
                 this.Filename = this.Filename + this.Extention;

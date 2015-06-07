@@ -11,26 +11,26 @@ namespace Collectorz
         #region Constructor
         public CAudioStream()
         {
-            codec = "AC3";
-            language = "Deutsch";
-            numberOfChannels = "2";
+            this.codec = "AC3";
+            this.language = "Deutsch";
+            this.numberOfChannels = "2";
         }
         #endregion
         #region Properties
         public string Codec
         {
-            get { return codec; }
-            set { codec = value; }
+            get { return this.codec; }
+            set { this.codec = value; }
         }
         public string Language
         {
-            get { return language; }
-            set { language = value; }
+            get { return this.language; }
+            set { this.language = value; }
         }
         public string NumberOfChannels
         {
-            get { return numberOfChannels; }
-            set { numberOfChannels = value; }
+            get { return this.numberOfChannels; }
+            set { this.numberOfChannels = value; }
         }
         #endregion
         #region Functions
