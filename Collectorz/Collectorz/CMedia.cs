@@ -248,7 +248,7 @@ namespace Collectorz
         #endregion
         #region Functions
         public abstract void readVideoFiles(XmlNode XMLMedia);
-        public abstract void writeNFO(string AusgabeNFO);
+        public abstract void writeNFO();
         public abstract void writeSH(StreamWriter swrSH);
         public abstract CMedia clone();
         public abstract CMedia clone(int server, bool isSpecial = false);

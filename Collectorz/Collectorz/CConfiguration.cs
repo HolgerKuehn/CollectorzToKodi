@@ -158,7 +158,7 @@ namespace Collectorz
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
         /// </summary>
-        private List<string> serverLocalPathOfServerForMediaStorage; // MediaPublication
+        //private List<string> serverLocalPathOfServerForMediaStorage; // MediaPublication
         /// <summary>
         /// <para>type of mapping used during deployment</para>
         /// <remarks>supported values: UNIX (Windows will be added later)</remarks>

@@ -95,7 +95,7 @@ namespace Collectorz
             }
 
             foreach (CEpisode episode in this.Episodes)
-                episode.writeNFO(AusgabeNFO);
+                episode.writeNFO();
         }
         public override void writeSH(StreamWriter swrSH)
         {
