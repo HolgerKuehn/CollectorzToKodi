@@ -72,18 +72,22 @@ namespace Collectorz
         public string convertFilename()
         {
             this.URLLocalFilesystem = this.URL;
-
+            
+            if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
+                this.URLLocalFilesystem = this.URLLocalFilesystem.ReplaceAll("\\", "/");
+            
             for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++ )
             {
-                string driveLetter;
-                string localPath;
-                this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToDriveLetter].TryGetValue(i.ToString(), out driveLetter);
-                this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPath].TryGetValue(i.ToString(), out localPath);
+                string driveLetter = this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
+                string localPath = this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPath][i.ToString()];
+                //this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPath].TryGetValue(i.ToString(), out localPath);
                 
                 // determine used servers from assigned driveLetters
-                if (this.URL.Contains(driveLetter))
+                if (this.URL.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
                 {
-                    this.Media.Server.Add(i);
+                    if (!this.Media.Server.Contains(i))
+                        this.Media.Server.Add(i);
+
                     this.Server = i;
                 }
 

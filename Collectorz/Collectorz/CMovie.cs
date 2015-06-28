@@ -124,9 +124,10 @@ namespace Collectorz
                 for (int i = 0; i < this.SubTitleStreams.Count; i++)
                 {
                     CSubTitleFile subTitleFile = this.SubTitleStreams.ElementAt(i);
-
-                    if (subTitleFile.Filename != "")
-                        swrSH.WriteLine("/bin/ln -s \"" + subTitleFile.URLLocalFilesystem + "\" \"" + subTitleFile.Filename + "\"");
+                    if (subTitleFile.GetType().ToString().Contains("CSrtSubTitleFile"))
+                        ((CSrtSubTitleFile)subTitleFile).writeSubTitleStreamDataToSH(swrSH);
+                    else
+                        subTitleFile.writeSubTitleStreamDataToSH(swrSH);
                 }
 
                 // Images

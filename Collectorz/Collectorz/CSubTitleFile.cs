@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.IO;
+using System.Xml;
 
 namespace Collectorz
 {
@@ -36,18 +37,39 @@ namespace Collectorz
 
             return (CMediaFile)subTitleFileClone;
         }
-        public void checkForSubTitleStreamFile(XmlNode XMLMedia)
+        public CMediaFile checkForSubTitleStreamFile(XmlNode XMLMedia)
         {
+            CSubTitleFile subTitleFile = (CSubTitleFile)this.clone();
+            CSrtSubTitleFile srtSubTitleFile = new CSrtSubTitleFile(this);
+            bool isSrtSubTitleFile = false;
+
             foreach (XmlNode XMLSubTitleStreamFile in XMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
                 if ((XMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText("") == "Movie") && XMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText("").Contains("Untertitel." + this.Language + "."))
                 {
-                    this.Description = XMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText("");
-                    this.URL = XMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText("");
-                    this.convertFilename();
-                    this.Filename = this.Media.Filename + this.Extention;
+                    subTitleFile.Description = XMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText("");
+                    subTitleFile.URL = XMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText("");
+                    subTitleFile.convertFilename();
+                    subTitleFile.Filename = subTitleFile.Media.Filename + subTitleFile.Extention;
+                    srtSubTitleFile.readFromSubTitleFile(subTitleFile);
+
+                    if (srtSubTitleFile.Extention.Contains(".srt"))
+                    {
+                        isSrtSubTitleFile = true;
+                        srtSubTitleFile.readSrtFile();
+                    }
                 }
             }
+
+            if (isSrtSubTitleFile)
+                return srtSubTitleFile;
+            else
+                return subTitleFile;
+        }
+        public void writeSubTitleStreamDataToSH(StreamWriter swrSH)
+        {
+            if (this.Filename != "")
+                swrSH.WriteLine("/bin/ln -s \"" + this.URLLocalFilesystem + "\" \"" + this.Filename + "\"");
         }
         #endregion
     }

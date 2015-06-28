@@ -119,6 +119,7 @@ namespace Collectorz
 
                 // Images
                 this.writeImagesToSH(swrSH);
+                this.writeSubTitleStreamDataToSH(swrSH);
 
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
 

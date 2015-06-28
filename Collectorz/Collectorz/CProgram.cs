@@ -37,7 +37,7 @@ namespace Collectorz
             {
                 int server = (int)i;
 
-                using (StreamWriter swrSH = new StreamWriter(configuration.MovieCollectorLocalPathToXMLExportPath + "NFO" + server + "Win.sh", false, Encoding.UTF8, 512))
+                using (StreamWriter swrSH = new StreamWriter(configuration.MovieCollectorLocalPathToXMLExportPath + "NFO" + configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][server.ToString()] + "Win.sh", false, Encoding.UTF8, 512))
                 {
                     // SH-Dateiheader
                     swrSH.WriteLine("#!/bin/bash");

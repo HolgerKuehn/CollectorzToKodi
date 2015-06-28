@@ -723,8 +723,8 @@ namespace Collectorz
 
                 if (displayname != "")
                 {
-                    subTitleStream.checkForSubTitleStreamFile(XMLMedia);
-                    this.SubTitleStreams.Add(subTitleStream);
+                    CSubTitleFile srtSubTitleStream = (CSubTitleFile)subTitleStream.checkForSubTitleStreamFile(XMLMedia);
+                    this.SubTitleStreams.Add(srtSubTitleStream);
                 }
             }
         }
@@ -872,15 +872,27 @@ namespace Collectorz
         }
         private void writeSubTitleStreamData(StreamWriter swrNFO)
         {
-            foreach (CSubTitleFile subTitleStrem in this.SubTitleStreams)
+            foreach (CSubTitleFile subTitleStream in this.SubTitleStreams)
             {
                 swrNFO.WriteLine("            <subtitle>");
-                swrNFO.WriteLine("                <language>" + subTitleStrem.Language + "</language>");
+                swrNFO.WriteLine("                <language>" + subTitleStream.Language + "</language>");
                 swrNFO.WriteLine("            </subtitle>");
+
+                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
+                    ((CSrtSubTitleFile)subTitleStream).writeSrtSubTitleStreamDataToSRT();
             }
 
             swrNFO.WriteLine("        </streamdetails>");
             swrNFO.WriteLine("    </fileinfo>");
+        }
+        public virtual void writeSubTitleStreamDataToSH(StreamWriter swrSH)
+        {
+            foreach (CSubTitleFile subTitleStream in this.SubTitleStreams)
+            {
+                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
+                    swrSH.WriteLine("/bin/cp \"" + configuration.MovieCollectorLocalPathToXMLExportPath + subTitleStream.Filename + "\" \"" + subTitleStream.Filename + "\"");
+            }
+            
         }
         public bool hasSpecials()
         {

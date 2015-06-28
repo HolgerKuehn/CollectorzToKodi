@@ -56,6 +56,13 @@ namespace Collectorz
             ExtraBackdrop,
             ExtraCover
         }
+        public enum SrtSubTitleLineType
+        {
+            entryNumber,
+            times,
+            subTitles,
+            emptyLine
+        };
         #endregion
         #region Attributes
         #region Kodi
