@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace Collectorz
 {
@@ -21,6 +22,7 @@ namespace Collectorz
             get { return this.language; }
             set { this.language = value; }
         }
+        
         #endregion
         #region Functions
         public override CMediaFile clone()
@@ -39,32 +41,61 @@ namespace Collectorz
         }
         public CMediaFile checkForSubTitleStreamFile(XmlNode XMLMedia)
         {
-            CSubTitleFile subTitleFile = (CSubTitleFile)this.clone();
-            CSrtSubTitleFile srtSubTitleFile = new CSrtSubTitleFile(this);
+            CSrtSubTitleFileCollection srtSubTitleFileCollection = null;
+            CSubTitleFile subTitleFile = null;
             bool isSrtSubTitleFile = false;
 
             foreach (XmlNode XMLSubTitleStreamFile in XMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
+                // check all links for subtitle in language
                 if ((XMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText("") == "Movie") && XMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText("").Contains("Untertitel." + this.Language + "."))
                 {
+                    isSrtSubTitleFile = false;
+
+                    // create new subtitle objects (generic Subtitle or SRT-Subtitle)
+                    subTitleFile = (CSubTitleFile)this.clone();
+                    
+                    // name and filenames
                     subTitleFile.Description = XMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText("");
                     subTitleFile.URL = XMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText("");
                     subTitleFile.convertFilename();
-                    subTitleFile.Filename = subTitleFile.Media.Filename + subTitleFile.Extention;
-                    srtSubTitleFile.readFromSubTitleFile(subTitleFile);
 
-                    if (srtSubTitleFile.Extention.Contains(".srt"))
+                    // check for fileIndex
+                    int completeLength = subTitleFile.Description.Length;
+                    int subtitleLength = ("Untertitel." + this.Language + ".").Length;
+                    int fileIndex = 1;
+
+                    if (!int.TryParse(subTitleFile.Description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out fileIndex))
+                        fileIndex = 1;
+
+                    // subtitle file name and type
+                    if (subTitleFile.Extention.Contains(".srt"))
                     {
                         isSrtSubTitleFile = true;
-                        srtSubTitleFile.readSrtFile();
+                        if (srtSubTitleFileCollection == null)
+                            srtSubTitleFileCollection = new CSrtSubTitleFileCollection(this);
+
+                        subTitleFile.Filename = subTitleFile.Media.Filename + " part " + ("0000" + fileIndex.ToString()).Substring(fileIndex.ToString().Length) + subTitleFile.Extention;
+
+                        while (srtSubTitleFileCollection.SubTitleFiles.Count < fileIndex)
+                            srtSubTitleFileCollection.SubTitleFiles.Add(null);
+
+                        if (srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1] == null)
+                            srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1] = new CSrtSubTitleFile(subTitleFile);
+
+                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].readFromSubTitleFile(subTitleFile);
+                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].FileIndex = fileIndex;
+                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].readSrtFile();
                     }
                 }
             }
 
+
+            // collecting subs and return them as CMediaFiles
             if (isSrtSubTitleFile)
-                return srtSubTitleFile;
+                return (CMediaFile)srtSubTitleFileCollection;
             else
-                return subTitleFile;
+                return (CMediaFile)subTitleFile;
         }
         public void writeSubTitleStreamDataToSH(StreamWriter swrSH)
         {

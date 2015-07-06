@@ -723,8 +723,11 @@ namespace Collectorz
 
                 if (displayname != "")
                 {
-                    CSubTitleFile srtSubTitleStream = (CSubTitleFile)subTitleStream.checkForSubTitleStreamFile(XMLMedia);
-                    this.SubTitleStreams.Add(srtSubTitleStream);
+                    CSubTitleFile checkedSubTitleStream = (CSubTitleFile)subTitleStream.checkForSubTitleStreamFile(XMLMedia);
+                    if (checkedSubTitleStream != null)
+                        this.SubTitleStreams.Add(checkedSubTitleStream);
+                    else
+                        this.SubTitleStreams.Add(subTitleStream);
                 }
             }
         }
@@ -878,8 +881,8 @@ namespace Collectorz
                 swrNFO.WriteLine("                <language>" + subTitleStream.Language + "</language>");
                 swrNFO.WriteLine("            </subtitle>");
 
-                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
-                    ((CSrtSubTitleFile)subTitleStream).writeSrtSubTitleStreamDataToSRT();
+                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFileCollection"))
+                    ((CSrtSubTitleFileCollection)subTitleStream).writeSrtSubTitleStreamDataToSRT();
             }
 
             swrNFO.WriteLine("        </streamdetails>");

@@ -124,8 +124,8 @@ namespace Collectorz
                 for (int i = 0; i < this.SubTitleStreams.Count; i++)
                 {
                     CSubTitleFile subTitleFile = this.SubTitleStreams.ElementAt(i);
-                    if (subTitleFile.GetType().ToString().Contains("CSrtSubTitleFile"))
-                        ((CSrtSubTitleFile)subTitleFile).writeSubTitleStreamDataToSH(swrSH);
+                    if (subTitleFile.GetType().ToString().Contains("CSrtSubTitleFileCollection"))
+                        ((CSrtSubTitleFileCollection)subTitleFile).writeSubTitleStreamDataToSH(swrSH);
                     else
                         subTitleFile.writeSubTitleStreamDataToSH(swrSH);
                 }
