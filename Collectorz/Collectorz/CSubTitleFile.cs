@@ -83,9 +83,7 @@ namespace Collectorz
                         if (srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1] == null)
                             srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1] = new CSrtSubTitleFile(subTitleFile);
 
-                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].readFromSubTitleFile(subTitleFile);
-                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].FileIndex = fileIndex;
-                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].readSrtFile();
+                        srtSubTitleFileCollection.SubTitleFiles[fileIndex - 1].readFromSubTitleFile(subTitleFile, fileIndex);
                     }
                 }
             }
@@ -97,7 +95,7 @@ namespace Collectorz
             else
                 return (CMediaFile)subTitleFile;
         }
-        public void writeSubTitleStreamDataToSH(StreamWriter swrSH)
+        public virtual void writeSubTitleStreamDataToSH(StreamWriter swrSH)
         {
             if (this.Filename != "")
                 swrSH.WriteLine("/bin/ln -s \"" + this.URLLocalFilesystem + "\" \"" + this.Filename + "\"");

@@ -55,7 +55,7 @@ namespace Collectorz
         /// <summary>
         /// writes new srt-file
         /// </summary>
-        public void writeSrtSubTitleStreamDataToSRT()
+        public virtual void writeSrtSubTitleStreamDataToSRT()
         {
             foreach (CSrtSubTitleFile subTitleFile in this.subTitleFiles)
                 if (subTitleFile != null)
@@ -65,7 +65,7 @@ namespace Collectorz
         /// writes subtitle to SH
         /// </summary>
         /// <param name="swrSH"></param>
-        public void writeSubTitleStreamDataToSH(StreamWriter swrSH)
+        public override void writeSubTitleStreamDataToSH(StreamWriter swrSH)
         {
             foreach (CSrtSubTitleFile subTitleFile in this.subTitleFiles)
                 if (subTitleFile != null)

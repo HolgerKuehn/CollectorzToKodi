@@ -56,6 +56,7 @@
     <Compile Include="CSeries.cs" />
     <Compile Include="CMovie.cs" />
     <Compile Include="CMedia.cs" />
+    <Compile Include="CSrtSubTitleCollection.cs" />
     <Compile Include="CSrtSubTitleFile.cs" />
     <Compile Include="CSrtSubTitleFileEntry.cs" />
     <Compile Include="CVideoFile.cs" />
