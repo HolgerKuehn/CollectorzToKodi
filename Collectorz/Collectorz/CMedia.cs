@@ -733,13 +733,24 @@ namespace Collectorz
         }
         public string overrideMediaStreamData(string title)
         {
-            if (title.Contains("(TV)"))
+            if (title.Contains("(TV)") && (this.configuration.KodiSkin == "Transparency!"))
+                this.VideoCodec = CConfiguration.VideoCodec.H264; // BluRay Standard-Codec
+
+
+            if (title.Contains("(TV)") && (this.configuration.KodiSkin != "Transparency!"))
                 this.VideoCodec = CConfiguration.VideoCodec.TV;
+
 
             title = title.Replace("(TV)", "");
 
-            if (title.Contains("(BluRay)"))
+
+            if (title.Contains("(BluRay)") && (this.configuration.KodiSkin == "Transparency!"))
+                this.VideoCodec = CConfiguration.VideoCodec.H264; // BluRay Standard-Codec
+
+
+            if (title.Contains("(BluRay)") && (this.configuration.KodiSkin != "Transparency!"))
                 this.VideoCodec = CConfiguration.VideoCodec.BluRay;
+            
 
             title = title.Replace("(BluRay)", "");
 

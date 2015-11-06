@@ -22,16 +22,9 @@ namespace Collectorz
         /// <returns>Error Code 1, if no valid file was assigned</returns>
         static int Main()
         {
-            string[] Arguments = Environment.GetCommandLineArgs();
-            if (Arguments.Length != 2)
-            {
-                Console.Write("Dateiname wurde nicht übergeben.");
-                return 1;
-            }
-            
             CConfiguration configuration = new CConfiguration();
             CMediaCollection MediaCollection = new CMediaCollection(configuration);
-            MediaCollection.readXML(Arguments[1]);
+            MediaCollection.readXML(configuration.MovieCollectorLocalPathToXMLExport);
 
             for (int i = 0; i < configuration.ServerNumberOfServers; i++)
             {

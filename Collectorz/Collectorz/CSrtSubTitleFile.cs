@@ -83,7 +83,7 @@ namespace Collectorz
 
 
             // reading subtitle content
-            if (this.URL == "")
+            if (this.URL == "" || !File.Exists(this.URL))
                 return;
 
             using (StreamReader srdSrtFile = new StreamReader(this.URL, Encoding.UTF8))
