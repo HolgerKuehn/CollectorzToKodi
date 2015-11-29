@@ -1,4 +1,6 @@
-﻿
+﻿/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
     public class CAudioStream

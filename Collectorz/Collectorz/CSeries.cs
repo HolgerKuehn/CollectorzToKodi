@@ -4,9 +4,12 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
-    public class CSeries : CMedia
+    public class CSeries : CVideo
     {
         #region Attributes
         private List<CEpisode> episodes;
@@ -127,7 +130,7 @@ namespace Collectorz
                     episode.writeSH(swrSH);
             }
         }
-        public override CMedia clone()
+        public override CVideo clone()
         {
             CSeries seriesClone = new CSeries(this.Configuration);
             seriesClone.Title = this.Title;
@@ -179,7 +182,7 @@ namespace Collectorz
 
             return seriesClone;
         }
-        public override CMedia clone(int server, bool isSpecial = false)
+        public override CVideo clone(int server, bool isSpecial = false)
         {
             bool cloneSeries = false;
             foreach (int serverList in this.Server)

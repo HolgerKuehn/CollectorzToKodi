@@ -1,4 +1,6 @@
-﻿
+﻿/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
     public abstract class CMediaFile
@@ -10,7 +12,7 @@ namespace Collectorz
         private string uRLLocalFilesystem;
         private string filename;
         private string extention;
-        private CMedia media;
+        private CVideo media;
         private int server;
         #endregion
         #region Constructor
@@ -56,7 +58,7 @@ namespace Collectorz
             get { return this.extention; }
             set { this.extention = value; }
         }
-        public CMedia Media
+        public CVideo Media
         {
             get { return this.media; }
             set { this.media = value; }

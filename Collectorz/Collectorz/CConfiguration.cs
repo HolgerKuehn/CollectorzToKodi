@@ -1,22 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz programs.</para>
+/// </summary>
 namespace Collectorz
 {
+    using System.Collections.Generic;
+
     /// <summary>
-    /// <para>stores all Parameters configured by settings-files</para>
-    /// <para></para>
-    /// <para>used settings-files</para>
-    /// <para>SettingsMovieCollector.settings - Settings related to data storage in MovieCollector</para>
-    /// <para>SettingsKodi.settings - Settings related to Kodi</para>
-    /// <para>SettingsServer.settings - Settings related to your local server structure</para>
+    /// Stores all Parameters configured by settings-files.<br/>
+    /// <br/>
+    /// used settings-files<br/>
+    /// SettingsMovieCollector.settings - Settings related to data storage in MovieCollector<br/>
+    /// SettingsKodi.settings - Settings related to Kodi<br/>
+    /// SettingsServer.settings - Settings related to your local server structure<br/>
     /// </summary>
     public class CConfiguration
     {
         #region Enums
+
+        /// <summary>
+        /// List of video codecs used for export to Kodi.
+        /// </summary>
         public enum VideoCodec
         {
             TV,
@@ -24,6 +27,10 @@ namespace Collectorz
             H264,
             H265
         }
+
+        /// <summary>
+        /// List of server types handled by this program.
+        /// </summary>
         public enum ListOfServerTypes
         {
             NumberToName,
@@ -32,6 +39,7 @@ namespace Collectorz
             DriveLetterToName,
             NameToDriveLetter
         }
+
         public enum VideoAspectRatio
         {
             AspectRatio_4_3,
@@ -75,127 +83,144 @@ namespace Collectorz
         private string kodiSkin;
         #endregion
         #region MovieCollector
+
         /// <summary>
         /// <para>string used to mark specials</para>
         /// <remarks>string is replaced in disks or titles and defines all elements as specials</remarks>
         /// <returns>string used to mark specials</returns>
         /// </summary>
         private string movieCollectorSpecials;
+
         /// <summary>
         /// <para>string used to mark movies in series</para>
         /// <remarks>string is replaced in disks or titles and defines all elements as movies</remarks>
         /// <returns>string used to mark movies in series</returns>
         /// </summary>
         private string movieCollectorMovies;
+
         /// <summary>
         /// string to override MPAA-Rating in Disks or Episode
         /// </summary>
         private string movieCollectorMPAARating;
+
         /// <summary>
         /// <para>string used to define the Season Episode should be shown in</para>
         /// <remarks>
-        ///     <para>string is replaced in disks or titles and defines all elements with specific Seasons<para>
-        ///     <para><Season> needs to be a valid number</para>
+        ///     <para>string is replaced in disks or titles and defines all elements with specific Seasons</para>
+        ///     <para>needs to be a valid number</para>
         /// </remarks>
-        /// <returns>string used to mark Seasons<returns>
+        /// <returns>string used to mark Seasons</returns>
         /// </summary>
         private string movieCollectorSeason;
+
         /// <summary>
         /// <para>string used to define the available languages in this media</para>
         /// <remarks>
-        ///     <para>string is been parsed for ISO-2-country-codes<para>
-        ///     <para><Language> needs to be a collection of valid ISO-2-country-codes</para>
+        ///     <para>string is been parsed for ISO-2-country-codes</para>
+        ///     <para>"Language" needs to be a collection of valid ISO-2-country-codes</para>
         ///     <para>the codes must be present in the IMDB-ID, movie- or episode-title, to be displayed in KODI</para>
         /// </remarks>
-        /// <returns>string used to mark multi-language-media<returns>
+        /// <returns>string used to mark multi-language-media</returns>
         /// </summary>
         private string movieCollectorLanguage;
+       
         /// <summary>
         /// <para>local path to Collectorz-XML-Export including Filename and extension</para>
         /// <remarks>
         ///     <para>filename needs to end with ".xml"</para>
         /// </remarks>
-        /// <returns>local path to Collectorz-XML-Export including Filename and extension<returns>
+        /// <returns>local path to Collectorz-XML-Export including Filename and extension</returns>
         /// </summary>
         private string movieCollectorLocalPathToXMLExport;
+
         /// <summary>
         /// <para>local path to Collectorz-XML-Export excluding Filename and extension</para>
         /// <remarks>
         ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
         /// </remarks>
-        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension<returns>
+        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension</returns>
         /// </summary>
         private string movieCollectorLocalPathToXMLExportPath;
+
         /// <summary>
         /// <para>Filename and extension excluding path to Collectorz-XML-Export</para>
         /// <remarks>
         ///     <para>is generated from movieCollectorLocalPathToXMLExport</para>
         /// </remarks>
-        /// <returns>Filename and extension excluding path to Collectorz-XML-Export<returns>
+        /// <returns>Filename and extension excluding path to Collectorz-XML-Export</returns>
         /// </summary>
         private string movieCollectorLocalPathToXMLExportFile;
         #endregion
+
         #region Server
+
         /// <summary>
         /// <para>number of server used to store media</para>
         /// <remarks>needs to be a valid number equal or above 1</remarks>
         /// <returns>number of server</returns>
         /// </summary>
         private int serverNumberOfServers;
+
         /// <summary>
         /// <para>list of server names to store media</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of server names</returns>
         /// </summary>
         private List<string> serverListOfServers;
+
         /// <summary>
         /// <para>list of associated drive-letters for server names to store media</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of associated drive-letters used for server names</returns>
         /// </summary>
         private List<string> serverDriveMappingOfServers;
+
         /// <summary>
         /// <para>list of local paths used on the associated server names to store media</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
         /// </summary>
         private List<string> serverLocalPathOfServerForMediaStorage;
-        /// <summary>
-        /// <para>list of local paths used on the associated server names to store media</para>
-        /// <remarks>values separated by colon</remarks>
-        /// <returns>list of local paths used on the associated server names to store media</returns>
-        /// </summary>
-        //private List<string> serverLocalPathOfServerForMediaStorage; // MediaPublication
+
         /// <summary>
         /// <para>type of mapping used during deployment</para>
         /// <remarks>supported values: UNIX (Windows will be added later)</remarks>
         /// <returns>type of mapping used during deployment</returns>
         /// </summary>
         private string serverMappingType;
+
         /// <summary>
         /// <para>directory used to publish movies to Kodi</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>directory used to publish movies to Kodi</returns>
         /// </summary>
         private string serverMovieDirectory;
+
         /// <summary>
         /// <para>directory used to publish series to Kodi</para>
         /// <remarks>values separated by colon</remarks>
         /// <returns>directory used to publish series to Kodi</returns>
         /// </summary>
         private string serverSeriesDirectory;
+
         #endregion
+
         #region Dictionaries
+
         /// <summary>
         /// <para>list of server names to store media</para>
         /// <remarks>Dictionary used to combine associated drive-letters and server names</remarks>
         /// <returns>list of server names</returns>
         /// </summary>
         private List<Dictionary<string, string>> serverListsOfServers;
+
         #endregion
         #endregion
+
         #region Constructor
+
         /// <summary>
+        /// Initializes a new instance of the <see cref="CConfiguration"/> class.
         /// initializes configuration with settings-files
         /// </summary>
         public CConfiguration()
@@ -227,15 +252,17 @@ namespace Collectorz
             List<Dictionary<string, string>> listOfServers = new List<Dictionary<string, string>>();
             int i = 0;
             for (i = 0; i < 5 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
+            {
                 listOfServers.Add(new Dictionary<string, string>());
+            }
 
             for (i = 0; i < this.ServerNumberOfServers; i++)
             {
-                listOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(), ServerListOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(), ServerDriveMappingOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToLocalPath].Add(i.ToString(), ServerLocalPathOfServerForMediaStorage[i]);
-                listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(ServerDriveMappingOfServers[i], ServerListOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(ServerListOfServers[i], ServerDriveMappingOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(), this.ServerListOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(), this.ServerDriveMappingOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToLocalPath].Add(i.ToString(), this.ServerLocalPathOfServerForMediaStorage[i]);
+                listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
+                listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
             }
 
             this.serverListsOfServers = listOfServers;
@@ -277,11 +304,12 @@ namespace Collectorz
             get { return this.movieCollectorMovies; }
             set { }
         }
+
         /// <summary>
-        /// <para>string used to mark different MPAA-Rating from MovieData</para>
+        /// Gets or sets string used to mark different MPAA-Rating from MovieData
         /// <remarks>
-        ///     <para>string is replaced in disks or titles and defines all elements with specific MPAA-Rating<para>
-        ///     <para><MPAARating> needs to be a valid MPAA-Rating for the intended system</para>
+        ///     string is replaced in disks or titles and defines all elements with specific MPAA-Rating<br/>
+        ///     "MPAARating" needs to be a valid MPAA-Rating for the intended system
         /// </remarks>
         /// <returns>string used to mark different MPAA-Rating</returns>
         /// </summary>
@@ -290,44 +318,49 @@ namespace Collectorz
             get { return this.movieCollectorMPAARating; }
             set { }
         }
+
         /// <summary>
         /// <para>string used to define the Season Episode should be shown in</para>
         /// <remarks>
-        ///     <para>string is replaced in disks or titles and defines all elements with specific Seasons<para>
-        ///     <para><MPAARating> needs to be a valid number</para>
-        /// </remarks>string used to mark Seasons<returns>
+        ///     <para>string is replaced in disks or titles and defines all elements with specific Seasons</para>
+        ///     <para>"MPAARating" needs to be a valid number</para>
+        /// </remarks>
+        /// <returns>string used to mark Seasons</returns>
         /// </summary>
         public string MovieCollectorSeason
         {
             get { return this.movieCollectorSeason; }
             set { }
         }
+
         /// <summary>
-        /// <para>string used to define the available languages in this media</para>
+        /// Gets or sets string used to define the available languages in this media
         /// <remarks>
-        ///     <para>string is been parsed for ISO-2-country-codes<para>
-        ///     <para><Language> needs to be a collection of valid ISO-2-country-codes</para>
-        ///     <para>the codes must be present in the IMDB-ID, movie- or episode-title, to be displayed in KODI</para>
+        ///     string is been parsed for ISO-2-country-codes<br/>
+        ///     "Language" needs to be a collection of valid ISO-2-country-codes<br/>
+        ///     the codes must be present in the IMDB-ID, movie- or episode-title, to be displayed in KODI
         /// </remarks>
-        /// <returns>string used to mark multi-language-media<returns>
+        /// <returns>string used to mark multi-language-media</returns>
         /// </summary>
         public string MovieCollectorLanguage
         {
             get { return this.movieCollectorLanguage; }
             set { }
         }
+
         /// <summary>
         /// <para>local path to Collectorz-XML-Export including Filename and extension</para>
         /// <remarks>
         ///     <para>filename needs to end with ".xml"</para>
         /// </remarks>
-        /// <returns>local path to Collectorz-XML-Export including Filename and extension<returns>
+        /// <returns>local path to Collectorz-XML-Export including Filename and extension</returns>
         /// </summary>
         public string MovieCollectorLocalPathToXMLExport
         {
             get { return this.movieCollectorLocalPathToXMLExport; }
             set { }
         }
+
         /// <summary>
         /// <para>local path to Collectorz-XML-Export excluding Filename and extension</para>
         /// <remarks>

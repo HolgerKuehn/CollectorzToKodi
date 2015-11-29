@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
     /// <summary>
@@ -75,7 +78,7 @@ namespace Collectorz
         {
             bool XMLMovieIsMovie = false;
             bool XMLMovieIsSeries = false;
-            CMedia media = null;
+            CVideo media = null;
             foreach (XmlNode XMLMovie in CXML.XMLReadFile(EingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
                 #region evaluate Type and create media-object

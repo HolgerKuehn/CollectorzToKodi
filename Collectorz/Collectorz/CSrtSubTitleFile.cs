@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
     /// <summary>

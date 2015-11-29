@@ -3,9 +3,12 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
-    public class CMovie : CMedia
+    public class CMovie : CVideo
     {
         #region Constructor
         public CMovie(CConfiguration configuration)
@@ -136,7 +139,7 @@ namespace Collectorz
                 swrSH.WriteLine("cd /share/XBMC/Filme/");
             }
         }
-        public override CMedia clone()
+        public override CVideo clone()
         {
             CMovie movieClone = new CMovie(this.Configuration);
             movieClone.Title = this.Title;
@@ -174,7 +177,7 @@ namespace Collectorz
 
             return movieClone;
         }
-        public override CMedia clone(int server, bool isSpecial = false)
+        public override CVideo clone(int server, bool isSpecial = false)
         {
             bool cloneMovie = false;
             bool hasSpecials = false;

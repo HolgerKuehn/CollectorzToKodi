@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
-    public class CEpisode : CMedia
+    public class CEpisode : CVideo
     {
         #region Attributes
         private string season;
@@ -141,7 +144,7 @@ namespace Collectorz
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
             }
         }
-        public override CMedia clone()
+        public override CVideo clone()
         {
             CEpisode episodeClone = new CEpisode(this.Configuration);
             episodeClone.Title = this.Title;
@@ -184,9 +187,9 @@ namespace Collectorz
             episodeClone.IsSpecial = this.IsSpecial;
             episodeClone.Series = this.Series;
 
-            return (CMedia)episodeClone;
+            return (CVideo)episodeClone;
         }
-        public override CMedia clone(int server, bool isSpecial = false)
+        public override CVideo clone(int server, bool isSpecial = false)
         {
             throw new NotImplementedException();
         }

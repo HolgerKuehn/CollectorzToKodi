@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Security.Cryptography;
+﻿using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Configuration;
 
 
+/// <summary>
+/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// </summary>
 namespace Collectorz
 {
     /// <summary>

@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
     <DocumentationFile>bin\Debug\Collectorz.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>Collectorz.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Collectorz.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>Collectorz.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Collectorz.CProgram</StartupObject>
@@ -48,14 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CActor.cs" />
     <Compile Include="CBaseClassExtention.cs" />
     <Compile Include="CAudioStream.cs" />
     <Compile Include="CImageFile.cs" />
     <Compile Include="CEpisode.cs" />
     <Compile Include="CConfiguration.cs" />
+    <Compile Include="CMedia.cs" />
     <Compile Include="CSeries.cs" />
     <Compile Include="CMovie.cs" />
-    <Compile Include="CMedia.cs" />
+    <Compile Include="CVideo.cs" />
     <Compile Include="CSrtSubTitleCollection.cs" />
     <Compile Include="CSrtSubTitleFile.cs" />
     <Compile Include="CSrtSubTitleFileEntry.cs" />
@@ -87,6 +91,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Collectorz.ruleset" />
+    <None Include="packages.config" />
     <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SettingsServer.Designer.cs</LastGenOutput>
@@ -102,6 +108,12 @@
       <LastGenOutput>SettingsMovieCollector.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-beta017\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-beta017\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-beta017\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
