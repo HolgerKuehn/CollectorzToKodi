@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 
 /// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
@@ -69,9 +69,9 @@ namespace Collectorz
         /// reads the MovieCollectoz XML export into MediaCollection
         /// </summary>
         /// <remarks>
-        ///     <para>requires user defined field:</para>
-        ///     <para>"XBMC Movie" - true if entry is to be interpreted as a movie</para>
-        ///     <para>"XBMC Series" - true if entry is to be interpreted as a series</para>
+        ///     requires user defined field:<br/>
+        ///     "XBMC Movie" - true if entry is to be interpreted as a movie<br/>
+        ///     "XBMC Series" - true if entry is to be interpreted as a series<br/>
         /// </remarks>
         /// <param name="EingabeXML">File that was used while export from MovieCollector - complete local path</param>
         public void readXML(string EingabeXML)
@@ -79,7 +79,7 @@ namespace Collectorz
             bool XMLMovieIsMovie = false;
             bool XMLMovieIsSeries = false;
             CVideo media = null;
-            foreach (XmlNode XMLMovie in CXML.XMLReadFile(EingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
+            foreach (XmlNode XMLMovie in CBaseClassExtention.XMLReadFile(EingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
                 #region evaluate Type and create media-object
                 foreach (XmlNode XMLUserDefinedValue in XMLMovie.XMLReadSubnode("userdefinedvalues").XMLReadSubnodes("userdefinedvalue"))
@@ -104,13 +104,13 @@ namespace Collectorz
                 #region Media (Movie & Series)
                 media.Title = XMLMovie.XMLReadSubnode("title").XMLReadInnerText("");
                 media.Title = media.overrideMediaStreamData(media.Title);
-                media.Year = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("year").XMLReadSubnode("displayname").XMLReadInnerText("");
-                media.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(media.Title + " (" + media.Year + ")"))).Replace("?", "").Replace("-", "").Replace(":", "").Trim();
+                media.PublishingYear = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("year").XMLReadSubnode("displayname").XMLReadInnerText("");
+                media.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(media.Title + " (" + media.PublishingYear + ")"))).Replace("?", "").Replace("-", "").Replace(":", "").Trim();
                 media.TitleSort = XMLMovie.XMLReadSubnode("titlesort").XMLReadInnerText("");
                 media.TitleOriginal = XMLMovie.XMLReadSubnode("originaltitle").XMLReadInnerText("");
-                media.Set = XMLMovie.XMLReadSubnode("series").XMLReadSubnode("displayname").XMLReadInnerText("");
+                media.MediaGroup = XMLMovie.XMLReadSubnode("series").XMLReadSubnode("displayname").XMLReadInnerText("");
                 media.Rating = XMLMovie.XMLReadSubnode("imdbrating").XMLReadInnerText("");
-                media.Plot = XMLMovie.XMLReadSubnode("plot").XMLReadInnerText("");
+                media.Content = XMLMovie.XMLReadSubnode("plot").XMLReadInnerText("");
                 media.RunTime = XMLMovie.XMLReadSubnode("runtime").XMLReadInnerText("");
                 media.MPAA = XMLMovie.XMLReadSubnode("mpaarating").XMLReadSubnode("displayname").XMLReadInnerText("");
                 media.IMDbId = "tt" + XMLMovie.XMLReadSubnode("imdbnum").XMLReadInnerText("");
@@ -126,13 +126,13 @@ namespace Collectorz
                 if (XMLMovieIsMovie)
                 {
                     ((CMovie)media).readVideoFiles(XMLMovie);
-                    media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
+                    media.PublishingDate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
                     media.PlayCount = (XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
                     media.PlayDate = XMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
 
-                    if (media.hasSpecials() && media.Set == "")
+                    if (media.hasSpecials() && media.MediaGroup == "")
                     {
-                        media.Set = media.Title;
+                        media.MediaGroup = media.Title;
                     }
                     this.MovieCollection.Add(((CMovie)media));
                 }
@@ -141,7 +141,7 @@ namespace Collectorz
                 if (XMLMovieIsSeries)
                 {
                     // releasedate and number episodes in series
-                    media.Airdate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.Year);
+                    media.PublishingDate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
                     ((CSeries)media).NumberOfTotalEpisodes = (int)Int32.Parse(XMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(""));
 
                     // episodes
@@ -164,10 +164,10 @@ namespace Collectorz
                             episode.Title = episode.overrideSeason(episode.overrideMediaStreamData(XMLEpisode.XMLReadSubnode("title").XMLReadInnerText("")), true);
                             episode.TitleSort = episode.Title;
                             episode.TitleOriginal = episode.Title;
-                            episode.Set = episode.Series.Set;
-                            episode.Plot = XMLEpisode.XMLReadSubnode("plot").XMLReadInnerText("");
+                            episode.MediaGroup = episode.Series.MediaGroup;
+                            episode.Content = XMLEpisode.XMLReadSubnode("plot").XMLReadInnerText("");
                             episode.RunTime = XMLEpisode.XMLReadSubnode("runtimeminutes").XMLReadInnerText("");
-                            episode.Airdate = XMLEpisode.XMLReadSubnode("firstairdate").XMLReadSubnode("date").XMLReadInnerText(episode.Series.Airdate);
+                            episode.PublishingDate = XMLEpisode.XMLReadSubnode("firstairdate").XMLReadSubnode("date").XMLReadInnerText(episode.Series.PublishingDate);
                             episode.PlayCount = (XMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
                             episode.PlayDate = XMLEpisode.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
                             episode.Genres = episode.Series.Genres;

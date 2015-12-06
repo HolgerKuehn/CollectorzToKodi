@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 
 /// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
@@ -72,8 +72,8 @@ namespace Collectorz
                 swrNFO.WriteLine("    <title>" + this.Title + "</title>");
                 swrNFO.WriteLine("    <showtitle>" + this.Title + "</showtitle>");
                 swrNFO.WriteLine("    <rating>" + this.Rating + "</rating>");
-                swrNFO.WriteLine("    <year>" + this.Year + "</year>");
-                swrNFO.WriteLine("    <plot>" + this.Plot + "</plot>");
+                swrNFO.WriteLine("    <year>" + this.PublishingYear + "</year>");
+                swrNFO.WriteLine("    <plot>" + this.Content + "</plot>");
                 swrNFO.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
                 swrNFO.WriteLine("    <episode>" + this.NumberOfTotalEpisodes + "</episode>");
                 swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
@@ -82,9 +82,9 @@ namespace Collectorz
                     swrNFO.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
 
                 swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
-                swrNFO.WriteLine("    <aired>" + this.Airdate + "</aired>");
-                swrNFO.WriteLine("    <premiered>" + this.Airdate + "</premiered>");
-                swrNFO.WriteLine("    <set>" + this.Set + "</set>");
+                swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
+                swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
+                swrNFO.WriteLine("    <MediaGroup>" + this.MediaGroup + "</MediaGroup>");
                 swrNFO.WriteLine("    <id>" + this.IMDbId + "</id>");
                 swrNFO.WriteLine("    <country>" + this.Country + "</country>");
 
@@ -136,11 +136,11 @@ namespace Collectorz
             seriesClone.Title = this.Title;
             seriesClone.TitleSort = this.TitleSort;
             seriesClone.TitleOriginal = this.TitleOriginal;
-            seriesClone.Set = this.Set;
+            seriesClone.MediaGroup = this.MediaGroup;
             seriesClone.Rating = this.Rating;
-            seriesClone.Year = this.Year;
-            seriesClone.Airdate = this.Airdate;
-            seriesClone.Plot = this.Plot;
+            seriesClone.PublishingYear = this.PublishingYear;
+            seriesClone.PublishingDate = this.PublishingDate;
+            seriesClone.Content = this.Content;
             seriesClone.RunTime = this.RunTime;
             seriesClone.Images = this.Images; // if required, still to be cloned
             seriesClone.MPAA = this.MPAA;
@@ -197,11 +197,11 @@ namespace Collectorz
                 seriesClone.Title = this.Title;
                 seriesClone.TitleSort = this.TitleSort;
                 seriesClone.TitleOriginal = this.TitleOriginal;
-                seriesClone.Set = this.Set;
+                seriesClone.MediaGroup = this.MediaGroup;
                 seriesClone.Rating = this.Rating;
-                seriesClone.Year = this.Year;
-                seriesClone.Airdate = this.Airdate;
-                seriesClone.Plot = this.Plot;
+                seriesClone.PublishingYear = this.PublishingYear;
+                seriesClone.PublishingDate = this.PublishingDate;
+                seriesClone.Content = this.Content;
                 seriesClone.RunTime = this.RunTime;
                 seriesClone.Images = this.Images; // if required, still to be cloned
                 seriesClone.MPAA = this.MPAA;

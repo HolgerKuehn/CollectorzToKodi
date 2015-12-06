@@ -1,24 +1,24 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsMovieCollector">
+<settingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="settingsMovieCollector">
   <Profiles />
-  <Settings>
-    <Setting Name="Specials" Type="System.String" Scope="User">
+  <settings>
+    <setting Name="Specials" Type="System.String" Scope="User">
       <Value Profile="(Default)">(Special)</Value>
-    </Setting>
-    <Setting Name="MPAARating" Type="System.String" Scope="User">
+    </setting>
+    <setting Name="MPAARating" Type="System.String" Scope="User">
       <Value Profile="(Default)">(F&lt;MPAARating&gt;)</Value>
-    </Setting>
-    <Setting Name="Season" Type="System.String" Scope="User">
+    </setting>
+    <setting Name="Season" Type="System.String" Scope="User">
       <Value Profile="(Default)">(S&lt;Season&gt;)</Value>
-    </Setting>
-    <Setting Name="Language" Type="System.String" Scope="User">
+    </setting>
+    <setting Name="Language" Type="System.String" Scope="User">
       <Value Profile="(Default)">(L&lt;Language&gt;)</Value>
-    </Setting>
-    <Setting Name="Movies" Type="System.String" Scope="User">
+    </setting>
+    <setting Name="Movies" Type="System.String" Scope="User">
       <Value Profile="(Default)">(Movie)</Value>
-    </Setting>
-    <Setting Name="LocalPathToXMLExport" Type="System.String" Scope="User">
+    </setting>
+    <setting Name="LocalPathToXMLExport" Type="System.String" Scope="User">
       <Value Profile="(Default)">P:\Collectorz.com\nfo-Konverter\nfoConverter\nfoConverter\bin\Filme.xml</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>
+    </setting>
+  </settings>
+</settingsFile>

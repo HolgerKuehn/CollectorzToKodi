@@ -1,37 +1,47 @@
-﻿/// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
-/// </summary>
+﻿// <copyright file="CActor.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace Collectorz
 {
     /// <summary>
-    /// <para>class to mange Actors</para>
+    /// class to mange Actors
     /// </summary>
     public class CActor : CPerson
     {
         #region Attributes
+
         /// <summary>
-        /// <para>role played by actor</para>
+        /// role played by actor
         /// </summary>
         private string role;
+
         #endregion
         #region Constructor
+
         /// <summary>
-        /// <para>initializes actor with blank values</para>
+        /// Initializes a new instance of the <see cref="CActor"/> class.<br/>
+        /// <br/>
+        /// Initializes actor with blank values.
         /// </summary>
-        public CActor() : base()
+        public CActor()
+            : base()
         {
-            this.role = "";
+            this.role = string.Empty;
         }
+
         #endregion
         #region Properties
+
         /// <summary>
-        /// <para>role played by actor</para>
+        /// Gets or sets role played by actor
         /// </summary>
         public string Role
         {
             get { return this.role; }
             set { this.role = value; }
         }
+
         #endregion
     }
 }

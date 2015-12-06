@@ -12,12 +12,12 @@ namespace Collectorz.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
-    internal sealed partial class SettingsServer : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.settingsDesigner.settingsSingleFileGenerator", "14.0.0.0")]
+    internal sealed partial class settingsServer : global::System.Configuration.ApplicationSettingsBase {
         
-        private static SettingsServer defaultInstance = ((SettingsServer)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsServer())));
+        private static settingsServer defaultInstance = ((settingsServer)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new settingsServer())));
         
-        public static SettingsServer Default {
+        public static settingsServer Default {
             get {
                 return defaultInstance;
             }
@@ -37,7 +37,7 @@ namespace Collectorz.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SHIRYOUSOOCHI,EIZOUSOOCHI,YOBISOOCHI,JOUSETSUSOOCHI")]
+        [global::System.Configuration.DefaultSettingValueAttribute("SHIRYOUSOOCHI,EIZOUSOOCHI,YOBISOOCHI,JOUsetSUSOOCHI")]
         public string ListOfServer {
             get {
                 return ((string)(this["ListOfServer"]));

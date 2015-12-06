@@ -12,12 +12,12 @@ namespace Collectorz.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
-    internal sealed partial class SettingsMovieCollector : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.settingsDesigner.settingsSingleFileGenerator", "12.0.0.0")]
+    internal sealed partial class settingsMovieCollector : global::System.Configuration.ApplicationSettingsBase {
         
-        private static SettingsMovieCollector defaultInstance = ((SettingsMovieCollector)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsMovieCollector())));
+        private static settingsMovieCollector defaultInstance = ((settingsMovieCollector)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new settingsMovieCollector())));
         
-        public static SettingsMovieCollector Default {
+        public static settingsMovieCollector Default {
             get {
                 return defaultInstance;
             }

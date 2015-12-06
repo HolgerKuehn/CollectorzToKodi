@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 
 /// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
@@ -91,7 +91,7 @@ namespace Collectorz
             {
                 CConfiguration.SrtSubTitleLineType lineType = new CConfiguration.SrtSubTitleLineType();
                 CSrtSubTitleFileEntry srtSubTitleFileEntry = new CSrtSubTitleFileEntry();
-                lineType = CConfiguration.SrtSubTitleLineType.entryNumber;
+                lineType = CConfiguration.SrtSubTitleLineType.EntryNumber;
 
                 while (true)
                 {
@@ -101,23 +101,23 @@ namespace Collectorz
                     srtSubTitleFileEntry.OffsetTime = this.OffsetTime;
 
                     // end of SubTitleLines
-                    if (lineType == CConfiguration.SrtSubTitleLineType.subTitles && srtLine == "")
+                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine == "")
                     {
                         this.SubTitleEntries.Add(srtSubTitleFileEntry);
-                        lineType = CConfiguration.SrtSubTitleLineType.emptyLine;
+                        lineType = CConfiguration.SrtSubTitleLineType.EmptyLine;
                     }
 
 
                     // SubTitleLines
-                    if (lineType == CConfiguration.SrtSubTitleLineType.subTitles && srtLine != "")
+                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine != "")
                     {
                         srtSubTitleFileEntry.SubTitleLines.Add(srtLine);
-                        lineType = CConfiguration.SrtSubTitleLineType.subTitles;
+                        lineType = CConfiguration.SrtSubTitleLineType.SubTitles;
                     }
 
 
                     // second Line -> Times
-                    if (lineType == CConfiguration.SrtSubTitleLineType.times)
+                    if (lineType == CConfiguration.SrtSubTitleLineType.Times)
                     {
                         string strStartTime = srtLine.Substring(0, 12).Replace(",", ".");
                         string strEndTime = srtLine.Substring(17, 12).Replace(",", ".");
@@ -135,12 +135,12 @@ namespace Collectorz
                         srtSubTitleFileEntry.EndTime = timEndTime;
                         srtSubTitleFileEntry.TimeExtentions = timeExtentions;
 
-                        lineType = CConfiguration.SrtSubTitleLineType.subTitles;
+                        lineType = CConfiguration.SrtSubTitleLineType.SubTitles;
                     }
 
 
                     // first Line -> EntryNumber
-                    if (lineType == CConfiguration.SrtSubTitleLineType.entryNumber)
+                    if (lineType == CConfiguration.SrtSubTitleLineType.EntryNumber)
                     {
                         strOffsetTime = srtLine.RightOf("(Offset ").LeftOf(")");
                         srtLine = srtLine.Replace("(Offset " + strOffsetTime + ")", "");
@@ -153,14 +153,14 @@ namespace Collectorz
                         }
 
                         srtSubTitleFileEntry.EntryNumber = int.Parse(srtLine);
-                        lineType = CConfiguration.SrtSubTitleLineType.times;
+                        lineType = CConfiguration.SrtSubTitleLineType.Times;
                     }
 
 
-                    if (lineType == CConfiguration.SrtSubTitleLineType.emptyLine)
+                    if (lineType == CConfiguration.SrtSubTitleLineType.EmptyLine)
                     {
                         srtSubTitleFileEntry = new CSrtSubTitleFileEntry();
-                        lineType = CConfiguration.SrtSubTitleLineType.entryNumber;
+                        lineType = CConfiguration.SrtSubTitleLineType.EntryNumber;
                     }
                 }
             }

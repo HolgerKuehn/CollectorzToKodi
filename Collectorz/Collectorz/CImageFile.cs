@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
@@ -13,7 +13,7 @@ namespace Collectorz
         public CImageFile(CConfiguration configuration)
             : base(configuration)
         {
-            this.imageType = CConfiguration.ImageType.unknown;
+            this.imageType = CConfiguration.ImageType.Unknown;
             this.season = "";
         }
         #endregion

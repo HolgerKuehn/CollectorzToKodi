@@ -1,14 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
+﻿// <copyright file="CEpisode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-/// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
-/// </summary>
 namespace Collectorz
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Xml;
+
     public class CEpisode : CVideo
     {
         #region Attributes
@@ -18,8 +19,10 @@ namespace Collectorz
         private string displayEpisode;
         private bool isSpecial;
         private CSeries series;
+
         #endregion
         #region Constructor
+
         public CEpisode(CConfiguration configuration)
             : base(configuration)
         {
@@ -30,40 +33,50 @@ namespace Collectorz
             this.series = null;
             this.isSpecial = false;
         }
+
         #endregion
         #region Properties
+
         public string Season
         {
             get { return this.season; }
             set { this.season = value; }
         }
+
         public string DisplaySeason
         {
             get { return this.displaySeason; }
             set { this.displaySeason = value; }
         }
+
         public string Episode
         {
             get { return this.episode; }
             set { this.episode = value; }
         }
+
         public string DisplayEpisode
         {
             get { return this.displayEpisode; }
             set { this.displayEpisode = value; }
         }
+
         public CSeries Series
         {
             get { return this.series; }
             set { this.series = value; }
         }
+
         public bool IsSpecial
         {
             get { return this.isSpecial; }
             set { this.isSpecial = value; }
         }
+
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
         public override void readVideoFiles(XmlNode XMLMedia)
         {
             CVideoFile videoFile = new CVideoFile(this.Configuration);
@@ -78,9 +91,11 @@ namespace Collectorz
 
             this.VideoFiles.Add(videoFile);
         }
+
+        /// <inheritdoc/>
         public override void writeNFO()
         {
-            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath +  this.Filename + ".nfo", false, Encoding.UTF8, 512))
+            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
                 swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
                 swrNFO.WriteLine("<episodedetails>");
@@ -89,11 +104,11 @@ namespace Collectorz
                 swrNFO.WriteLine("    <displayseason>" + this.DisplaySeason + "</displayseason>");
                 swrNFO.WriteLine("    <episode>" + this.Episode + "</episode>");
                 swrNFO.WriteLine("    <displayepisode>" + this.DisplayEpisode + "</displayepisode>");
-                swrNFO.WriteLine("    <aired>" + this.Airdate + "</aired>");
-                swrNFO.WriteLine("    <premiered>" + this.Airdate + "</premiered>");
+                swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
+                swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
                 swrNFO.WriteLine("    <rating>" + this.Rating + "</rating>");
                 swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
-                swrNFO.WriteLine("    <plot>" + this.Plot + "</plot>");
+                swrNFO.WriteLine("    <plot>" + this.Content + "</plot>");
                 swrNFO.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
 
                 if (this.PlayDate != "")
@@ -101,7 +116,7 @@ namespace Collectorz
 
                 swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
 
-                swrNFO.WriteLine("    <set>" + this.Set + "</set>");
+                swrNFO.WriteLine("    <set>" + this.MediaGroup + "</set>");
 
                 this.writeGenre(swrNFO);
                 this.writeStudio(swrNFO);
@@ -113,6 +128,8 @@ namespace Collectorz
                 swrNFO.WriteLine("</episodedetails>");
             }
         }
+
+        /// <inheritdoc/>
         public override void writeSH(StreamWriter swrSH)
         {
             if (this.Title != "")
@@ -144,17 +161,19 @@ namespace Collectorz
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
             }
         }
+
+        /// <inheritdoc/>
         public override CVideo clone()
         {
             CEpisode episodeClone = new CEpisode(this.Configuration);
             episodeClone.Title = this.Title;
             episodeClone.TitleSort = this.TitleSort;
             episodeClone.TitleOriginal = this.TitleOriginal;
-            episodeClone.Set = this.Set;
+            episodeClone.MediaGroup = this.MediaGroup;
             episodeClone.Rating = this.Rating;
-            episodeClone.Year = this.Year;
-            episodeClone.Airdate = this.Airdate;
-            episodeClone.Plot = this.Plot;
+            episodeClone.PublishingYear = this.PublishingYear;
+            episodeClone.PublishingDate = this.PublishingDate;
+            episodeClone.Content = this.Content;
             episodeClone.RunTime = this.RunTime;
             episodeClone.Images = this.Images; // if required, still to be cloned
             episodeClone.MPAA = this.MPAA;
@@ -189,10 +208,12 @@ namespace Collectorz
 
             return (CVideo)episodeClone;
         }
+
         public override CVideo clone(int server, bool isSpecial = false)
         {
             throw new NotImplementedException();
         }
+
         public void extractSeriesData(CSeries series)
         {
             // clone only relevant Attributes
@@ -201,6 +222,7 @@ namespace Collectorz
             this.VideoAspectRatio = series.VideoAspectRatio;
             this.Rating = series.Rating;
         }
+
         public void extractSeriesData(CEpisode episode)
         {
             // clone only relevant Attributes
@@ -215,6 +237,7 @@ namespace Collectorz
             this.DisplaySeason = episode.DisplaySeason;
             this.MediaLanguages = episode.MediaLanguages;
         }
+
         public string overrideSeason(string title, bool countEpisode = false)
         {
             this.Season = "0";
@@ -241,7 +264,6 @@ namespace Collectorz
                 while (this.Series.NumberOfEpisodesPerSeason.Count - 1 < (int)Int32.Parse(this.Season))
                     this.Series.NumberOfEpisodesPerSeason.Add(0);
 
-
                 this.Series.NumberOfEpisodes = this.Series.NumberOfEpisodes + (this.IsSpecial ? 0 : 1);
                 this.Series.NumberOfSpecials = this.Series.NumberOfSpecials + (this.IsSpecial ? 1 : 0);
 
@@ -253,6 +275,7 @@ namespace Collectorz
 
             return title.Trim();
         }
+
         public override void readImages(XmlNode XMLNode)
         {
             CImageFile image;
@@ -270,6 +293,7 @@ namespace Collectorz
                 image.Media.Images.Add(image);
 
         }
+
         public override void writeImagesToNFO(StreamWriter swrNFO)
         {
             for (int i = 0; i < this.Images.Count; i++)
@@ -283,13 +307,15 @@ namespace Collectorz
                         swrNFO.WriteLine("    <thumb>" + imageFile.URL + "</thumb>");
             }
         }
+
+        /// <inheritdoc/>
         public override void writeImagesToSH(StreamWriter swrSH)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
                 CImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConfiguration.ImageType.unknown)
+                if (imageFile.Filename != "" && !imageFile.URL.Contains("http://") && imageFile.ImageType != CConfiguration.ImageType.Unknown)
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
             }
         }

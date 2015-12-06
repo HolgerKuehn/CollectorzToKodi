@@ -12,12 +12,12 @@ namespace Collectorz.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
-    internal sealed partial class SettingsKodi : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.settingsDesigner.settingsSingleFileGenerator", "12.0.0.0")]
+    internal sealed partial class settingsKodi : global::System.Configuration.ApplicationSettingsBase {
         
-        private static SettingsKodi defaultInstance = ((SettingsKodi)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsKodi())));
+        private static settingsKodi defaultInstance = ((settingsKodi)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new settingsKodi())));
         
-        public static SettingsKodi Default {
+        public static settingsKodi Default {
             get {
                 return defaultInstance;
             }

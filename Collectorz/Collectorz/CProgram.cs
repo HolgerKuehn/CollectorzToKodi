@@ -3,17 +3,17 @@ using System.Text;
 
 
 /// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
     /// <summary>
-    /// <para>Main class of Collectorz converter, managing main program flow</para>
+    /// Main class of Collectorz converter, managing main program flow<br/>
     /// </summary>
     public class CProgram
     {
         /// <summary>
-        /// <para>Entry-point for command-line-tool</para>
+        /// Entry-point for command-line-tool<br/>
         /// </summary>
         /// <returns>Error Code 1, if no valid file was assigned</returns>
         static int Main()

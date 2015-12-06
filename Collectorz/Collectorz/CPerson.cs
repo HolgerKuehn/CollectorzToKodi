@@ -1,27 +1,27 @@
 ﻿/// <summary>
-/// <para>Namespace for managing .nfo-export from Collectorz-Programs </para>
+/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
 /// </summary>
 namespace Collectorz
 {
     /// <summary>
-    /// <para>class to manage persons from Collectorz-Programs</para>
+    /// class to manage persons from Collectorz-Programs<br/>
     /// </summary>
     public class CPerson
     {
         #region Attributes
         /// <summary>
-        /// <para>full name displayed in Kodi</para>
+        /// full name displayed in Kodi<br/>
         /// </summary>
         private string name;
         /// <summary>
-        /// <para>link to thumb of person</para>
-        /// <para>can hold url or local-file link to thumb</para>
+        /// link to thumb of person<br/>
+        /// can hold url or local-file link to thumb<br/>
         /// </summary>
         private string thumb;
         #endregion
         #region Constructor
         /// <summary>
-        /// <para>initializes person with blank values</para>
+        /// initializes person with blank values<br/>
         /// </summary>
         public CPerson()
         {
@@ -31,7 +31,7 @@ namespace Collectorz
         #endregion
         #region Properties
         /// <summary>
-        /// <para>full name displayed in Kodi</para>
+        /// full name displayed in Kodi<br/>
         /// </summary>
         public string Name
         {
@@ -39,8 +39,8 @@ namespace Collectorz
             set { this.name = value; }
         }
         /// <summary>
-        /// <para>link to thumb of person</para>
-        /// <para>can hold url or local-file link to thumb</para>
+        /// link to thumb of person<br/>
+        /// can hold url or local-file link to thumb<br/>
         /// </summary>
         public string Thumb
         {
