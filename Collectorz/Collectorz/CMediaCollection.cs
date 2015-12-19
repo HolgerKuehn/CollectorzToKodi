@@ -1,70 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿// <copyright file="CMediaCollection.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 
-/// <summary>
-/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
-/// </summary>
 namespace Collectorz
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Xml;
+
     /// <summary>
     /// provides methods to handle the complete media-collection (e.g. movies and series) from MovieCollector
     /// </summary>
     public class CMediaCollection
     {
         #region Attributes
+
         /// <summary>
         /// stores configuration for MediaCollection
         /// </summary>
-        private CConfiguration configuration;
+        private readonly CConfiguration configuration;
+
         /// <summary>
         /// stores MediaCollection for movies
         /// </summary>
-        private List<CMovie> movieCollection;
+        private readonly List<CMovie> movieCollection;
+
         /// <summary>
         /// stores MediaCollection for series
         /// </summary>
-        private List<CSeries> seriesCollection;
+        private readonly List<CSeries> seriesCollection;
+
         #endregion
         #region Constructor
+
         /// <summary>
-        /// initializes MediaCollection and Configuration
+        /// Initializes a new instance of the <see cref="CMediaCollection"/> class.
         /// </summary>
+        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
         public CMediaCollection(CConfiguration configuration)
         {
             this.configuration = configuration;
             this.movieCollection = new List<CMovie>();
             this.seriesCollection = new List<CSeries>();
         }
+
         #endregion
         #region Properties
+
         /// <summary>
-        /// <returns>current configuration used by MediaCollection</returns>
+        /// Gets current configuration used by MediaCollection
         /// </summary>
+        /// <returns>current configuration used by MediaCollection</returns>
         public CConfiguration Configuration
         {
             get { return this.configuration; }
-            set { }
         }
+
         /// <summary>
-        /// <returns>current MovieCollection used by MediaCollection</returns>
+        /// Gets current MovieCollection used by MediaCollection
         /// </summary>
+        /// <returns>current MovieCollection used by MediaCollection</returns>
         public List<CMovie> MovieCollection
         {
             get { return this.movieCollection; }
-            set { }
         }
+
         /// <summary>
-        /// <returns>current SeriesCollection used by MediaCollection</returns>
+        /// Gets current SeriesCollection used by MediaCollection
         /// </summary>
+        /// <returns>current SeriesCollection used by MediaCollection</returns>
         public List<CSeries> SeriesCollection
         {
             get { return this.seriesCollection; }
-            set { }
         }
+
         #endregion
         #region Functions
+
         /// <summary>
         /// reads the MovieCollectoz XML export into MediaCollection
         /// </summary>
@@ -73,178 +86,160 @@ namespace Collectorz
         ///     "XBMC Movie" - true if entry is to be interpreted as a movie<br/>
         ///     "XBMC Series" - true if entry is to be interpreted as a series<br/>
         /// </remarks>
-        /// <param name="EingabeXML">File that was used while export from MovieCollector - complete local path</param>
-        public void readXML(string EingabeXML)
+        /// <param name="eingabeXML">File that was used while export from MovieCollector - complete local path</param>
+        public void ReadXML(string eingabeXML)
         {
-            bool XMLMovieIsMovie = false;
-            bool XMLMovieIsSeries = false;
+            bool xMLMovieIsMovie = false;
+            bool xMLMovieIsSeries = false;
             CVideo media = null;
-            foreach (XmlNode XMLMovie in CBaseClassExtention.XMLReadFile(EingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
+            foreach (XmlNode xMLMovie in CBaseClassExtention.XMLReadFile(eingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
                 #region evaluate Type and create media-object
-                foreach (XmlNode XMLUserDefinedValue in XMLMovie.XMLReadSubnode("userdefinedvalues").XMLReadSubnodes("userdefinedvalue"))
+                foreach (XmlNode xMLUserDefinedValue in xMLMovie.XMLReadSubnode("userdefinedvalues").XMLReadSubnodes("userdefinedvalue"))
                 {
-                    if (XMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText("") == "XBMC Movie")
-                        XMLMovieIsMovie = XMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText("") == "Yes" || XMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText("") == "Ja";
+                    if (xMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText(string.Empty) == "XBMC Movie")
+                    {
+                        xMLMovieIsMovie = xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Yes" || xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Ja";
+                    }
 
-                    if (XMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText("") == "XBMC Serie")
-                        XMLMovieIsSeries = XMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText("") == "Yes" || XMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText("") == "Ja";
+                    if (xMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText(string.Empty) == "XBMC Serie")
+                    {
+                        xMLMovieIsSeries = xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Yes" || xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Ja";
+                    }
                 }
 
-                if (XMLMovieIsMovie)
+                if (xMLMovieIsMovie)
+                {
                     media = new CMovie(this.Configuration);
+                }
 
-                if (XMLMovieIsSeries)
+                if (xMLMovieIsSeries)
+                {
                     media = new CSeries(this.Configuration);
+                }
 
                 if (media == null)
+                {
                     continue; // TODO: ### write error log
+                }
 
                 #endregion
                 #region Media (Movie & Series)
-                media.Title = XMLMovie.XMLReadSubnode("title").XMLReadInnerText("");
-                media.Title = media.overrideMediaStreamData(media.Title);
-                media.PublishingYear = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("year").XMLReadSubnode("displayname").XMLReadInnerText("");
-                media.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(media.Title + " (" + media.PublishingYear + ")"))).Replace("?", "").Replace("-", "").Replace(":", "").Trim();
-                media.TitleSort = XMLMovie.XMLReadSubnode("titlesort").XMLReadInnerText("");
-                media.TitleOriginal = XMLMovie.XMLReadSubnode("originaltitle").XMLReadInnerText("");
-                media.MediaGroup = XMLMovie.XMLReadSubnode("series").XMLReadSubnode("displayname").XMLReadInnerText("");
-                media.Rating = XMLMovie.XMLReadSubnode("imdbrating").XMLReadInnerText("");
-                media.Content = XMLMovie.XMLReadSubnode("plot").XMLReadInnerText("");
-                media.RunTime = XMLMovie.XMLReadSubnode("runtime").XMLReadInnerText("");
-                media.MPAA = XMLMovie.XMLReadSubnode("mpaarating").XMLReadSubnode("displayname").XMLReadInnerText("");
-                media.IMDbId = "tt" + XMLMovie.XMLReadSubnode("imdbnum").XMLReadInnerText("");
-                media.Country = XMLMovie.XMLReadSubnode("country").XMLReadSubnode("displayname").XMLReadInnerText("");
-                media.readImages(XMLMovie);
-                media.readGenre(XMLMovie);
-                media.readStudio(XMLMovie);
-                media.readCrew(XMLMovie);
-                media.readCast(XMLMovie);
-                media.readStreamData(XMLMovie);
+
+                media.Title = xMLMovie.XMLReadSubnode("title").XMLReadInnerText(string.Empty);
+                media.Title = media.OverrideVideoStreamData(media.Title);
+                media.PublishingYear = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("year").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                media.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(media.Title + " (" + media.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
+                media.TitleSort = xMLMovie.XMLReadSubnode("titlesort").XMLReadInnerText(string.Empty);
+                media.TitleOriginal = xMLMovie.XMLReadSubnode("originaltitle").XMLReadInnerText(string.Empty);
+                media.MediaGroup = xMLMovie.XMLReadSubnode("series").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                media.Rating = xMLMovie.XMLReadSubnode("imdbrating").XMLReadInnerText(string.Empty);
+                media.Content = xMLMovie.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
+                media.RunTime = xMLMovie.XMLReadSubnode("runtime").XMLReadInnerText(string.Empty);
+                media.MPAA = xMLMovie.XMLReadSubnode("mpaarating").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                media.IMDbId = "tt" + xMLMovie.XMLReadSubnode("imdbnum").XMLReadInnerText(string.Empty);
+                media.Country = xMLMovie.XMLReadSubnode("country").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                media.ReadImages(xMLMovie);
+                media.ReadGenre(xMLMovie);
+                media.ReadStudio(xMLMovie);
+                media.ReadCrew(xMLMovie);
+                media.ReadCast(xMLMovie);
+                media.ReadStreamData(xMLMovie);
+
                 #endregion
                 #region Movie
-                if (XMLMovieIsMovie)
-                {
-                    ((CMovie)media).readVideoFiles(XMLMovie);
-                    media.PublishingDate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
-                    media.PlayCount = (XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLMovie.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
-                    media.PlayDate = XMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
 
-                    if (media.hasSpecials() && media.MediaGroup == "")
+                if (xMLMovieIsMovie)
+                {
+                    ((CMovie)media).ReadMediaFiles(xMLMovie);
+                    media.PublishingDate = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
+                    media.PlayCount = (xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Yes" || xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Ja") ? "1" : "0";
+                    media.PlayDate = xMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText(string.Empty);
+
+                    if (media.HasSpecials() && media.MediaGroup == string.Empty)
                     {
                         media.MediaGroup = media.Title;
                     }
-                    this.MovieCollection.Add(((CMovie)media));
+
+                    this.MovieCollection.Add((CMovie)media);
                 }
+
                 #endregion
                 #region Series
-                if (XMLMovieIsSeries)
+
+                if (xMLMovieIsSeries)
                 {
                     // releasedate and number episodes in series
-                    media.PublishingDate = XMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
-                    ((CSeries)media).NumberOfTotalEpisodes = (int)Int32.Parse(XMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(""));
+                    media.PublishingDate = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
+                    ((CSeries)media).NumberOfTotalEpisodes = (int)int.Parse(xMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(string.Empty));
 
                     // episodes
-                    foreach (XmlNode XMLSeriesDisc in XMLMovie.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
+                    foreach (XmlNode xMLSeriesDisc in xMLMovie.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
                     {
                         CEpisode seriesDiscEpisode = new CEpisode(this.Configuration);
-                        seriesDiscEpisode.Series = ((CSeries)media);
-                        seriesDiscEpisode.extractSeriesData((CSeries)media);
-                        seriesDiscEpisode.overrideSeason(seriesDiscEpisode.overrideMediaStreamData(XMLSeriesDisc.XMLReadSubnode("title").XMLReadInnerText("")), false);
+                        seriesDiscEpisode.Series = (CSeries)media;
+                        seriesDiscEpisode.ExtractSeriesData((CSeries)media);
+                        seriesDiscEpisode.OverrideSeason(seriesDiscEpisode.OverrideVideoStreamData(xMLSeriesDisc.XMLReadSubnode("title").XMLReadInnerText(string.Empty)), false);
 
-                        foreach (XmlNode XMLEpisode in XMLSeriesDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
+                        foreach (XmlNode xMLEpisode in xMLSeriesDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                         {
                             CEpisode episode = new CEpisode(this.Configuration);
 
                             // reset Episode-Attributes to Disc-Attributes
-                            episode.extractSeriesData(seriesDiscEpisode);
+                            episode.ExtractSeriesData(seriesDiscEpisode);
 
                             // read Episode-Details
-                            episode.Series = ((CSeries)media);
-                            episode.Title = episode.overrideSeason(episode.overrideMediaStreamData(XMLEpisode.XMLReadSubnode("title").XMLReadInnerText("")), true);
+                            episode.Series = (CSeries)media;
+                            episode.Title = episode.OverrideSeason(episode.OverrideVideoStreamData(xMLEpisode.XMLReadSubnode("title").XMLReadInnerText(string.Empty)), true);
                             episode.TitleSort = episode.Title;
                             episode.TitleOriginal = episode.Title;
                             episode.MediaGroup = episode.Series.MediaGroup;
-                            episode.Content = XMLEpisode.XMLReadSubnode("plot").XMLReadInnerText("");
-                            episode.RunTime = XMLEpisode.XMLReadSubnode("runtimeminutes").XMLReadInnerText("");
-                            episode.PublishingDate = XMLEpisode.XMLReadSubnode("firstairdate").XMLReadSubnode("date").XMLReadInnerText(episode.Series.PublishingDate);
-                            episode.PlayCount = (XMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText("") == "Yes" || XMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText("") == "Ja" ? "1" : "0");
-                            episode.PlayDate = XMLEpisode.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText("");
+                            episode.Content = xMLEpisode.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
+                            episode.RunTime = xMLEpisode.XMLReadSubnode("runtimeminutes").XMLReadInnerText(string.Empty);
+                            episode.PublishingDate = xMLEpisode.XMLReadSubnode("firstairdate").XMLReadSubnode("date").XMLReadInnerText(episode.Series.PublishingDate);
+                            episode.PlayCount = xMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Yes" || xMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Ja" ? "1" : "0";
+                            episode.PlayDate = xMLEpisode.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText(string.Empty);
                             episode.Genres = episode.Series.Genres;
                             episode.Studios = episode.Series.Studios;
                             episode.AudioStreams = episode.Series.AudioStreams;
                             episode.SubTitleStreams = episode.Series.SubTitleStreams;
-                            episode.readCrew(XMLEpisode);
-                            episode.readCast(XMLEpisode);
-                            episode.readVideoFiles(XMLEpisode);
-                            episode.readImages(XMLEpisode);
+                            episode.ReadCrew(xMLEpisode);
+                            episode.ReadCast(xMLEpisode);
+                            episode.ReadMediaFiles(xMLEpisode);
+                            episode.ReadImages(xMLEpisode);
 
                             ((CSeries)media).Episodes.Add(episode);
                         }
                     }
 
-                    SeriesCollection.Add(((CSeries)media));
+                    this.SeriesCollection.Add((CSeries)media);
                 }
+
                 #endregion
-            };
+            }
         }
-        private List<CMovie> clonePerLanguage(List<CMovie> movieCollection)
-        {
-            List<CMovie> movieCollectionPerLanguage = new List<CMovie>();
 
-            foreach (CMovie movie in movieCollection)
-                foreach (string movieLanguage in movie.MediaLanguages)
-                {
-                    CMovie movieClone = (CMovie)movie.clone();
-                    List<string> mediaLanguagesToBeReplaced = new List<string>();
-                    mediaLanguagesToBeReplaced.Add(movie.MediaLanguages[0]);
-                    movieClone.clonePerLanguage(mediaLanguagesToBeReplaced, movieLanguage);
-                    movieCollectionPerLanguage.Add(movieClone);
-                }
-
-            return movieCollectionPerLanguage;
-        }
-        private List<CSeries> clonePerLanguage(List<CSeries> seriesCollection)
-        {
-            List<CSeries> seriesCollectionPerLanguage = new List<CSeries>();
-
-            foreach (CSeries series in seriesCollection)
-                foreach (string seriesLanguage in series.MediaLanguages)
-                {
-                    CSeries seriesClone = (CSeries)series.clone();
-                    List<string> mediaLanguagesToBeReplaced;
-
-                    mediaLanguagesToBeReplaced = new List<string>();
-                    mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
-                    seriesClone.clonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
-
-
-                    foreach (CEpisode episodeClone in seriesClone.Episodes)
-                    {
-                        mediaLanguagesToBeReplaced = new List<string>();
-                        mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
-                        mediaLanguagesToBeReplaced.Add(episodeClone.MediaLanguages[0]); // and episode data, when available languages change during series
-
-                        episodeClone.clonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage); 
-                    }
-                    seriesCollectionPerLanguage.Add(seriesClone);
-                }
-
-            return seriesCollectionPerLanguage;
-        }
-        public List<CMovie> listMovieCollectionPerServer(int server)
+        /// <summary>
+        /// list of movies stored at the specified server
+        /// </summary>
+        /// <param name="server">Server containing the Movie; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        /// <returns>new list of movies stored at the specified server</returns>
+        public List<CMovie> ListMovieCollectionPerServer(int server)
         {
             List<CMovie> movieCollectionPerServer = new List<CMovie>();
-            
-            foreach (CMovie movie in listMovieCollectionPerServer(server, false))
+
+            foreach (CMovie movie in this.ListMovieCollectionPerServer(server, false))
             {
                 if (movie != null)
+                {
                     movieCollectionPerServer.Add(movie);
+                }
             }
-            
-            foreach (CMovie movie in listMovieCollectionPerServer(server, true))
+
+            foreach (CMovie movie in this.ListMovieCollectionPerServer(server, true))
             {
-                if (movie != null) { 
+                if (movie != null)
+                {
                     movie.Title = movie.Title + " (Specials)";
                     movie.TitleSort = movie.TitleSort + " (Specials)";
                     movie.TitleOriginal = movie.TitleOriginal + " (Specials)";
@@ -255,45 +250,127 @@ namespace Collectorz
 
             return movieCollectionPerServer;
         }
-        public List<CMovie> listMovieCollectionPerServer(int server, bool isSpecial)
+
+        /// <summary>
+        /// list of movies stored at the specified server
+        /// </summary>
+        /// <param name="server">Server containing the Movie; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        /// <param name="isSpecial">value indicating whether Specials or regular movies should be returned</param>
+        /// <returns>new list of movies stored at the specified server</returns>
+        public List<CMovie> ListMovieCollectionPerServer(int server, bool isSpecial)
         {
             List<CMovie> movieCollectionPerServer = new List<CMovie>();
-            foreach (CMovie movie in this.clonePerLanguage(this.MovieCollection))
+            foreach (CMovie movie in this.ClonePerLanguage(this.MovieCollection))
             {
                 bool addMovie = false;
                 foreach (int serverList in movie.Server)
-                    if (serverList.Equals(server))
-                        addMovie = true;
-
-                if (movie.VideoFiles.Count > 0 && addMovie)
                 {
-                    CMovie movieClone = (CMovie)movie.clone(server, isSpecial);
+                    if (serverList.Equals(server))
+                    {
+                        addMovie = true;
+                    }
+                }
+
+                if (movie.MediaFiles.Count > 0 && addMovie)
+                {
+                    CMovie movieClone = (CMovie)movie.Clone(server, isSpecial);
                     movieCollectionPerServer.Add(movieClone);
                 }
             }
 
             return movieCollectionPerServer;
         }
-        public List<CSeries> listSeriesCollectionPerServer(int server)
+
+        /// <summary>
+        /// list of series stored at the specified server
+        /// </summary>
+        /// <param name="server">Server containing the Movie; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        /// <returns>new list of series stored at the specified server</returns>
+        public List<CSeries> ListSeriesCollectionPerServer(int server)
         {
             List<CSeries> seriesCollectionPerServer = new List<CSeries>();
 
-            foreach (CSeries series in this.clonePerLanguage(this.SeriesCollection))
+            foreach (CSeries series in this.ClonePerLanguage(this.SeriesCollection))
             {
                 bool addSeries = false;
                 foreach (int serverList in series.Server)
+                {
                     if (serverList.Equals(server))
+                    {
                         addSeries = true;
+                    }
+                }
 
                 if (addSeries)
                 {
-                    CSeries seriesClone = (CSeries)series.clone(server);
+                    CSeries seriesClone = (CSeries)series.Clone(server);
                     seriesCollectionPerServer.Add(seriesClone);
                 }
             }
 
             return seriesCollectionPerServer;
         }
+
+        /// <summary>
+        /// list movies, duplicated by language, if multiple video file are used
+        /// </summary>
+        /// <param name="movieCollection">List of movies, that should be checked for multiple languages</param>
+        /// <returns>new list of movies, duplicated by language, if multiple video file are used</returns>
+        private List<CMovie> ClonePerLanguage(List<CMovie> movieCollection)
+        {
+            List<CMovie> movieCollectionPerLanguage = new List<CMovie>();
+
+            foreach (CMovie movie in movieCollection)
+            {
+                foreach (string movieLanguage in movie.MediaLanguages)
+                {
+                    CMovie movieClone = (CMovie)movie.Clone();
+                    List<string> mediaLanguagesToBeReplaced = new List<string>();
+                    mediaLanguagesToBeReplaced.Add(movie.MediaLanguages[0]);
+                    movieClone.ClonePerLanguage(mediaLanguagesToBeReplaced, movieLanguage);
+                    movieCollectionPerLanguage.Add(movieClone);
+                }
+            }
+
+            return movieCollectionPerLanguage;
+        }
+
+        /// <summary>
+        /// list series, duplicated by language, if multiple video file are used
+        /// </summary>
+        /// <param name="seriesCollection">List of series, that should be checked for multiple languages</param>
+        /// <returns>new list of series, duplicated by language, if multiple video file are used</returns>
+        private List<CSeries> ClonePerLanguage(List<CSeries> seriesCollection)
+        {
+            List<CSeries> seriesCollectionPerLanguage = new List<CSeries>();
+
+            foreach (CSeries series in seriesCollection)
+            {
+                foreach (string seriesLanguage in series.MediaLanguages)
+                {
+                    CSeries seriesClone = (CSeries)series.Clone();
+                    List<string> mediaLanguagesToBeReplaced;
+
+                    mediaLanguagesToBeReplaced = new List<string>();
+                    mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                    seriesClone.ClonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
+
+                    foreach (CEpisode episodeClone in seriesClone.Episodes)
+                    {
+                        mediaLanguagesToBeReplaced = new List<string>();
+                        mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                        mediaLanguagesToBeReplaced.Add(episodeClone.MediaLanguages[0]); // and episode data, when available languages change during series
+
+                        episodeClone.ClonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
+                    }
+
+                    seriesCollectionPerLanguage.Add(seriesClone);
+                }
+            }
+
+            return seriesCollectionPerLanguage;
+        }
+
         #endregion
     }
 }

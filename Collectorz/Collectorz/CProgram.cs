@@ -1,12 +1,12 @@
-﻿using System.IO;
-using System.Text;
+﻿// <copyright file="CProgram.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 
-
-/// <summary>
-/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
-/// </summary>
 namespace Collectorz
 {
+    using System.IO;
+    using System.Text;
+
     /// <summary>
     /// Main class of Collectorz converter, managing main program flow<br/>
     /// </summary>
@@ -16,11 +16,11 @@ namespace Collectorz
         /// Entry-point for command-line-tool<br/>
         /// </summary>
         /// <returns>Error Code 1, if no valid file was assigned</returns>
-        static int Main()
+        public static int Main()
         {
             CConfiguration configuration = new CConfiguration();
-            CMediaCollection MediaCollection = new CMediaCollection(configuration);
-            MediaCollection.readXML(configuration.MovieCollectorLocalPathToXMLExport);
+            CMediaCollection mediaCollection = new CMediaCollection(configuration);
+            mediaCollection.ReadXML(configuration.MovieCollectorLocalPathToXMLExport);
 
             for (int i = 0; i < configuration.ServerNumberOfServers; i++)
             {
@@ -28,27 +28,27 @@ namespace Collectorz
 
                 using (StreamWriter swrSH = new StreamWriter(configuration.MovieCollectorLocalPathToXMLExportPath + "NFO" + configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][server.ToString()] + "Win.sh", false, Encoding.UTF8, 512))
                 {
-                    // SH-Dateiheader
+                    // SH file header
                     swrSH.WriteLine("#!/bin/bash");
-                    swrSH.WriteLine("");
-                    
+                    swrSH.WriteLine(string.Empty);
+
                     // Movie
                     swrSH.WriteLine("cd /share/XBMC/Filme/");
 
-                    foreach (CMovie movie in MediaCollection.listMovieCollectionPerServer(server))
+                    foreach (CMovie movie in mediaCollection.ListMovieCollectionPerServer(server))
                     {
-                        movie.writeNFO();
-                        movie.writeSH(swrSH);
+                        movie.WriteNFO();
+                        movie.WriteSH(swrSH);
                     }
 
-                    // SH-Dateiheader
-                    swrSH.WriteLine("");
+                    // series
+                    swrSH.WriteLine(string.Empty);
                     swrSH.WriteLine("cd /share/XBMC/Serien/");
 
-                    foreach (CSeries series in MediaCollection.listSeriesCollectionPerServer(server))
+                    foreach (CSeries series in mediaCollection.ListSeriesCollectionPerServer(server))
                     {
-                        series.writeNFO();
-                        series.writeSH(swrSH);
+                        series.WriteNFO();
+                        series.WriteSH(swrSH);
                     }
                 }
             }

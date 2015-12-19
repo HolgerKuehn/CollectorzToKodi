@@ -1,5 +1,5 @@
-﻿// <copyright file="CAudioStream.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="CAudioStream.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace Collectorz

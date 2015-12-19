@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collectorz", "Collectorz\Collectorz.csproj", "{0C4F807D-7A67-4DB0-818F-9B4C8917860C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collectorz Code", "Collectorz\Collectorz Code.csproj", "{0C4F807D-7A67-4DB0-818F-9B4C8917860C}"
+EndProject
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "Collectorz Dokumentation", "..\Sandcastle\Collectorz Dokumentation.shfbproj", "{98105ED4-A281-4B96-A87E-A646DB779F7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0C4F807D-7A67-4DB0-818F-9B4C8917860C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C4F807D-7A67-4DB0-818F-9B4C8917860C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C4F807D-7A67-4DB0-818F-9B4C8917860C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

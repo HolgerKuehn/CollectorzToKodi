@@ -60,7 +60,7 @@
     <Compile Include="CSeries.cs" />
     <Compile Include="CMovie.cs" />
     <Compile Include="CVideo.cs" />
-    <Compile Include="CSrtSubTitleCollection.cs" />
+    <Compile Include="CSrtSubTitleFileCollection.cs" />
     <Compile Include="CSrtSubTitleFile.cs" />
     <Compile Include="CSrtSubTitleFileEntry.cs" />
     <Compile Include="CVideoFile.cs" />
@@ -108,7 +108,7 @@
       <LastGenOutput>SettingsMovieCollector.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="stylecop.json" />
+    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

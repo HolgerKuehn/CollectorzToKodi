@@ -8,7 +8,8 @@
   "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/settings/stylecop.schema.json",
   "settings": {
     "documentationRules": {
-      "companyName": "Holger Kühn"
+      "companyName": "Holger Kühn",
+	  "copyrightText": "Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved."
     }
   }
 }

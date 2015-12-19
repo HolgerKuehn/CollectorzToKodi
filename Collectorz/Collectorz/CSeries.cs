@@ -1,69 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Xml;
+﻿// <copyright file="CSeries.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 
-/// <summary>
-/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
-/// </summary>
 namespace Collectorz
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+    using System.Xml;
+
+    /// <summary>
+    /// Class managing series from MovieCollector
+    /// </summary>
     public class CSeries : CVideo
     {
         #region Attributes
+
+        /// <summary>
+        /// List of episodes in this series
+        /// </summary>
         private List<CEpisode> episodes;
-        private int numberOfTotaLEpisodes;
+
+        /// <summary>
+        /// number of episodes, whether specials or not, that are part of this series
+        /// </summary>
+        private int numberOfTotalEpisodes;
+
+        /// <summary>
+        /// number of episodes, not including specials, that are part of this series
+        /// </summary>
         private int numberOfEpisodes;
+
+        /// <summary>
+        /// number of specials, that are part of this series
+        /// </summary>
         private int numberOfSpecials;
+
+        /// <summary>
+        /// list of numbers of episodes in each season
+        /// </summary>
         private List<int> numberOfEpisodesPerSeason;
+
         #endregion
         #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSeries"/> class.
+        /// </summary>
+        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
         public CSeries(CConfiguration configuration)
             : base(configuration)
         {
-            episodes = new List<CEpisode>();
-            numberOfTotaLEpisodes = 0;
-            numberOfEpisodes = 0;
-            numberOfSpecials = 0;
-            numberOfEpisodesPerSeason = new List<int>();
-            numberOfEpisodesPerSeason.Add(0); // Specials
-            numberOfEpisodesPerSeason.Add(0); // Season 1
+            this.episodes = new List<CEpisode>();
+            this.numberOfTotalEpisodes = 0;
+            this.numberOfEpisodes = 0;
+            this.numberOfSpecials = 0;
+            this.numberOfEpisodesPerSeason = new List<int>();
+            this.numberOfEpisodesPerSeason.Add(0); // Specials
+            this.numberOfEpisodesPerSeason.Add(0); // Season 1
         }
+
         #endregion
         #region Properties
+
+        /// <summary>
+        /// Gets or sets list of episodes in this series
+        /// </summary>
         public List<CEpisode> Episodes
         {
             get { return this.episodes; }
             set { this.episodes = value; }
         }
+
+        /// <summary>
+        /// Gets or sets number of episodes, whether specials or not, that are part of this series
+        /// </summary>
         public int NumberOfTotalEpisodes
         {
-            get { return this.numberOfTotaLEpisodes; }
-            set { this.numberOfTotaLEpisodes = value; }
+            get { return this.numberOfTotalEpisodes; }
+            set { this.numberOfTotalEpisodes = value; }
         }
+
+        /// <summary>
+        /// Gets or sets number of episodes, not including specials, that are part of this series
+        /// </summary>
         public int NumberOfEpisodes
         {
             get { return this.numberOfEpisodes; }
             set { this.numberOfEpisodes = value; }
         }
+
+        /// <summary>
+        /// Gets or sets number of specials, that are part of this series
+        /// </summary>
         public int NumberOfSpecials
         {
             get { return this.numberOfSpecials; }
             set { this.numberOfSpecials = value; }
         }
+
+        /// <summary>
+        /// Gets or sets list of numbers of episodes in each season
+        /// </summary>
         public List<int> NumberOfEpisodesPerSeason
         {
             get { return this.numberOfEpisodesPerSeason; }
             set { this.numberOfEpisodesPerSeason = value; }
         }
+
         #endregion
         #region Functions
-        public override void readVideoFiles(XmlNode XMLMedia)
+
+        /// <inheritdoc/>
+        public override void ReadMediaFiles(XmlNode xMLMedia)
         {
             throw new NotImplementedException();
         }
-        public override void writeNFO()
+
+        /// <inheritdoc/>
+        public override void WriteNFO()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
@@ -78,8 +134,10 @@ namespace Collectorz
                 swrNFO.WriteLine("    <episode>" + this.NumberOfTotalEpisodes + "</episode>");
                 swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
 
-                if (this.PlayDate != "")
+                if (this.PlayDate != string.Empty)
+                {
                     swrNFO.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
+                }
 
                 swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
                 swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
@@ -88,21 +146,25 @@ namespace Collectorz
                 swrNFO.WriteLine("    <id>" + this.IMDbId + "</id>");
                 swrNFO.WriteLine("    <country>" + this.Country + "</country>");
 
-                this.writeGenre(swrNFO);
-                this.writeStudio(swrNFO);
-                this.writeCrew(swrNFO);
-                this.writeCast(swrNFO);
-                this.writeImagesToNFO(swrNFO);
+                this.WriteGenre(swrNFO);
+                this.WriteStudio(swrNFO);
+                this.WriteCrew(swrNFO);
+                this.WriteCast(swrNFO);
+                this.WriteImagesToNFO(swrNFO);
 
                 swrNFO.WriteLine("</tvshow>");
             }
 
             foreach (CEpisode episode in this.Episodes)
-                episode.writeNFO();
+            {
+                episode.WriteNFO();
+            }
         }
-        public override void writeSH(StreamWriter swrSH)
+
+        /// <inheritdoc/>
+        public override void WriteSH(StreamWriter swrSH)
         {
-            if (this.Title != "")
+            if (this.Title != string.Empty)
             {
                 swrSH.WriteLine("if [ -d \"" + this.Filename + "\" ];");
                 swrSH.WriteLine("then ");
@@ -112,7 +174,9 @@ namespace Collectorz
 
                 swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
                 for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
+                {
                     swrSH.WriteLine("mkdir \"Season " + ("00" + i.ToString()).Substring(i.ToString().Length) + "\"");
+                }
 
                 swrSH.WriteLine("mkdir \"extrafanart\"");
                 swrSH.WriteLine("mkdir \"extrathumbs\"");
@@ -121,16 +185,20 @@ namespace Collectorz
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
                 // Images
-                this.writeImagesToSH(swrSH);
-                this.writeSubTitleStreamDataToSH(swrSH);
+                this.WriteImagesToSH(swrSH);
+                this.WriteSubTitleStreamDataToSH(swrSH);
 
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
 
                 foreach (CEpisode episode in this.Episodes)
-                    episode.writeSH(swrSH);
+                {
+                    episode.WriteSH(swrSH);
+                }
             }
         }
-        public override CVideo clone()
+
+        /// <inheritdoc/>
+        public override CMedia Clone()
         {
             CSeries seriesClone = new CSeries(this.Configuration);
             seriesClone.Title = this.Title;
@@ -154,8 +222,10 @@ namespace Collectorz
             seriesClone.Writers = this.Writers;
             seriesClone.Actors = this.Actors;
 
-            foreach (CVideoFile videoFile in this.VideoFiles)
-                seriesClone.VideoFiles.Add((CVideoFile)videoFile.clone());
+            foreach (CVideoFile videoFile in this.MediaFiles)
+            {
+                seriesClone.MediaFiles.Add((CVideoFile)videoFile.Clone());
+            }
 
             seriesClone.Filename = this.Filename;
             seriesClone.Server = this.Server;
@@ -169,7 +239,7 @@ namespace Collectorz
             seriesClone.Episodes = new List<CEpisode>();
             foreach (CEpisode episode in this.Episodes)
             {
-                CEpisode episodeClone = (CEpisode)episode.clone();
+                CEpisode episodeClone = (CEpisode)episode.Clone();
                 episodeClone.Series = seriesClone;
 
                 seriesClone.Episodes.Add(episodeClone);
@@ -182,12 +252,18 @@ namespace Collectorz
 
             return seriesClone;
         }
-        public override CVideo clone(int server, bool isSpecial = false)
+
+        /// <inheritdoc/>
+        public override CVideo Clone(int server, bool isSpecial = false)
         {
             bool cloneSeries = false;
             foreach (int serverList in this.Server)
+            {
                 if (serverList.Equals(server))
+                {
                     cloneSeries = true;
+                }
+            }
 
             CSeries seriesClone = null;
 
@@ -215,11 +291,13 @@ namespace Collectorz
                 seriesClone.Writers = this.Writers;
                 seriesClone.Actors = this.Actors;
 
-                foreach (CVideoFile videoFile in this.VideoFiles)
-                    seriesClone.VideoFiles.Add((CVideoFile)videoFile.clone());
+                foreach (CVideoFile videoFile in this.MediaFiles)
+                {
+                    seriesClone.MediaFiles.Add((CVideoFile)videoFile.Clone());
+                }
 
                 seriesClone.Filename = this.Filename;
-                seriesClone.addServer(server);
+                seriesClone.AddServer(server);
                 seriesClone.VideoCodec = this.VideoCodec;
                 seriesClone.VideoDefinition = this.VideoDefinition;
                 seriesClone.VideoAspectRatio = this.VideoAspectRatio;
@@ -230,15 +308,17 @@ namespace Collectorz
                 foreach (CEpisode episode in this.Episodes)
                 {
                     bool cloneEpisode = false;
-                    foreach (CVideoFile videoFile in episode.VideoFiles)
+                    foreach (CVideoFile videoFile in episode.MediaFiles)
                     {
-                        if (videoFile.URL != "" && videoFile.Server.Equals(server))
+                        if (videoFile.URL != string.Empty && videoFile.Server.Equals(server))
+                        {
                             cloneEpisode = true;
+                        }
                     }
 
                     if (cloneEpisode)
                     {
-                        CEpisode episodeClone = (CEpisode)episode.clone();
+                        CEpisode episodeClone = (CEpisode)episode.Clone();
                         episodeClone.Series = seriesClone;
                         seriesClone.Episodes.Add(episodeClone);
                     }
@@ -252,6 +332,7 @@ namespace Collectorz
 
             return seriesClone;
         }
+
         #endregion
     }
 }

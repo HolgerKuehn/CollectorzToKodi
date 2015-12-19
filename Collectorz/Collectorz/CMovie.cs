@@ -1,68 +1,82 @@
-﻿using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
+﻿// <copyright file="CMovie.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 
-/// <summary>
-/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
-/// </summary>
 namespace Collectorz
 {
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Xml;
+
+    /// <summary>
+    /// Class managing movie data from MovieCollector
+    /// </summary>
     public class CMovie : CVideo
     {
         #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CMovie"/> class.
+        /// </summary>
+        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
         public CMovie(CConfiguration configuration)
             : base(configuration)
-        {}
+        {
+        }
+
         #endregion
         #region Functions
-        public override void readVideoFiles(XmlNode XMLMedia)
+
+        /// <inheritdoc/>
+        public override void ReadMediaFiles(XmlNode xMLMedia)
         {
             int k = 0;
 
-            // videofiles from Link-List
-            foreach (XmlNode XMLVideodatei in XMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
+            // video files from Link-List
+            foreach (XmlNode xMLVideodatei in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
-                if (XMLVideodatei.XMLReadSubnode("urltype").XMLReadInnerText("") == "Movie" && !XMLVideodatei.XMLReadSubnode("description").XMLReadInnerText("").Contains("Untertitel."))
+                if (xMLVideodatei.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie" && !xMLVideodatei.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel."))
                 {
                     CVideoFile videoFile = new CVideoFile(this.Configuration);
                     k++;
 
-                    videoFile.Description = XMLVideodatei.XMLReadSubnode("description").XMLReadInnerText("");
-                    videoFile.Description = videoFile.overrideSpecial(this.overrideMediaStreamData(videoFile.Description));
+                    videoFile.Description = xMLVideodatei.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
+                    videoFile.Description = videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
-                    videoFile.URL = XMLVideodatei.XMLReadSubnode("url").XMLReadInnerText("");
+                    videoFile.URL = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     videoFile.Media = this;
-                    videoFile.convertFilename();
+                    videoFile.ConvertFilename();
 
-                    this.VideoFiles.Add(videoFile);
+                    this.MediaFiles.Add(videoFile);
                 }
             }
 
-
-            // Video-Files from Discs and override MediaStreamData
-            foreach (XmlNode XMLMovieDisc in XMLMedia.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
+            // video files from Discs and override MediaStreamData
+            foreach (XmlNode xMLMovieDisc in xMLMedia.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
             {
-                string discTitle = this.overrideMediaStreamData(XMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(""));
+                string discTitle = this.OverrideVideoStreamData(xMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(string.Empty));
 
-                foreach (XmlNode XMLEpisode in XMLMovieDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
+                foreach (XmlNode xMLEpisode in xMLMovieDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                 {
                     CVideoFile videoFile = new CVideoFile(this.Configuration);
                     k++;
 
-                    videoFile.Description = XMLEpisode.XMLReadSubnode("title").XMLReadInnerText("");
-                    videoFile.overrideSpecial(discTitle);
-                    videoFile.overrideSpecial(this.overrideMediaStreamData(videoFile.Description));
-                    videoFile.URL = XMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText("");
+                    videoFile.Description = xMLEpisode.XMLReadSubnode("title").XMLReadInnerText(string.Empty);
+                    videoFile.OverrideSpecial(discTitle);
+                    videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
+                    videoFile.URL = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
                     videoFile.Media = this;
-                    videoFile.convertFilename();
+                    videoFile.ConvertFilename();
 
-                    this.VideoFiles.Add(videoFile);
+                    this.MediaFiles.Add(videoFile);
                 }
             }
         }
-        public override void writeNFO()
+
+        /// <inheritdoc/>
+        public override void WriteNFO()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
@@ -78,8 +92,10 @@ namespace Collectorz
                 swrNFO.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
                 swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
 
-                if (this.PlayDate != "")
+                if (this.PlayDate != string.Empty)
+                {
                     swrNFO.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
+                }
 
                 swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
 
@@ -88,19 +104,21 @@ namespace Collectorz
                 swrNFO.WriteLine("    <id>" + this.IMDbId + "</id>");
                 swrNFO.WriteLine("    <country>" + this.Country + "</country>");
 
-                this.writeGenre(swrNFO);
-                this.writeStudio(swrNFO);
-                this.writeCrew(swrNFO);
-                this.writeCast(swrNFO);
-                this.writeStreamData(swrNFO);
-                this.writeImagesToNFO(swrNFO);
+                this.WriteGenre(swrNFO);
+                this.WriteStudio(swrNFO);
+                this.WriteCrew(swrNFO);
+                this.WriteCast(swrNFO);
+                this.WriteStreamData(swrNFO);
+                this.WriteImagesToNFO(swrNFO);
 
                 swrNFO.WriteLine("</movie>");
             }
         }
-        public override void writeSH(StreamWriter swrSH)
+
+        /// <inheritdoc/>
+        public override void WriteSH(StreamWriter swrSH)
         {
-            if (this.Title != "")
+            if (this.Title != string.Empty)
             {
                 swrSH.WriteLine("if [ -d \"" + this.Filename + "\" ];");
                 swrSH.WriteLine("then ");
@@ -116,9 +134,9 @@ namespace Collectorz
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // Videodateien
-                for (int i = 0; i < this.VideoFiles.Count; i++)
+                for (int i = 0; i < this.MediaFiles.Count; i++)
                 {
-                    CVideoFile videoFile = this.VideoFiles.ElementAt(i);
+                    CVideoFile videoFile = (CVideoFile)this.MediaFiles.ElementAt(i);
 
                     swrSH.WriteLine("/bin/ln -s \"" + videoFile.URLLocalFilesystem + "\" \"" + videoFile.Filename + "\"");
                 }
@@ -128,18 +146,24 @@ namespace Collectorz
                 {
                     CSubTitleFile subTitleFile = this.SubTitleStreams.ElementAt(i);
                     if (subTitleFile.GetType().ToString().Contains("CSrtSubTitleFileCollection"))
-                        ((CSrtSubTitleFileCollection)subTitleFile).writeSubTitleStreamDataToSH(swrSH);
+                    {
+                        ((CSrtSubTitleFileCollection)subTitleFile).WriteSubTitleStreamDataToSH(swrSH);
+                    }
                     else
-                        subTitleFile.writeSubTitleStreamDataToSH(swrSH);
+                    {
+                        subTitleFile.WriteSubTitleStreamDataToSH(swrSH);
+                    }
                 }
 
                 // Images
-                this.writeImagesToSH(swrSH);
+                this.WriteImagesToSH(swrSH);
 
                 swrSH.WriteLine("cd /share/XBMC/Filme/");
             }
         }
-        public override CVideo clone()
+
+        /// <inheritdoc/>
+        public override CMedia Clone()
         {
             CMovie movieClone = new CMovie(this.Configuration);
             movieClone.Title = this.Title;
@@ -163,8 +187,10 @@ namespace Collectorz
             movieClone.Writers = this.Writers;
             movieClone.Actors = this.Actors;
 
-            foreach (CVideoFile videoFile in this.VideoFiles)
-                movieClone.VideoFiles.Add((CVideoFile)videoFile.clone());
+            foreach (CVideoFile videoFile in this.MediaFiles)
+            {
+                movieClone.MediaFiles.Add((CVideoFile)videoFile.Clone());
+            }
 
             movieClone.Filename = this.Filename;
             movieClone.Server = this.Server;
@@ -177,22 +203,32 @@ namespace Collectorz
 
             return movieClone;
         }
-        public override CVideo clone(int server, bool isSpecial = false)
+
+        /// <inheritdoc/>
+        public override CVideo Clone(int server, bool isSpecial = false)
         {
             bool cloneMovie = false;
             bool hasSpecials = false;
 
             // check if Movie is on requested Server
             foreach (int serverList in this.Server)
+            {
                 if (serverList.Equals(server))
+                {
                     cloneMovie = true;
+                }
+            }
 
             // check if Movie contains Specials, if isSpecial is requested
             if (isSpecial)
             {
-                foreach (CVideoFile videoFile in this.VideoFiles)
+                foreach (CVideoFile videoFile in this.MediaFiles)
+                {
                     if (videoFile.Server.Equals(server) && videoFile.IsSpecial == isSpecial)
+                    {
                         hasSpecials = true;
+                    }
+                }
             }
 
             CMovie movieClone = null;
@@ -221,12 +257,16 @@ namespace Collectorz
                 movieClone.Writers = this.Writers;
                 movieClone.Actors = this.Actors;
 
-                foreach (CVideoFile videoFile in this.VideoFiles)
+                foreach (CVideoFile videoFile in this.MediaFiles)
+                {
                     if (videoFile.Server.Equals(server) && videoFile.IsSpecial == isSpecial)
-                        movieClone.VideoFiles.Add((CVideoFile)videoFile.clone());
+                    {
+                        movieClone.MediaFiles.Add((CVideoFile)videoFile.Clone());
+                    }
+                }
 
                 movieClone.Filename = this.Filename;
-                movieClone.addServer(server);
+                movieClone.AddServer(server);
                 movieClone.VideoCodec = this.VideoCodec;
                 movieClone.VideoDefinition = this.VideoDefinition;
                 movieClone.VideoAspectRatio = this.VideoAspectRatio;
@@ -237,6 +277,7 @@ namespace Collectorz
 
             return movieClone;
         }
+
         #endregion
     }
 }

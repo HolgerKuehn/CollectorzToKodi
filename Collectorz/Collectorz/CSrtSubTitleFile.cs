@@ -1,23 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿// <copyright file="CSrtSubTitleFile.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 
-/// <summary>
-/// Namespace for managing .nfo-export from Collectorz-Programs <br/>
-/// </summary>
 namespace Collectorz
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+
     /// <summary>
     /// Extension for SRT-Files
     /// </summary>
-    class CSrtSubTitleFile : CSrtSubTitleFileCollection
+    public class CSrtSubTitleFile : CSrtSubTitleFileCollection
     {
         #region Attributes
+
+        /// <summary>
+        /// SRT-Entries
+        /// </summary>
         private List<CSrtSubTitleFileEntry> subTitleEntries;
+
+        /// <summary>
+        /// basic time offset for subtitle entries
+        /// </summary>
         private TimeSpan offsetTime;
+
         #endregion
         #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSrtSubTitleFile"/> class.
+        /// </summary>
+        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
         public CSrtSubTitleFile(CConfiguration configuration)
             : base(configuration)
         {
@@ -26,6 +41,12 @@ namespace Collectorz
             TimeSpan offsetTime;
             TimeSpan.TryParse("00:00:00.000", out offsetTime);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSrtSubTitleFile"/> class.
+        /// converts plain subtitle into SRT-subtitle
+        /// </summary>
+        /// <param name="subTitleFile">plain SRT-subtitle to be converted to SRT-subtitle</param>
         public CSrtSubTitleFile(CSubTitleFile subTitleFile)
             : this(subTitleFile.Configuration)
         {
@@ -34,35 +55,41 @@ namespace Collectorz
             this.URL = subTitleFile.URL;
             this.URLLocalFilesystem = subTitleFile.URLLocalFilesystem;
             this.Filename = subTitleFile.Filename;
-            this.Extention = subTitleFile.Extention;
+            this.Extension = subTitleFile.Extension;
             this.Server = subTitleFile.Server;
             this.Media = subTitleFile.Media;
         }
+
         #endregion
         #region Properties
+
         /// <summary>
-        /// SRT-Entries
+        /// Gets or sets SRT-Entries
         /// </summary>
         public List<CSrtSubTitleFileEntry> SubTitleEntries
         {
-            get { return subTitleEntries; }
-            set { subTitleEntries = value; }
+            get { return this.subTitleEntries; }
+            set { this.subTitleEntries = value; }
         }
+
         /// <summary>
-        /// Time to stop the subtitle entry
+        /// Gets or sets basic time offset for subtitle entries
         /// </summary>
         private TimeSpan OffsetTime
         {
-            get { return offsetTime; }
-            set { offsetTime = value; }
+            get { return this.offsetTime; }
+            set { this.offsetTime = value; }
         }
+
         #endregion
         #region Functions
+
         /// <summary>
         /// transfers actualized data from subTitleFile
         /// </summary>
-        /// <param name="subTitleFile"></param>
-        public void readFromSubTitleFile(CSubTitleFile subTitleFile, int fileIndex)
+        /// <param name="subTitleFile">Subtitle file added to Media</param>
+        /// <param name="fileIndex">Index of multiple files</param>
+        public void ReadFromSubTitleFile(CSubTitleFile subTitleFile, int fileIndex)
         {
             TimeSpan timOffsetTime;
             string strOffsetTime;
@@ -70,60 +97,64 @@ namespace Collectorz
             // reading basic information
             this.Description = subTitleFile.Description;
             strOffsetTime = this.Description.RightOf("(Offset ").LeftOf(")");
-            this.Description = this.Description.Replace("(Offset " + strOffsetTime + ")", "");
+            this.Description = this.Description.Replace("(Offset " + strOffsetTime + ")", string.Empty);
 
             this.URL = subTitleFile.URL;
             this.URLLocalFilesystem = subTitleFile.URLLocalFilesystem;
             this.Filename = subTitleFile.Filename;
-            this.Extention = subTitleFile.Extention;
+            this.Extension = subTitleFile.Extension;
             this.FileIndex = fileIndex;
 
             TimeSpan.TryParse(strOffsetTime, out timOffsetTime);
 
             this.OffsetTime = timOffsetTime;
 
-
             // reading subtitle content
-            if (this.URL == "" || !File.Exists(this.URL))
+            if (this.URL == string.Empty || !File.Exists(this.URL))
+            {
                 return;
+            }
 
             using (StreamReader srdSrtFile = new StreamReader(this.URL, Encoding.UTF8))
             {
-                CConfiguration.SrtSubTitleLineType lineType = new CConfiguration.SrtSubTitleLineType();
+                CConfiguration.SrtSubTitleLineType lineType = default(CConfiguration.SrtSubTitleLineType);
                 CSrtSubTitleFileEntry srtSubTitleFileEntry = new CSrtSubTitleFileEntry();
                 lineType = CConfiguration.SrtSubTitleLineType.EntryNumber;
 
                 while (true)
                 {
                     string srtLine = srdSrtFile.ReadLine();
-                    if (srtLine == null) break;
+                    if (srtLine == null)
+                    {
+                        break;
+                    }
 
                     srtSubTitleFileEntry.OffsetTime = this.OffsetTime;
 
                     // end of SubTitleLines
-                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine == "")
+                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine == string.Empty)
                     {
                         this.SubTitleEntries.Add(srtSubTitleFileEntry);
                         lineType = CConfiguration.SrtSubTitleLineType.EmptyLine;
                     }
 
-
                     // SubTitleLines
-                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine != "")
+                    if (lineType == CConfiguration.SrtSubTitleLineType.SubTitles && srtLine != string.Empty)
                     {
                         srtSubTitleFileEntry.SubTitleLines.Add(srtLine);
                         lineType = CConfiguration.SrtSubTitleLineType.SubTitles;
                     }
-
 
                     // second Line -> Times
                     if (lineType == CConfiguration.SrtSubTitleLineType.Times)
                     {
                         string strStartTime = srtLine.Substring(0, 12).Replace(",", ".");
                         string strEndTime = srtLine.Substring(17, 12).Replace(",", ".");
-                        string timeExtentions = "";
+                        string timeExtentions = string.Empty;
                         if (srtLine.Length > 30)
+                        {
                             timeExtentions = srtLine.Substring(30, srtLine.Length);
+                        }
 
                         TimeSpan timStartTime;
                         TimeSpan timEndTime;
@@ -138,24 +169,21 @@ namespace Collectorz
                         lineType = CConfiguration.SrtSubTitleLineType.SubTitles;
                     }
 
-
                     // first Line -> EntryNumber
                     if (lineType == CConfiguration.SrtSubTitleLineType.EntryNumber)
                     {
                         strOffsetTime = srtLine.RightOf("(Offset ").LeftOf(")");
-                        srtLine = srtLine.Replace("(Offset " + strOffsetTime + ")", "");
+                        srtLine = srtLine.Replace("(Offset " + strOffsetTime + ")", string.Empty);
 
-                        if (strOffsetTime != "")
+                        if (strOffsetTime != string.Empty)
                         {
                             TimeSpan.TryParse(strOffsetTime, out timOffsetTime);
-
                             this.OffsetTime = timOffsetTime;
                         }
 
                         srtSubTitleFileEntry.EntryNumber = int.Parse(srtLine);
                         lineType = CConfiguration.SrtSubTitleLineType.Times;
                     }
-
 
                     if (lineType == CConfiguration.SrtSubTitleLineType.EmptyLine)
                     {
@@ -165,42 +193,40 @@ namespace Collectorz
                 }
             }
         }
+
         /// <summary>
-        /// writes new srt-file
+        /// writes new SRT-file
         /// </summary>
-        public override void writeSrtSubTitleStreamDataToSRT()
+        public override void WriteSrtSubTitleStreamDataToSRT()
         {
             using (StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename, false, Encoding.UTF8, 512))
             {
                 int entryNumber = 0;
-                TimeSpan startTime;
-                TimeSpan endTime;
 
                 foreach (CSrtSubTitleFileEntry srtSubTitleFileEntry in this.SubTitleEntries)
                 {
+                    // resets Entry-Number
                     entryNumber++;
-                    startTime = srtSubTitleFileEntry.StartTime.Add(srtSubTitleFileEntry.OffsetTime);
-                    endTime = srtSubTitleFileEntry.EndTime.Add(srtSubTitleFileEntry.OffsetTime);
+                    srtSubTitleFileEntry.EntryNumber = entryNumber;
 
-                    swrSrtSubTitle.WriteLine(entryNumber);
-                    swrSrtSubTitle.WriteLine(startTime.ToString(@"hh\:mm\:ss\.fff").Replace(".", ",") + " --> " + endTime.ToString(@"hh\:mm\:ss\.fff").Replace(".", ",") + (srtSubTitleFileEntry.TimeExtentions == "" ? "" : " ") + srtSubTitleFileEntry.TimeExtentions);
-
-                    foreach (string subTitleLine in srtSubTitleFileEntry.SubTitleLines)
-                        swrSrtSubTitle.WriteLine(subTitleLine);
-
-                    swrSrtSubTitle.WriteLine("");
+                    // write entry to file
+                    srtSubTitleFileEntry.WriteSrtSubTitleStreamDataToSRT(swrSrtSubTitle);
                 }
             }
         }
+
         /// <summary>
         /// writes subtitle to SH
         /// </summary>
-        /// <param name="swrSH"></param>
-        public override void writeSubTitleStreamDataToSH(StreamWriter swrSH)
+        /// <param name="swrSH">StreamWriter used to write script to</param>
+        public override void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
         {
-            if (this.Filename != "")
+            if (this.Filename != string.Empty)
+            {
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+            }
         }
+
         #endregion
     }
 }

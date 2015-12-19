@@ -1,5 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="AssemblyInfo.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
 using System.Reflection;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Collectorz")]
-[assembly: AssemblyDescription("Converter Collectorz programs to nfo files used in Kodi")]
+[assembly: AssemblyDescription("Converter from Collectorz programs to nfo files used in Kodi")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Holger Kühn")]
 [assembly: AssemblyProduct("Collectorz")]
