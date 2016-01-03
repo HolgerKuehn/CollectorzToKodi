@@ -1,24 +1,27 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<settingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="settingsMovieCollector">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsMovieCollector">
   <Profiles />
-  <settings>
-    <setting Name="Specials" Type="System.String" Scope="User">
+  <Settings>
+    <Setting Name="Specials" Type="System.String" Scope="User">
       <Value Profile="(Default)">(Special)</Value>
-    </setting>
-    <setting Name="MPAARating" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="MPAARating" Type="System.String" Scope="User">
       <Value Profile="(Default)">(F&lt;MPAARating&gt;)</Value>
-    </setting>
-    <setting Name="Season" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="Season" Type="System.String" Scope="User">
       <Value Profile="(Default)">(S&lt;Season&gt;)</Value>
-    </setting>
-    <setting Name="Language" Type="System.String" Scope="User">
-      <Value Profile="(Default)">(L&lt;Language&gt;)</Value>
-    </setting>
-    <setting Name="Movies" Type="System.String" Scope="User">
-      <Value Profile="(Default)">(Movie)</Value>
-    </setting>
-    <setting Name="LocalPathToXMLExport" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="Movies" Type="System.String" Scope="User">
+      <Value Profile="(Default)">XBMC Movie</Value>
+    </Setting>
+    <Setting Name="Series" Type="System.String" Scope="User">
+      <Value Profile="(Default)">XBMC Serie</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">de</Value>
+    </Setting>
+    <Setting Name="LocalPathToXMLExport" Type="System.String" Scope="User">
       <Value Profile="(Default)">P:\Collectorz.com\nfo-Konverter\nfoConverter\nfoConverter\bin\Filme.xml</Value>
-    </setting>
-  </settings>
-</settingsFile>
+    </Setting>
+  </Settings>
+</SettingsFile>

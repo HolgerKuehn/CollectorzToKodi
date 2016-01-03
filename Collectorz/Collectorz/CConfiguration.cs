@@ -125,6 +125,13 @@ namespace Collectorz
         private readonly List<string> serverLocalPathOfServerForMediaStorage;
 
         /// <summary>
+        /// list of local paths used on the associated server names for publication<br/>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names for publication</returns>
+        /// </summary>
+        private readonly List<string> serverLocalPathOfServerForMediaPublication;
+
+        /// <summary>
         /// type of mapping used during deployment<br/>
         /// <remarks>supported values: UNIX (Windows will be added later)</remarks>
         /// <returns>type of mapping used during deployment</returns>
@@ -168,38 +175,39 @@ namespace Collectorz
         {
             #region Kodi
 
-            this.kodiSkin = Properties.settingsKodi.Default.Skin;
+            this.kodiSkin = Properties.SettingsKodi.Default.Skin;
 
             #endregion
             #region MovieCollector
 
-            this.movieCollectorSpecials = Properties.settingsMovieCollector.Default.Specials;
-            this.movieCollectorMovies = Properties.settingsMovieCollector.Default.Movies;
-            this.movieCollectorMPAARating = Properties.settingsMovieCollector.Default.MPAARating;
-            this.movieCollectorSeason = Properties.settingsMovieCollector.Default.Season;
-            this.movieCollectorLanguage = Properties.settingsMovieCollector.Default.Language;
+            this.movieCollectorSpecials = Properties.SettingsMovieCollector.Default.Specials;
+            this.movieCollectorMovies = Properties.SettingsMovieCollector.Default.Movies;
+            this.movieCollectorMPAARating = Properties.SettingsMovieCollector.Default.MPAARating;
+            this.movieCollectorSeason = Properties.SettingsMovieCollector.Default.Season;
+            this.movieCollectorLanguage = Properties.SettingsMovieCollector.Default.Language;
 
-            this.movieCollectorLocalPathToXMLExport = Properties.settingsMovieCollector.Default.LocalPathToXMLExport;
+            this.movieCollectorLocalPathToXMLExport = Properties.SettingsMovieCollector.Default.LocalPathToXMLExport;
             this.movieCollectorLocalPathToXMLExportFile = this.movieCollectorLocalPathToXMLExport.RightOfLast("\\");
             this.movieCollectorLocalPathToXMLExportPath = this.movieCollectorLocalPathToXMLExport.LeftOfLast("\\") + "\\";
 
             #endregion
             #region Server
 
-            this.serverNumberOfServers = Properties.settingsServer.Default.NumberOfServer;
-            this.serverListOfServers = Properties.settingsServer.Default.ListOfServer.Split(",");
-            this.serverDriveMappingOfServers = Properties.settingsServer.Default.DriveMappingOfServer.Split(",");
-            this.serverLocalPathOfServerForMediaStorage = Properties.settingsServer.Default.LocalPathOfServerForMediaStorage.Split(",");
-            this.serverMappingType = Properties.settingsServer.Default.MappingType;
-            this.serverMovieDirectory = Properties.settingsServer.Default.MovieDirectory;
-            this.serverSeriesDirectory = Properties.settingsServer.Default.SeriesDirectory;
+            this.serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer;
+            this.serverListOfServers = Properties.SettingsServer.Default.ListOfServer.Split(",");
+            this.serverDriveMappingOfServers = Properties.SettingsServer.Default.DriveMappingOfServer.Split(",");
+            this.serverLocalPathOfServerForMediaStorage = Properties.SettingsServer.Default.LocalPathOfServerForMediaStorage.Split(",");
+            this.serverLocalPathOfServerForMediaPublication = Properties.SettingsServer.Default.LocalPathOfServerForMediaPublication.Split(",");
+            this.serverMappingType = Properties.SettingsServer.Default.MappingType;
+            this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory;
+            this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory;
 
             #endregion
             #region Dictionaries
 
             List<Dictionary<string, string>> listOfServers = new List<Dictionary<string, string>>();
             int i = 0;
-            for (i = 0; i < 5 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
+            for (i = 0; i < 6 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
             {
                 listOfServers.Add(new Dictionary<string, string>());
             }
@@ -208,7 +216,8 @@ namespace Collectorz
             {
                 listOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerListOfServers[i]);
                 listOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDriveMappingOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToLocalPath].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaStorage[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaStorage[i]);
+                listOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaPublication[i]);
                 listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
                 listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
             }
@@ -263,9 +272,14 @@ namespace Collectorz
             NumberToDriveLetter,
 
             /// <summary>
-            /// dictionary from number to local path in filesystem
+            /// dictionary from number to local path for media storage in file system
             /// </summary>
-            NumberToLocalPath,
+            NumberToLocalPathForMediaStorage,
+
+            /// <summary>
+            /// dictionary from number to local path for media publication in file system
+            /// </summary>
+            NumberToLocalPathForMediaPublication,
 
             /// <summary>
             /// dictionary from associated drive letter to name
@@ -524,37 +538,6 @@ namespace Collectorz
         }
 
         /// <summary>
-        /// Gets list of server names to store media<br/>
-        /// </summary>
-        /// <remarks>values separated by colon</remarks>
-        /// <returns>list of server names</returns>
-        private List<string> ServerListOfServers
-        {
-            get { return this.serverListOfServers; }
-        }
-
-        /// <summary>
-        /// Gets list of associated drive-letters for server names to store media
-        /// </summary>
-        /// <remarks>values separated by colon</remarks>
-        /// <returns>list of associated drive-letters used for server names</returns>
-        private List<string> ServerDriveMappingOfServers
-        {
-            get { return this.serverDriveMappingOfServers; }
-        }
-
-        /// <summary>
-        /// Gets list of local paths used on the associated server names to store media<br/>
-        /// </summary>
-        /// <remarks>values separated by colon</remarks>
-        /// <returns>list of local paths used on the associated server names to store media</returns>
-        private List<string> ServerLocalPathOfServerForMediaStorage
-        {
-            get { return this.serverLocalPathOfServerForMediaStorage; }
-        }
-
-        #pragma warning disable SA1202 // ElementsMustBeOrderedByAccess
-        /// <summary>
         /// Gets type of mapping used during deployment<br/>
         /// </summary>
         /// <remarks>supported values: UNIX (Windows will be added later)</remarks>
@@ -596,6 +579,46 @@ namespace Collectorz
         public List<Dictionary<string, string>> ServerListsOfServers
         {
             get { return this.serverListsOfServers; }
+        }
+
+        /// <summary>
+        /// Gets list of server names to store media<br/>
+        /// </summary>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of server names</returns>
+        private List<string> ServerListOfServers
+        {
+            get { return this.serverListOfServers; }
+        }
+
+        /// <summary>
+        /// Gets list of associated drive-letters for server names to store media
+        /// </summary>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of associated drive-letters used for server names</returns>
+        private List<string> ServerDriveMappingOfServers
+        {
+            get { return this.serverDriveMappingOfServers; }
+        }
+
+        /// <summary>
+        /// Gets list of local paths used on the associated server names to store media<br/>
+        /// </summary>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names to store media</returns>
+        private List<string> ServerLocalPathOfServerForMediaStorage
+        {
+            get { return this.serverLocalPathOfServerForMediaStorage; }
+        }
+
+        /// <summary>
+        /// Gets list of local paths used on the associated server names for publication<br/>
+        /// <remarks>values separated by colon</remarks>
+        /// <returns>list of local paths used on the associated server names for publication</returns>
+        /// </summary>
+        private List<string> ServerLocalPathOfServerForMediaPublication
+        {
+            get { return this.serverLocalPathOfServerForMediaPublication; }
         }
 
         #endregion

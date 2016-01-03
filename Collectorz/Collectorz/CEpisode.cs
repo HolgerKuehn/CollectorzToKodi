@@ -189,7 +189,8 @@ namespace Collectorz
         {
             if (this.Title != string.Empty)
             {
-                swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Series.Filename + "/Season " + ("00" + this.Season).Substring(this.Season.Length) + "\"");
+                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + ("00" + this.Season).Substring(this.Season.Length) + "\"");
+
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
@@ -342,10 +343,10 @@ namespace Collectorz
                 this.DisplaySeason = "1";
             }
 
-            if (title.Contains("(Special)"))
+            if (title.Contains(this.Configuration.MovieCollectorSpecials))
             {
                 this.isSpecial = true;
-                title = title.Replace("(Special)", string.Empty);
+                title = title.Replace(this.Configuration.MovieCollectorSpecials, string.Empty);
             }
 
             if (title.Contains("(S"))

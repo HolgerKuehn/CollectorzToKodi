@@ -171,7 +171,7 @@ namespace Collectorz
             for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
             {
                 string driveLetter = this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
-                string localPath = this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPath][i.ToString()];
+                string localPath = this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
 
                 // determine used servers from assigned driveLetters
                 if (this.URL.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))

@@ -1,31 +1,30 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<settingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="settingsServer">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsServer">
   <Profiles />
-  <settings>
-    <setting Name="NumberOfServer" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">3</Value>
-    </setting>
-    <setting Name="ListOfServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">SHIRYOUSOOCHI,EIZOUSOOCHI,YOBISOOCHI,JOUsetSUSOOCHI</Value>
-    </setting>
-    <setting Name="DriveMappingOfServer" Type="System.String" Scope="User">
+  <Settings>
+    <Setting Name="NumberOfServer" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="ListOfServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SHIRYOUSOOCHI,EIZOUSOOCHI,YOBISOOCHI,JOUSETSUSOOCHI</Value>
+    </Setting>
+    <Setting Name="DriveMappingOfServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">P,U,V,X</Value>
-    </setting>
-    <setting Name="MappingType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">UNIX
-</Value>
-    </setting>
-    <setting Name="LocalPathOfServerForMediaStorage" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="MappingType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UNIX</Value>
+    </Setting>
+    <Setting Name="LocalPathOfServerForMediaStorage" Type="System.String" Scope="User">
       <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video</Value>
-    </setting>
-    <setting Name="MovieDirectory" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="MovieDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">Filme</Value>
-    </setting>
-    <setting Name="SeriesDirectory" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="SeriesDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">Serien</Value>
-    </setting>
-    <setting Name="LocalPathOfServerForMediaPublication" Type="System.String" Scope="User">
+    </Setting>
+    <Setting Name="LocalPathOfServerForMediaPublication" Type="System.String" Scope="User">
       <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC</Value>
-    </setting>
-  </settings>
-</settingsFile>
+    </Setting>
+  </Settings>
+</SettingsFile>

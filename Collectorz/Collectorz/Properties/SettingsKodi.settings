@@ -1,9 +1,9 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<settingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="settingsKodi">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Collectorz.Properties" GeneratedClassName="SettingsKodi">
   <Profiles />
-  <settings>
-    <setting Name="Skin" Type="System.String" Scope="User">
+  <Settings>
+    <Setting Name="Skin" Type="System.String" Scope="User">
       <Value Profile="(Default)">Transparency!</Value>
-    </setting>
-  </settings>
-</settingsFile>
+    </Setting>
+  </Settings>
+</SettingsFile>

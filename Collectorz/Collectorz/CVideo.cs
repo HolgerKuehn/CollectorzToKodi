@@ -240,8 +240,13 @@ namespace Collectorz
         #endregion
         #region Functions
 
-        /// <inheritdoc/>
-        public override void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
+        /// <summary>
+        /// Clones video to specified languages
+        /// </summary>
+        /// <remarks>extends base transformations from CMedia.ClonePerLanguage with IMDbID-Transformation</remarks>
+        /// <param name="isoCodesToBeReplaced">list target languages</param>
+        /// <param name="isoCodeForReplacemant">language used as placeholder in Collectorz programs</param>
+        public new void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
         {
             ((CMedia)this).ClonePerLanguage(isoCodesToBeReplaced, isoCodeForReplacemant);
 
