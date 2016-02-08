@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     /// <summary>
     /// base type for media files, e.g. images, videos, etc.
@@ -12,7 +12,7 @@ namespace Collectorz
         #region Attributes
 
         /// <summary>
-        /// current configuration of Collectorz
+        /// current configuration of CollectorzToKodi
         /// </summary>
         private CConfiguration configuration;
 
@@ -58,7 +58,7 @@ namespace Collectorz
         /// <summary>
         /// Initializes a new instance of the <see cref="CMediaFile"/> class.
         /// </summary>
-        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public CMediaFile(CConfiguration configuration)
         {
             this.configuration = configuration;
@@ -74,7 +74,7 @@ namespace Collectorz
         #region Properties
 
         /// <summary>
-        /// Gets or sets current configuration of Collectorz
+        /// Gets or sets current configuration of CollectorzToKodi
         /// </summary>
         public CConfiguration Configuration
         {
@@ -194,37 +194,37 @@ namespace Collectorz
             }
 
             // determine file extension
-            if (this.URLLocalFilesystem.ToLower().Contains(".m2ts"))
+            string extension = this.URLLocalFilesystem.ToLower().RightOfLast(".");
+            string filename = this.URLLocalFilesystem.ToLower().LeftOfLast(".");
+
+            switch (extension)
             {
-                this.Extension = ".m2ts";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".m4v"))
-            {
-                this.Extension = ".m4v";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".vob"))
-            {
-                this.Extension = ".vob";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".de.srt"))
-            {
-                this.Extension = ".de.srt";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".en.srt"))
-            {
-                this.Extension = ".en.srt";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".jp.srt"))
-            {
-                this.Extension = ".jp.srt";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".jpg"))
-            {
-                this.Extension = ".jpg";
-            }
-            else if (this.URLLocalFilesystem.ToLower().Contains(".png"))
-            {
-                this.Extension = ".png";
+                case "m2ts":
+                case "m4v":
+                case "vob":
+
+                case "jpg":
+                case "png":
+                    this.Extension = "." + extension;
+                    break;
+
+                case "srt":
+                    extension = extension + "." + filename.RightOfLast(".");
+                    filename = filename.LeftOfLast(".");
+
+                    switch (extension)
+                    {
+                        case "de.srt":
+                        case "en.srt":
+                        case "jp.srt":
+                            this.Extension = "." + extension;
+                            break;
+                    }
+
+                    break;
+
+                default:
+                    throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
             }
 
             if (!this.Filename.Contains(this.Extension))

@@ -2,10 +2,10 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     /// <summary>
-    /// class to manage persons from Collectorz-Programs<br/>
+    /// class to manage persons from CollectorzToKodi-Programs<br/>
     /// </summary>
     public class CPerson
     {

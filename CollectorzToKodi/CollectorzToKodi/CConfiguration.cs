@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System.Collections.Generic;
     using System.Globalization;
@@ -73,24 +73,24 @@ namespace Collectorz
         private readonly string movieCollectorLanguage;
 
         /// <summary>
-        /// local path to Collectorz-XML-Export including Filename and extension as specified in "SettingsMovieCollector.settings"
+        /// local path to CollectorzToKodi-XML-Export including Filename and extension as specified in "SettingsMovieCollector.settings"
         /// </summary>
         /// <remarks>filename needs to end with ".xml"</remarks>
-        /// <returns>local path to Collectorz-XML-Export including Filename and extension</returns>
+        /// <returns>local path to CollectorzToKodi-XML-Export including Filename and extension</returns>
         private readonly string movieCollectorLocalPathToXMLExport;
 
         /// <summary>
-        /// local path to Collectorz-XML-Export excluding Filename and extension as specified in "SettingsMovieCollector.settings"
+        /// local path to CollectorzToKodi-XML-Export excluding Filename and extension as specified in "SettingsMovieCollector.settings"
         /// </summary>
         /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
-        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension</returns>
+        /// <returns>local path to CollectorzToKodi-XML-Export excluding Filename and extension</returns>
         private readonly string movieCollectorLocalPathToXMLExportPath;
 
         /// <summary>
-        /// Filename and extension excluding path to Collectorz-XML-Export as specified in "SettingsMovieCollector.settings"
+        /// Filename and extension excluding path to CollectorzToKodi-XML-Export as specified in "SettingsMovieCollector.settings"
         /// </summary>
         /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
-        /// <returns>Filename and extension excluding path to Collectorz-XML-Export</returns>
+        /// <returns>Filename and extension excluding path to CollectorzToKodi-XML-Export</returns>
         private readonly string movieCollectorLocalPathToXMLExportFile;
 
         #endregion
@@ -495,30 +495,30 @@ namespace Collectorz
         }
 
         /// <summary>
-        /// Gets local path to Collectorz-XML-Export including Filename and extension<br/>
+        /// Gets local path to CollectorzToKodi-XML-Export including Filename and extension<br/>
         /// </summary>
         /// <remarks>filename needs to end with ".xml"</remarks>
-        /// <returns>local path to Collectorz-XML-Export including Filename and extension</returns>
+        /// <returns>local path to CollectorzToKodi-XML-Export including Filename and extension</returns>
         public string MovieCollectorLocalPathToXMLExport
         {
             get { return this.movieCollectorLocalPathToXMLExport; }
         }
 
         /// <summary>
-        /// Gets local path to Collectorz-XML-Export excluding Filename and extension
+        /// Gets local path to CollectorzToKodi-XML-Export excluding Filename and extension
         /// </summary>
         /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
-        /// <returns>local path to Collectorz-XML-Export excluding Filename and extension</returns>
+        /// <returns>local path to CollectorzToKodi-XML-Export excluding Filename and extension</returns>
         public string MovieCollectorLocalPathToXMLExportPath
         {
             get { return this.movieCollectorLocalPathToXMLExportPath; }
         }
 
         /// <summary>
-        /// Gets Filename and extension excluding path to Collectorz-XML-Export<br/>
+        /// Gets Filename and extension excluding path to CollectorzToKodi-XML-Export<br/>
         /// </summary>
         /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
-        /// <returns>Filename and extension excluding path to Collectorz-XML-Export</returns>
+        /// <returns>Filename and extension excluding path to CollectorzToKodi-XML-Export</returns>
         public string MovieCollectorLocalPathToXMLExportFile
         {
             get { return this.movieCollectorLocalPathToXMLExportFile; }
@@ -634,10 +634,10 @@ namespace Collectorz
         {
             switch (isoCode)
             {
-                case "de": return "deutsch";
+                case "de":
+                default: return "deutsch";
                 case "en": return "englisch";
                 case "jp": return "japanisch";
-                default: return "deutsch";
             }
         }
 

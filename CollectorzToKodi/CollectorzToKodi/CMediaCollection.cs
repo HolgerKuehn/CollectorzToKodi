@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System;
     using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace Collectorz
         /// <summary>
         /// Initializes a new instance of the <see cref="CMediaCollection"/> class.
         /// </summary>
-        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public CMediaCollection(CConfiguration configuration)
         {
             this.configuration = configuration;

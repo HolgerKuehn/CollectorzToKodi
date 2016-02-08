@@ -2,13 +2,13 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System.IO;
     using System.Text;
 
     /// <summary>
-    /// Main class of Collectorz converter, managing main program flow<br/>
+    /// Main class of CollectorzToKodi converter, managing main program flow<br/>
     /// </summary>
     public class CProgram
     {

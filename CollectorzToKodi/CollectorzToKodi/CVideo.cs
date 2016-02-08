@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System.Collections.Generic;
     using System.IO;
@@ -10,7 +10,7 @@ namespace Collectorz
     using System.Xml;
 
     /// <summary>
-    /// Class managing Video-Data from Collectorz MovieCollector
+    /// Class managing Video-Data from CollectorzToKodi MovieCollector
     /// </summary>
     public abstract class CVideo : CMedia
     {
@@ -82,7 +82,7 @@ namespace Collectorz
         /// <summary>
         /// Initializes a new instance of the <see cref="CVideo"/> class.
         /// </summary>
-        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public CVideo(CConfiguration configuration)
             : base(configuration)
         {
@@ -245,7 +245,7 @@ namespace Collectorz
         /// </summary>
         /// <remarks>extends base transformations from CMedia.ClonePerLanguage with IMDbID-Transformation</remarks>
         /// <param name="isoCodesToBeReplaced">list target languages</param>
-        /// <param name="isoCodeForReplacemant">language used as placeholder in Collectorz programs</param>
+        /// <param name="isoCodeForReplacemant">language used as placeholder in CollectorzToKodi programs</param>
         public new void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
         {
             ((CMedia)this).ClonePerLanguage(isoCodesToBeReplaced, isoCodeForReplacemant);

@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System;
     using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Collectorz
         /// <summary>
         /// Initializes a new instance of the <see cref="CSrtSubTitleFile"/> class.
         /// </summary>
-        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public CSrtSubTitleFile(CConfiguration configuration)
             : base(configuration)
         {
@@ -223,7 +223,7 @@ namespace Collectorz
         {
             if (this.Filename != string.Empty)
             {
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/CollectorzToKodi.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
             }
         }
 

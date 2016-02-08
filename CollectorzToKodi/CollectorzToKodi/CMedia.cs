@@ -2,7 +2,7 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
-namespace Collectorz
+namespace CollectorzToKodi
 {
     using System.Collections.Generic;
     using System.IO;
@@ -17,7 +17,7 @@ namespace Collectorz
         #region Attributes
 
         /// <summary>
-        /// Current configuration of Collectorz
+        /// Current configuration of CollectorzToKodi
         /// </summary>
         private CConfiguration configuration;
 
@@ -114,7 +114,7 @@ namespace Collectorz
         /// <summary>
         /// Initializes a new instance of the <see cref="CMedia"/> class.
         /// </summary>
-        /// <param name="configuration">current configuration for Collectorz programs and Kodi</param>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public CMedia(CConfiguration configuration)
         {
             this.configuration = configuration;
@@ -140,7 +140,7 @@ namespace Collectorz
         #region Properties
 
         /// <summary>
-        /// Gets or sets current configuration of Collectorz
+        /// Gets or sets current configuration of CollectorzToKodi
         /// </summary>
         public CConfiguration Configuration
         {
@@ -345,7 +345,7 @@ namespace Collectorz
         /// Clones media to specified languages
         /// </summary>
         /// <param name="isoCodesToBeReplaced">list target languages</param>
-        /// <param name="isoCodeForReplacemant">language used as placeholder in Collectorz programs</param>
+        /// <param name="isoCodeForReplacemant">language used as placeholder in CollectorzToKodi programs</param>
         public virtual void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
         {
             // check for target-language

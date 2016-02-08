@@ -8,11 +8,11 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("Collectorz")]
+[assembly: AssemblyTitle("CollectorzToKodi")]
 [assembly: AssemblyDescription("Converter from Collectorz programs to nfo files used in Kodi")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Holger Kühn")]
-[assembly: AssemblyProduct("Collectorz")]
+[assembly: AssemblyProduct("CollectorzToKodi")]
 [assembly: AssemblyCopyright("Copyright © 2014 - 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
