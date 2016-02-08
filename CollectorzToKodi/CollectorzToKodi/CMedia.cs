@@ -476,7 +476,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "cover";
             image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
+            image.ConvertFilename(false);
             image.ImageType = CConfiguration.ImageType.CoverFront;
 
             if (image.URL != string.Empty)
@@ -489,7 +489,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "coverback";
             image.URL = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
+            image.ConvertFilename(false);
             image.ImageType = CConfiguration.ImageType.CoverBack;
 
             if (image.URL != string.Empty)
@@ -502,7 +502,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "poster";
             image.URL = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
+            image.ConvertFilename(false);
             image.ImageType = CConfiguration.ImageType.Poster;
 
             if (image.URL != string.Empty)
@@ -515,7 +515,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "fanart";
             image.URL = xMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
+            image.ConvertFilename(false);
             image.ImageType = CConfiguration.ImageType.Backdrop;
 
             if (image.URL != string.Empty)
@@ -573,7 +573,7 @@ namespace CollectorzToKodi
                     }
 
                     imageFile.URL = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    imageFile.ConvertFilename();
+                    imageFile.ConvertFilename(false);
 
                     if (imageFile.URL != string.Empty)
                     {
@@ -657,7 +657,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb>smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
                     }
 
                     if (imageFile.ImageType == CConfiguration.ImageType.SeasonCover || imageFile.ImageType == CConfiguration.ImageType.SeasonBackdrop)
@@ -667,7 +667,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CSeries") ? "Serien" : "Filme") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CSeries") ? "Serien" : "Filme") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }

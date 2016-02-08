@@ -87,7 +87,7 @@ namespace CollectorzToKodi
                     // name and filenames
                     subTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
                     subTitleFile.URL = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    subTitleFile.ConvertFilename();
+                    subTitleFile.ConvertFilename(false);
 
                     // check for fileIndex
                     int completeLength = subTitleFile.Description.Length;

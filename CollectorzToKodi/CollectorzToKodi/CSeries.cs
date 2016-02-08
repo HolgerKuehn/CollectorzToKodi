@@ -182,7 +182,7 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("mkdir \"extrathumbs\"");
 
                 swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/CollectorzToKodi.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
                 // Images
                 this.WriteImagesToSH(swrSH);

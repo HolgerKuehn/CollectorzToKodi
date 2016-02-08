@@ -92,6 +92,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="CollectorzToKodi.ruleset" />
+    <None Include="LICENSE.md" />
     <None Include="packages.config" />
     <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -109,6 +110,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <AdditionalFiles Include="stylecop.json" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

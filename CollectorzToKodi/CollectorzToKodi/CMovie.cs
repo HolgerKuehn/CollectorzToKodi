@@ -46,7 +46,7 @@ namespace CollectorzToKodi
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
                     videoFile.URL = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     videoFile.Media = this;
-                    videoFile.ConvertFilename();
+                    videoFile.ConvertFilename(true);
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -68,7 +68,7 @@ namespace CollectorzToKodi
                     videoFile.URL = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
                     videoFile.Media = this;
-                    videoFile.ConvertFilename();
+                    videoFile.ConvertFilename(true);
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -130,8 +130,8 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
                 swrSH.WriteLine("mkdir \"extrafanart\"");
 
-                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/CollectorzToKodi.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/CollectorzToKodi.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // Videodateien
                 for (int i = 0; i < this.MediaFiles.Count; i++)

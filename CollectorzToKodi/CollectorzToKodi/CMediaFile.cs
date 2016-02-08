@@ -158,9 +158,15 @@ namespace CollectorzToKodi
         /// <summary>
         /// converts mapped drives to network names and adds used server to media
         /// </summary>
+        /// <param name="setMediaServer">defines, if Server is set for Media containing this MediaFile</param>
         /// <returns>URLLocalFilesystem</returns>
-        public string ConvertFilename()
+        public string ConvertFilename(bool setMediaServer = false)
         {
+            if (this.URL == string.Empty)
+            {
+                return string.Empty; // ###
+            }
+
             this.URLLocalFilesystem = this.URL;
 
             if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
@@ -176,7 +182,7 @@ namespace CollectorzToKodi
                 // determine used servers from assigned driveLetters
                 if (this.URL.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
                 {
-                    if (!this.Media.Server.Contains(i))
+                    if (setMediaServer && !this.Media.Server.Contains(i))
                     {
                         this.Media.Server.Add(i);
                     }
@@ -187,8 +193,9 @@ namespace CollectorzToKodi
                 // and replace them for local paths
                 this.URLLocalFilesystem = this.URLLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
             }
-
-            if (this.Media.GetType().ToString().Contains("CEpisode"))
+            
+            // change to new definition in CEpisode-class to avoid casting
+            if (setMediaServer && this.Media.GetType().ToString().Contains("CEpisode"))
             {
                 ((CEpisode)this.Media).Series.AddServer(this.Server);
             }
@@ -201,6 +208,7 @@ namespace CollectorzToKodi
             {
                 case "m2ts":
                 case "m4v":
+                case "mp4":
                 case "vob":
 
                 case "jpg":
@@ -209,7 +217,7 @@ namespace CollectorzToKodi
                     break;
 
                 case "srt":
-                    extension = extension + "." + filename.RightOfLast(".");
+                    extension = filename.RightOfLast(".") + "." + extension;
                     filename = filename.LeftOfLast(".");
 
                     switch (extension)

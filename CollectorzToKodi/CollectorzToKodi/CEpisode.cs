@@ -140,7 +140,7 @@ namespace CollectorzToKodi
             videoFile.Description = "EpisodeVideoFile";
             videoFile.URL = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
             videoFile.Media = this;
-            videoFile.ConvertFilename();
+            videoFile.ConvertFilename(true);
 
             this.MediaFiles.Add(videoFile);
         }
@@ -191,7 +191,7 @@ namespace CollectorzToKodi
             {
                 swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + ("00" + this.Season).Substring(this.Season.Length) + "\"");
 
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/CollectorzToKodi.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
                 for (int i = 0; i < this.MediaFiles.Count; i++)
@@ -391,7 +391,7 @@ namespace CollectorzToKodi
             image.Season = ((CEpisode)image.Media).Season;
             image.Filename = image.Media.Filename;
             image.URL = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
+            image.ConvertFilename(false);
             image.ImageType = CConfiguration.ImageType.EpisodeCover;
 
             if (image.URL != string.Empty)
@@ -411,7 +411,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.URL.Contains("http://"))
                     {
-                        swrNFO.WriteLine("    <thumb>smb://" + imageFile.Media.Server.ElementAt(0) + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + ((CEpisode)imageFile.Media).Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + ((CEpisode)imageFile.Media).Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {
