@@ -94,6 +94,12 @@ namespace CollectorzToKodi
             return title.Trim();
         }
 
+        /// <inheritdoc/>
+        public override string ConvertFilename()
+        {
+            return this.ConvertFilename(false);
+        }
+
         #endregion
     }
 }

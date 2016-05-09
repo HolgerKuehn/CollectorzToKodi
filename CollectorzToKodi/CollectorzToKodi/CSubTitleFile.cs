@@ -148,6 +148,12 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <inheritdoc/>
+        public override string ConvertFilename()
+        {
+            return this.ConvertFilename(false);
+        }
+
         #endregion
     }
 }

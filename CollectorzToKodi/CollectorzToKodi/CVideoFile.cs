@@ -60,6 +60,12 @@ namespace CollectorzToKodi
             return (CMediaFile)videoFileClone;
         }
 
+        /// <inheritdoc/>
+        public override string ConvertFilename()
+        {
+            return this.ConvertFilename(true);
+        }
+
         /// <summary>
         /// Sets Special from special tags present in title
         /// </summary>

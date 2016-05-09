@@ -333,6 +333,21 @@ namespace CollectorzToKodi
             return seriesClone;
         }
 
+        /// <inheritdoc/>
+        public override string OverrideVideoStreamData(string title)
+        {
+            string returnTitle = base.OverrideVideoStreamData(title);
+            this.CheckForDefaultMediaLanguages();
+
+            return returnTitle;
+        }
+
+        /// <inheritdoc/>
+        public override void AddServer(int serverList)
+        {
+            base.AddServer(serverList);
+        }
+
         #endregion
     }
 }

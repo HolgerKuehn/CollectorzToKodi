@@ -140,7 +140,7 @@ namespace CollectorzToKodi
             videoFile.Description = "EpisodeVideoFile";
             videoFile.URL = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
             videoFile.Media = this;
-            videoFile.ConvertFilename(true);
+            videoFile.ConvertFilename();
 
             this.MediaFiles.Add(videoFile);
         }
@@ -391,7 +391,7 @@ namespace CollectorzToKodi
             image.Season = ((CEpisode)image.Media).Season;
             image.Filename = image.Media.Filename;
             image.URL = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
-            image.ConvertFilename(false);
+            image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.EpisodeCover;
 
             if (image.URL != string.Empty)
@@ -411,7 +411,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.URL.Contains("http://"))
                     {
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + ((CEpisode)imageFile.Media).Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)CConfiguration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {
@@ -433,6 +433,29 @@ namespace CollectorzToKodi
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public override string OverrideVideoStreamData(string title)
+        {
+            string returnTitle = base.OverrideVideoStreamData(title);
+
+            // inherit Series data
+            if (this.MediaLanguages.Count == 0)
+            {
+                this.MediaLanguages = this.Series.MediaLanguages;
+            }
+
+            this.CheckForDefaultMediaLanguages();
+
+            return returnTitle;
+        }
+
+        /// <inheritdoc/>
+        public override void AddServer(int serverList)
+        {
+            base.AddServer(serverList);
+            this.Series.AddServer(serverList);
         }
 
         #endregion

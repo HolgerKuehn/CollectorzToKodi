@@ -384,7 +384,7 @@ namespace CollectorzToKodi
         /// (R###) - represent different Rating<br />
         /// (L## ##) - represents languages (2 digit ISO code) that are stored in different files for this video
         /// </remarks>
-        public string OverrideVideoStreamData(string title)
+        public virtual string OverrideVideoStreamData(string title)
         {
             if (title.Contains("(TV)"))
             {
@@ -486,19 +486,19 @@ namespace CollectorzToKodi
                 title = title.Replace("(L" + movieLanguages + ")", string.Empty).Trim();
             }
 
-            // inherit Series-data
-            if (this.MediaLanguages.Count == 0 && this.GetType().ToString().Contains("CEpisode"))
-            {
-                this.MediaLanguages = ((CEpisode)this).Series.MediaLanguages;
-            }
+            return title.Trim();
+        }
 
+        /// <summary>
+        /// checks, if MediaLanguages is still empty and add default Language "de" if necessary
+        /// </summary>
+        public void CheckForDefaultMediaLanguages()
+        {
             // or MediaGroup to default
             if (this.MediaLanguages.Count == 0)
             {
                 this.MediaLanguages.Add("de");
             }
-
-            return title.Trim();
         }
 
         /// <summary>

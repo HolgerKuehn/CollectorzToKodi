@@ -394,7 +394,7 @@ namespace CollectorzToKodi
         /// Adds reference to Server, if any part of media is stored on it
         /// </summary>
         /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
-        public void AddServer(int serverList)
+        public virtual void AddServer(int serverList)
         {
             bool addServer = true;
             foreach (int currentServerList in this.Server)
@@ -476,7 +476,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "cover";
             image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
-            image.ConvertFilename(false);
+            image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.CoverFront;
 
             if (image.URL != string.Empty)
@@ -489,7 +489,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "coverback";
             image.URL = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
-            image.ConvertFilename(false);
+            image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.CoverBack;
 
             if (image.URL != string.Empty)
@@ -502,7 +502,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "poster";
             image.URL = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
-            image.ConvertFilename(false);
+            image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.Poster;
 
             if (image.URL != string.Empty)
@@ -515,7 +515,7 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "fanart";
             image.URL = xMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty);
-            image.ConvertFilename(false);
+            image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.Backdrop;
 
             if (image.URL != string.Empty)
@@ -573,7 +573,7 @@ namespace CollectorzToKodi
                     }
 
                     imageFile.URL = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    imageFile.ConvertFilename(false);
+                    imageFile.ConvertFilename();
 
                     if (imageFile.URL != string.Empty)
                     {

@@ -46,7 +46,7 @@ namespace CollectorzToKodi
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
                     videoFile.URL = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     videoFile.Media = this;
-                    videoFile.ConvertFilename(true);
+                    videoFile.ConvertFilename();
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -68,7 +68,7 @@ namespace CollectorzToKodi
                     videoFile.URL = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
                     videoFile.Filename = this.Filename + " part " + ("0000" + k.ToString()).Substring(k.ToString().Length);
                     videoFile.Media = this;
-                    videoFile.ConvertFilename(true);
+                    videoFile.ConvertFilename();
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -276,6 +276,21 @@ namespace CollectorzToKodi
             }
 
             return movieClone;
+        }
+
+        /// <inheritdoc/>
+        public override string OverrideVideoStreamData(string title)
+        {
+            string returnTitle = base.OverrideVideoStreamData(title);
+            this.CheckForDefaultMediaLanguages();
+
+            return returnTitle;
+        }
+
+        /// <inheritdoc/>
+        public override void AddServer(int serverList)
+        {
+            base.AddServer(serverList);
         }
 
         #endregion
