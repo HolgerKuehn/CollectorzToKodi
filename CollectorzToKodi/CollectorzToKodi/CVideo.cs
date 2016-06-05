@@ -520,7 +520,7 @@ namespace CollectorzToKodi
         {
             foreach (CSubTitleFile subTitleStream in this.SubTitleStreams)
             {
-                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
+                if (subTitleStream.Filename != string.Empty && subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
                 {
                     swrSH.WriteLine("/bin/cp \"" + this.Configuration.MovieCollectorLocalPathToXMLExportPath + subTitleStream.Filename + "\" \"" + subTitleStream.Filename + "\"");
                 }

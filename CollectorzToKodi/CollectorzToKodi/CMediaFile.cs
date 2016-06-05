@@ -168,7 +168,7 @@ namespace CollectorzToKodi
         /// <returns>URLLocalFilesystem</returns>
         protected string ConvertFilename(bool setMediaServer = false)
         {
-            if (this.URL == string.Empty)
+            if (this.URL == string.Empty || this.URL.Contains(".m2ts"))
             {
                 return string.Empty; // ###
             }
@@ -208,7 +208,9 @@ namespace CollectorzToKodi
             {
                 case "m2ts":
                 case "m4v":
+                case "mkv":
                 case "mp4":
+                case "mpg":
                 case "vob":
 
                 case "jpg":

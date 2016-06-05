@@ -110,7 +110,15 @@ namespace CollectorzToKodi
 
                 if (xMLMovieIsMovie)
                 {
-                    media = new CMovie(this.Configuration);
+                    if (!this.Configuration.KodiExportMovieAsSeries)
+                    {
+                        media = new CMovie(this.Configuration);
+                    }
+                    else
+                    {
+                        xMLMovieIsMovie = false;
+                        xMLMovieIsSeries = true;
+                    }
                 }
 
                 if (xMLMovieIsSeries)

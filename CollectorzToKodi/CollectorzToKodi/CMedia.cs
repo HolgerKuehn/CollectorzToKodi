@@ -502,6 +502,12 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Filename = "poster";
             image.URL = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
+
+            if (this.Configuration.KodiSkin == "Estuary" /* Estuary just displays poster instead of cover; so setting this as poster when empty */ && image.URL == string.Empty)
+            {
+                image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+            }
+
             image.ConvertFilename();
             image.ImageType = CConfiguration.ImageType.Poster;
 

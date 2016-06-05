@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Regeln für CollectorzToKodi" Description="Codeanalyseregeln für CollectorzToKodi.csproj." ToolsVersion="14.0">
   <Include Path="allrules.ruleset" Action="Default" />
-  <Include Path="P:\Visual Studio\Repository\CollectorzToKodi\CollectorzToKodi\CollectorzToKodi\CollectorzToKodi.ruleset" Action="Default" />
+  <Include Path="p:\visual studio\repository\collectorztokodi\collectorztokodi\collectorztokodi\collectorztokodi.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="Warning" />
     <Rule Id="CA1001" Action="Warning" />

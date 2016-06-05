@@ -25,9 +25,15 @@ namespace CollectorzToKodi
         /// contains name of configured Kodi skin<br/>
         /// this is used to MediaGroup some attributes to skin-specific values
         /// </summary>
-        /// <remarks>supported skins: Transparency!, Confluence</remarks>
+        /// <remarks>supported skins: Transparency!, Confluence, Estuary</remarks>
         /// <returns>name of configured Kodi skin</returns>
         private readonly string kodiSkin;
+
+        /// <summary>
+        /// sets Export for Movies to Series<br/>
+        /// this way all Specials can be accessed separately
+        /// </summary>
+        private readonly bool kodiExportMovieAsSeries;
 
         #endregion
         #region MovieCollector
@@ -176,6 +182,7 @@ namespace CollectorzToKodi
             #region Kodi
 
             this.kodiSkin = Properties.SettingsKodi.Default.Skin;
+            this.kodiExportMovieAsSeries = Properties.SettingsKodi.Default.ExportMovieAsSeries;
 
             #endregion
             #region MovieCollector
@@ -424,11 +431,20 @@ namespace CollectorzToKodi
         /// Gets name of configured Kodi skin<br/>
         /// this is used to MediaGroup some attributes to skin-specific values
         /// </summary>
-        /// <remarks>supported skins: Transparency!, Confluence</remarks>
+        /// <remarks>supported skins: Transparency!, Confluence, Estuary</remarks>
         /// <returns>name of configured Kodi skin</returns>
         public string KodiSkin
         {
             get { return this.kodiSkin; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether movies are exported as series or not<br/>
+        /// this way all Specials can be accessed separately
+        /// </summary>
+        public bool KodiExportMovieAsSeries
+        {
+            get { return this.kodiExportMovieAsSeries; }
         }
 
         #endregion
