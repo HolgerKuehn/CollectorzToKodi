@@ -119,6 +119,19 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
+        public override void ReadSubTitleStreamData(XmlNode xMLMedia)
+        {
+            // read SubTitle-data by CVideo-class as default
+            base.ReadSubTitleStreamData(xMLMedia);
+
+            // reset filename for Series
+            foreach (CSubTitle subTitle in this.SubTitleStreams)
+            {
+                subTitle.SetFilename(this);
+            }
+        }
+
+        /// <inheritdoc/>
         public override void WriteNFO()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))

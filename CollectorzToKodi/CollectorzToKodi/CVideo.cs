@@ -74,7 +74,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of subtitles available in video
         /// </summary>
-        private List<CSubTitleFile> subTitleStreams;
+        private List<CSubTitle> subTitleStreams;
 
         #endregion
         #region Constructor
@@ -99,7 +99,7 @@ namespace CollectorzToKodi
             this.videoDefinition = CConfiguration.VideoDefinition.SD;
             this.videoAspectRatio = CConfiguration.VideoAspectRatio.AspectRatio169;
             this.audioStreams = new List<CAudioStream>();
-            this.subTitleStreams = new List<CSubTitleFile>();
+            this.subTitleStreams = new List<CSubTitle>();
         }
 
         #endregion
@@ -219,13 +219,13 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of subtitles available in video
         /// </summary>
-        public List<CSubTitleFile> SubTitleStreams
+        public List<CSubTitle> SubTitleStreams
         {
             get
             {
                 if (this.subTitleStreams == null)
                 {
-                    this.subTitleStreams = new List<CSubTitleFile>();
+                    this.subTitleStreams = new List<CSubTitle>();
                 }
 
                 return this.subTitleStreams;
@@ -509,7 +509,7 @@ namespace CollectorzToKodi
         {
             this.WriteVideoStreamData(swrNFO);
             this.WriteAudioStreamData(swrNFO);
-            this.WriteSubTitleStreamData(swrNFO);
+            this.WriteSubTitleStreamDataToNFO(swrNFO);
         }
 
         /// <summary>
@@ -518,12 +518,9 @@ namespace CollectorzToKodi
         /// <param name="swrSH">Bash-shell-script that the subtitles information should be added to</param>
         public virtual void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
         {
-            foreach (CSubTitleFile subTitleStream in this.SubTitleStreams)
+            foreach (CSubTitle subTitleStream in this.SubTitleStreams)
             {
-                if (subTitleStream.Filename != string.Empty && subTitleStream.GetType().ToString().Contains("CSrtSubTitleFile"))
-                {
-                    swrSH.WriteLine("/bin/cp \"" + this.Configuration.MovieCollectorLocalPathToXMLExportPath + subTitleStream.Filename + "\" \"" + subTitleStream.Filename + "\"");
-                }
+                subTitleStream.WriteSubTitleStreamDataToSH(swrSH);
             }
         }
 
@@ -550,6 +547,31 @@ namespace CollectorzToKodi
         /// <param name="isSpecial">value indicating whether the new CVideo object should contain specials or not</param>
         /// <returns>new instance of video object meeting specification to server and specials</returns>
         public abstract CVideo Clone(int server, bool isSpecial = false);
+
+        /// <summary>
+        /// Reads stream data representing subtitle information
+        /// </summary>
+        /// <param name="xMLMedia">Part of XML-file representing stream information</param>
+        public virtual void ReadSubTitleStreamData(XmlNode xMLMedia)
+        {
+            foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
+            {
+                CSubTitle subTitleStream = new CSubTitle(this.Configuration);
+                subTitleStream.Video = this;
+
+                string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                subTitleStream.Language = displayname;
+
+                if (displayname != string.Empty)
+                {
+                    // replacing generic SubTitle with specific one, e.g. Srt, etc.
+                    subTitleStream.ReadSubTitleFile(xMLMedia);
+
+                    // adding generic or specific one to Video
+                    this.SubTitleStreams.Add(subTitleStream);
+                }
+            }
+        }
 
         /// <summary>
         /// Reads stream data representing video information
@@ -622,35 +644,6 @@ namespace CollectorzToKodi
                 }
 
                 this.AudioStreams.Add(audioStreamData);
-            }
-        }
-
-        /// <summary>
-        /// Reads stream data representing subtitle information
-        /// </summary>
-        /// <param name="xMLMedia">Part of XML-file representing stream information</param>
-        private void ReadSubTitleStreamData(XmlNode xMLMedia)
-        {
-            foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
-            {
-                CSubTitleFile subTitleStream = new CSubTitleFile(this.Configuration);
-                subTitleStream.Media = this;
-
-                string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                subTitleStream.Language = displayname;
-
-                if (displayname != string.Empty)
-                {
-                    CSubTitleFile checkedSubTitleStream = (CSubTitleFile)subTitleStream.CheckForSubTitleStreamFile(xMLMedia);
-                    if (checkedSubTitleStream != null)
-                    {
-                        this.SubTitleStreams.Add(checkedSubTitleStream);
-                    }
-                    else
-                    {
-                        this.SubTitleStreams.Add(subTitleStream);
-                    }
-                }
             }
         }
 
@@ -732,18 +725,11 @@ namespace CollectorzToKodi
         /// </summary>
         /// <param name="swrNFO">NFO file that the stream information should be added to</param>
         /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
-        private void WriteSubTitleStreamData(StreamWriter swrNFO)
+        private void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
         {
-            foreach (CSubTitleFile subTitleStream in this.SubTitleStreams)
+            foreach (CSubTitle subTitleStream in this.SubTitleStreams)
             {
-                swrNFO.WriteLine("            <subtitle>");
-                swrNFO.WriteLine("                <language>" + subTitleStream.Language + "</language>");
-                swrNFO.WriteLine("            </subtitle>");
-
-                if (subTitleStream.GetType().ToString().Contains("CSrtSubTitleFileCollection"))
-                {
-                    ((CSrtSubTitleFileCollection)subTitleStream).WriteSrtSubTitleStreamDataToSRT();
-                }
+                subTitleStream.WriteSubTitleStreamDataToNFO(swrNFO);
             }
 
             swrNFO.WriteLine("        </streamdetails>");

@@ -2,10 +2,14 @@
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
+// <copyright file="CMediaCollection.cs" company="Holger Kühn">
+// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// </copyright>
 namespace CollectorzToKodi
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Xml;
 
@@ -210,6 +214,8 @@ namespace CollectorzToKodi
                             episode.Genres = episode.Series.Genres;
                             episode.Studios = episode.Series.Studios;
                             episode.AudioStreams = episode.Series.AudioStreams;
+
+                            // SubTitle der Episode ableiten
                             episode.SubTitleStreams = episode.Series.SubTitleStreams;
                             episode.ReadCrew(xMLEpisode);
                             episode.ReadCast(xMLEpisode);
@@ -296,9 +302,69 @@ namespace CollectorzToKodi
         /// <returns>new list of series stored at the specified server</returns>
         public List<CSeries> ListSeriesCollectionPerServer(int server)
         {
-            List<CSeries> seriesCollectionPerServer = new List<CSeries>();
+            List<CSeries> lstSeriesCollection = new List<CSeries>();
+            List<CSeries> lstSeriesCollectionPerMediaGroup = new List<CSeries>();
+            List<CSeries> lstSeriesCollectionPerServer = new List<CSeries>();
+            CSeries serSeriesPerMediaGroup = new CSeries(this.Configuration);
+            CEpisode epiEpisodePerMediaGroup = new CEpisode(this.Configuration);
+            string strActiveMediaGroup = string.Empty;
+            int intSeasonOffset = 0;
+            int intDisplaySeasonOffset = 0;
+            int intEpisodeOffset = 0;
 
-            foreach (CSeries series in this.ClonePerLanguage(this.SeriesCollection))
+            lstSeriesCollection = this.ClonePerLanguage(this.SeriesCollection);
+
+            // create new List of Series with MediaGroup name
+            foreach (CSeries serSeries in lstSeriesCollection.OrderBy(o => o.MediaGroup).ThenBy(o => o.TitleSort).ToList())
+            {
+                // create new Series, when a different MediaGroup is present
+                if (serSeries.MediaGroup != strActiveMediaGroup)
+                {
+                    serSeriesPerMediaGroup = (CSeries)serSeries.Clone();
+                    strActiveMediaGroup = serSeries.MediaGroup;
+                    intSeasonOffset = 0;
+                    intDisplaySeasonOffset = 0;
+                    intEpisodeOffset = 0;
+                }
+                else
+                {
+                    serSeriesPerMediaGroup.Title = serSeriesPerMediaGroup.MediaGroup;
+                    intSeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count;
+                    intDisplaySeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count;
+                    intEpisodeOffset = serSeriesPerMediaGroup.Episodes.Count;
+
+                    foreach (CEpisode epiEpisode in serSeries.Episodes)
+                    {
+                        epiEpisodePerMediaGroup = (CEpisode)epiEpisode.Clone();
+
+                        epiEpisodePerMediaGroup.DisplaySeason = (int.Parse(epiEpisodePerMediaGroup.DisplaySeason) + intDisplaySeasonOffset).ToString();
+                        epiEpisodePerMediaGroup.Episode = (int.Parse(epiEpisodePerMediaGroup.Episode) + intEpisodeOffset).ToString();
+
+                        epiEpisodePerMediaGroup.Season = epiEpisodePerMediaGroup.Season == "0" ? "0" : (int.Parse(epiEpisodePerMediaGroup.Season) + intSeasonOffset).ToString();
+                        epiEpisodePerMediaGroup.Series = serSeriesPerMediaGroup;
+
+                        serSeriesPerMediaGroup.Episodes.Add(epiEpisodePerMediaGroup);
+                        serSeriesPerMediaGroup.NumberOfEpisodes = serSeriesPerMediaGroup.NumberOfEpisodes + (!epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
+
+                        int intSeason = int.Parse(epiEpisodePerMediaGroup.Season);
+                        while (serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count < intSeason + 1)
+                        {
+                            serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+                        }
+
+                        serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] + 1;
+                        serSeriesPerMediaGroup.NumberOfSpecials = serSeriesPerMediaGroup.NumberOfSpecials + (epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
+                        serSeriesPerMediaGroup.NumberOfTotalEpisodes = serSeriesPerMediaGroup.NumberOfTotalEpisodes + 1;
+
+                           // epiEpisodePerMediaGroup.Filename
+                    }
+                }
+
+                lstSeriesCollectionPerMediaGroup.Add(serSeriesPerMediaGroup);
+            }
+
+            // list Series for Server
+            foreach (CSeries series in lstSeriesCollectionPerMediaGroup)
             {
                 bool addSeries = false;
                 foreach (int serverList in series.Server)
@@ -312,11 +378,11 @@ namespace CollectorzToKodi
                 if (addSeries)
                 {
                     CSeries seriesClone = (CSeries)series.Clone(server);
-                    seriesCollectionPerServer.Add(seriesClone);
+                    lstSeriesCollectionPerServer.Add(seriesClone);
                 }
             }
 
-            return seriesCollectionPerServer;
+            return lstSeriesCollectionPerServer;
         }
 
         /// <summary>

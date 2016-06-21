@@ -205,14 +205,9 @@ namespace CollectorzToKodi
                 }
 
                 // SubTitles
-                for (int i = 0; i < this.SubTitleStreams.Count; i++)
+                foreach (CSubTitle subTitle in this.SubTitleStreams)
                 {
-                    CSubTitleFile subTitleFile = this.SubTitleStreams.ElementAt(i);
-
-                    if (subTitleFile.Filename != string.Empty)
-                    {
-                        swrSH.WriteLine("/bin/ln -s \"" + subTitleFile.URLLocalFilesystem + "\" \"" + subTitleFile.Filename + "\"");
-                    }
+                    subTitle.WriteSubTitleStreamDataToSH(swrSH);
                 }
 
                 this.WriteImagesToSH(swrSH);

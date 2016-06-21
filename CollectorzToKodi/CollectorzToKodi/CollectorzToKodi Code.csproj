@@ -59,8 +59,8 @@
     <Compile Include="CMedia.cs" />
     <Compile Include="CSeries.cs" />
     <Compile Include="CMovie.cs" />
+    <Compile Include="CSubTitle.cs" />
     <Compile Include="CVideo.cs" />
-    <Compile Include="CSrtSubTitleFileCollection.cs" />
     <Compile Include="CSrtSubTitleFile.cs" />
     <Compile Include="CSrtSubTitleFileEntry.cs" />
     <Compile Include="CVideoFile.cs" />
@@ -88,6 +88,7 @@
       <DependentUpon>SettingsMovieCollector.settings</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="SrtSubTitle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

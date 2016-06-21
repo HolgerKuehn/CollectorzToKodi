@@ -12,7 +12,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Extension for SRT-Files
     /// </summary>
-    public class CSrtSubTitleFile : CSrtSubTitleFileCollection
+    public class CSrtSubTitleFile : CSubTitleFile
     {
         #region Attributes
 
@@ -40,24 +40,6 @@ namespace CollectorzToKodi
 
             TimeSpan offsetTime;
             TimeSpan.TryParse("00:00:00.000", out offsetTime);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CSrtSubTitleFile"/> class.
-        /// converts plain subtitle into SRT-subtitle
-        /// </summary>
-        /// <param name="subTitleFile">plain SRT-subtitle to be converted to SRT-subtitle</param>
-        public CSrtSubTitleFile(CSubTitleFile subTitleFile)
-            : this(subTitleFile.Configuration)
-        {
-            this.Language = subTitleFile.Language;
-            this.Description = subTitleFile.Description;
-            this.URL = subTitleFile.URL;
-            this.URLLocalFilesystem = subTitleFile.URLLocalFilesystem;
-            this.Filename = subTitleFile.Filename;
-            this.Extension = subTitleFile.Extension;
-            this.Server = subTitleFile.Server;
-            this.Media = subTitleFile.Media;
         }
 
         #endregion
@@ -194,11 +176,13 @@ namespace CollectorzToKodi
             }
         }
 
-        /// <summary>
-        /// writes new SRT-file
-        /// </summary>
-        public override void WriteSrtSubTitleStreamDataToSRT()
+        /// <inheritdoc/>
+        public override void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
         {
+            // perform action from base-class
+            base.WriteSubTitleStreamDataToNFO(swrNFO);
+
+            // generating srt-files, as this is one
             using (StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename, false, Encoding.UTF8, 512))
             {
                 int entryNumber = 0;

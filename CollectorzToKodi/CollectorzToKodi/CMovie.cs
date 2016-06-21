@@ -76,6 +76,19 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
+        public override void ReadSubTitleStreamData(XmlNode xMLMedia)
+        {
+            // read SubTitle-data by CVideo-class as default
+            base.ReadSubTitleStreamData(xMLMedia);
+
+            // reset filename for movie
+            foreach (CSubTitle subTitle in this.SubTitleStreams)
+            {
+                subTitle.SetFilename(this);
+            }
+        }
+
+        /// <inheritdoc/>
         public override void WriteNFO()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
@@ -142,17 +155,9 @@ namespace CollectorzToKodi
                 }
 
                 // SubTitles
-                for (int i = 0; i < this.SubTitleStreams.Count; i++)
+                foreach (CSubTitle subTitle in this.SubTitleStreams)
                 {
-                    CSubTitleFile subTitleFile = this.SubTitleStreams.ElementAt(i);
-                    if (subTitleFile.GetType().ToString().Contains("CSrtSubTitleFileCollection"))
-                    {
-                        ((CSrtSubTitleFileCollection)subTitleFile).WriteSubTitleStreamDataToSH(swrSH);
-                    }
-                    else
-                    {
-                        subTitleFile.WriteSubTitleStreamDataToSH(swrSH);
-                    }
+                    subTitle.WriteSubTitleStreamDataToSH(swrSH);
                 }
 
                 // Images
