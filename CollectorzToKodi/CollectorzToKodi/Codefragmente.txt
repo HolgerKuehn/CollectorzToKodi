@@ -1,0 +1,216 @@
+﻿        /// <summary>
+        /// Gets or sets SubTitle containing this SubTitleFile
+        /// </summary>
+        public SubTitle SubTitle
+        {
+            get { return this.subTitles; }
+            set { this.subTitles = value; }
+        }
+
+		
+            this.subTitleFiles = new List<CSubTitleFile>();
+
+        /// <summary>
+        /// Gets or sets subTitleFiles part of this SubTitle
+        /// </summary>
+        public List<CSubTitleFile> SubTitleFiles
+        {
+            get { return this.subTitleFiles; }
+            set { this.subTitleFiles = value; }
+        }
+
+
+            foreach (CSubTitleFile subTitleFiles in this.SubTitleFiles)
+            {
+                subTitleClone.SubTitleFiles.Add((CSubTitleFile)subTitleFiles.Clone());
+            }
+
+        /// <summary>
+        /// sets filename for SubTitleFile suitable for Movies
+        /// </summary>
+        /// <param name="movie">Movie, the SubTilte is referring to</param>
+        public virtual void SetFilename(CMovie movie)
+        {
+            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            {
+                subTitleFile.SetFilename(movie);
+            }
+        }
+
+        /// <summary>
+        /// sets filename for SubTitleFile suitable for Series
+        /// </summary>
+        /// <param name="series">Series, the SubTilte is referring to</param>
+        public virtual void SetFilename(CSeries series)
+        {
+            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            {
+                subTitleFile.SetFilename(series);
+            }
+        }
+
+		
+            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            {
+                subTitleFile.WriteSubTitleStreamDataToNFO(swrNFO);
+            }
+
+
+
+        /// <summary>
+        /// adds Subtitle to Shell-Script
+        /// </summary>
+        /// <param name="swrSH">Bash-Shell-Script</param>
+        public virtual void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
+        {
+            foreach (CSubTitleFile subTitleFile in this.subTitleFiles)
+            {
+                subTitleFile.WriteSubTitleStreamDataToSH(swrSH);
+            }
+        }
+
+		Epsiode.WriteSH:
+
+                // SubTitles
+                foreach (SubTitle subTitle in this.SubTitles)
+                {
+                    subTitle.WriteSubTitleStreamDataToSH(swrSH);
+                }
+
+
+		/// <summary>
+        /// sets filename for SubTitleFile suitable for Movies
+        /// </summary>
+        /// <param name="movie">Movie, the SubTilte is referring to</param>
+        public void SetFilename(CMovie movie)
+        {
+            this.Filename = movie.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+        }
+
+        /// <summary>
+        /// sets filename for SubTitleFile suitable for Series
+        /// </summary>
+        /// <param name="series">Series, the SubTilte is referring to</param>
+        public void SetFilename(CSeries series)
+        {
+            this.Filename = series.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+        }
+
+
+		/// <summary>
+        /// checks XML-file from MovieCollector for SubTitles linked to the Video
+        /// </summary>
+        /// <param name="xMLMedia">XML-file from MovieCollector</param>
+        /// <returns>List of assigned SubTitleFiles</returns>
+        public virtual List<SubTitleFile> ReadSubTitleFile(XmlNode xMLMedia)
+        {
+            List<SubTitleFile> lstSubTitleFile = new List<SubTitleFile>();
+
+            // Reading srt-SubTitles
+            SrtSubTitle srtSrtSubTitle = new SrtSubTitle(this.Configuration);
+            lstSubTitleFile.AddRange(srtSrtSubTitle.ReadSubTitleFile(xMLMedia));
+
+            return new List<SubTitleFile>();
+        }
+
+		/// <inheritdoc/>
+        public override List<SubTitleFile> ReadSubTitleFile(XmlNode xMLMedia)
+        {
+            List<SubTitleFile> lstSubTitleFiles = new List<SubTitleFile>();
+
+            foreach (XmlNode xMLSubTitleStreamFile in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
+            {
+                // check all links for subtitle in language
+                if ((xMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie") && xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel." + this.Language + "."))
+                {
+                    // create new subtitle objects (generic Subtitle or SRT-Subtitle)
+                    CSrtSubTitleFile srtSubTitleFile = new CSrtSubTitleFile(this.Configuration);
+
+                    // name and filenames
+                    srtSubTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
+                    srtSubTitleFile.URL = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    srtSubTitleFile.ConvertFilename();
+
+                    // check for fileIndex
+                    int completeLength = srtSubTitleFile.Description.Length;
+                    int subtitleLength = ("Untertitel." + this.Language + ".").Length;
+                    int fileIndex = 1;
+
+                    if (!int.TryParse(srtSubTitleFile.Description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out fileIndex))
+                    {
+                        fileIndex = 1;
+                    }
+
+                    // subtitle file name and type
+                    if (srtSubTitleFile.Extension.Contains(".srt"))
+                    {
+                        while (lstSubTitleFiles.Count < fileIndex)
+                        {
+                            lstSubTitleFiles.Add(null);
+                        }
+
+                        if (lstSubTitleFiles[fileIndex - 1] == null)
+                        {
+                            lstSubTitleFiles[fileIndex - 1] = new CSrtSubTitleFile(this.Configuration);
+                        }
+
+                        ((CSrtSubTitleFile)lstSubTitleFiles[fileIndex - 1]).ReadFromSubTitleFile(srtSubTitleFile, fileIndex);
+                    }
+                }
+            }
+
+            return lstSubTitleFiles;
+        }
+
+        /// <summary>
+        /// sets filename for SubTitleFile suitable for Movies
+        /// </summary>
+        /// <param name="movie">Movie, the SubTilte is referring to</param>
+        public override void SetFilename(CMovie movie)
+        {
+            base.SetFilename(movie);
+        }
+
+        /// <summary>
+        /// sets filename for SubTitleFile suitable for Series
+        /// </summary>
+        /// <param name="series">Series, the SubTilte is referring to</param>
+        public override void SetFilename(CSeries series)
+        {
+            base.SetFilename(series);
+        }
+
+		
+        
+        /// <summary>
+        /// Writes subtitle data to provided NFO file
+        /// </summary>
+        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
+        /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
+        public override void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
+        {
+            base.WriteSubTitleStreamDataToNFO(swrNFO);
+        }
+
+        /// <summary>
+        /// adds Subtitle to Shell-Script
+        /// </summary>
+        /// <param name="swrSH">Bash-Shell-Script</param>
+        public override void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
+        {
+            base.WriteSubTitleStreamDataToSH(swrSH);
+        }
+
+
+
+		/// <summary>
+        /// writes subtitle to SH
+        /// </summary>
+        /// <param name="swrSH">StreamWriter used to write script to</param>
+        public override void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
+        {
+            if (this.Filename != string.Empty)
+            {
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+            }
+        }
