@@ -219,6 +219,11 @@ namespace CollectorzToKodi
             string extension = this.URLLocalFilesystem.ToLower().RightOfLast(".");
             string filename = this.URLLocalFilesystem.ToLower().LeftOfLast(".");
 
+            if (extension == "jpeg")
+            {
+                extension = "jpg";
+            }
+
             switch (extension)
             {
                 case "m2ts":
@@ -228,6 +233,7 @@ namespace CollectorzToKodi
                 case "mpg":
                 case "vob":
 
+                case "gif":
                 case "jpg":
                 case "png":
                     this.Extension = "." + extension;

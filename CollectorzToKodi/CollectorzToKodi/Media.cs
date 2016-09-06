@@ -371,6 +371,9 @@ namespace CollectorzToKodi
                 this.TitleSort = this.TitleSort.ReplaceAll("(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
+                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
                 this.Filename = this.Filename.ReplaceAll("(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
@@ -408,6 +411,18 @@ namespace CollectorzToKodi
             if (addServer)
             {
                 this.Server.Add(serverList);
+            }
+        }
+
+        /// <summary>
+        /// Adds reference to Server, if any part of media is stored on it
+        /// </summary>
+        /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        public virtual void AddServer(List<int> serverList)
+        {
+            foreach (int server in serverList)
+            {
+                this.AddServer(server);
             }
         }
 
@@ -620,7 +635,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {
-                        swrSH.WriteLine("cd \"Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "\"");
+                        swrSH.WriteLine("cd \"Season " + imageFile.Season + "\"");
                     }
 
                     if (imageFile.ImageType == Configuration.ImageType.ExtraBackdrop)
@@ -673,7 +688,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CSeries") ? "Serien" : "Filme") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + imageFile.Season + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }

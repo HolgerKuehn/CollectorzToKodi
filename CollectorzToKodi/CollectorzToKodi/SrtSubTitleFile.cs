@@ -79,9 +79,7 @@ namespace CollectorzToKodi
             srtSubTitleFileClone.Media = this.Media;
             srtSubTitleFileClone.SubTitle = this.SubTitle;
             srtSubTitleFileClone.FileIndex = this.FileIndex;
-
-            // clone itself if necessary
-            srtSubTitleFileClone.SubTitleEntries = this.SubTitleEntries;
+            srtSubTitleFileClone.SubTitleEntries.AddRange(this.SubTitleEntries);
             srtSubTitleFileClone.OffsetTime = this.OffsetTime;
 
             return (SrtSubTitleFile)srtSubTitleFileClone;
@@ -90,23 +88,14 @@ namespace CollectorzToKodi
         /// <summary>
         /// transfers actualized data from subTitleFile
         /// </summary>
-        /// <param name="subTitleFile">Subtitle file added to Media</param>
-        /// <param name="fileIndex">Index of multiple files</param>
-        public void ReadFromSubTitleFile(SubTitleFile subTitleFile, int fileIndex)
+        public void ReadFromSubTitleFile()
         {
             TimeSpan timOffsetTime;
             string strOffsetTime;
 
             // reading basic information
-            this.Description = subTitleFile.Description;
             strOffsetTime = this.Description.RightOf("(Offset ").LeftOf(")");
             this.Description = this.Description.Replace("(Offset " + strOffsetTime + ")", string.Empty);
-
-            this.URL = subTitleFile.URL;
-            this.URLLocalFilesystem = subTitleFile.URLLocalFilesystem;
-            this.Filename = subTitleFile.Filename;
-            this.Extension = subTitleFile.Extension;
-            this.FileIndex = fileIndex;
 
             TimeSpan.TryParse(strOffsetTime, out timOffsetTime);
 
@@ -224,6 +213,15 @@ namespace CollectorzToKodi
                     srtSubTitleFileEntry.WriteSrtSubTitleStreamDataToSRT(swrSrtSubTitle);
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public override SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
+        {
+            SrtSubTitleFile srtTitleFile = (SrtSubTitleFile)subTitleFile;
+            srtTitleFile.SubTitleEntries.AddRange(this.SubTitleEntries);
+
+            return srtTitleFile;
         }
 
         #endregion

@@ -188,7 +188,7 @@ namespace CollectorzToKodi
         {
             if (this.Title != string.Empty)
             {
-                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + ("00" + this.actualSeason).Substring(this.actualSeason.Length) + "\"");
+                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.actualSeason + "\"");
 
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
@@ -389,7 +389,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.URL.Contains("http://"))
                     {
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + ("00" + imageFile.Season).Substring(imageFile.Season.Length) + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {

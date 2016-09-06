@@ -482,7 +482,22 @@ namespace CollectorzToKodi
                         // set Episode-Number accordingly
                         epiEpisodePerMediaGroup.ActualEpisode = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason].ToString();
 
+                        // add Server for serSeriesPerMediaGroup
+                        serSeriesPerMediaGroup.AddServer(epiEpisode.Server);
+
                         // TODO: Add cover as season-art
+
+                        // set VideoIndex and FileIndex for Episode and associated Files
+                        epiEpisodePerMediaGroup.VideoIndex = epiEpisodePerMediaGroup.VideoIndex + intDisplayEpisodeOffset;
+                        foreach (VideoFile videoFile in epiEpisodePerMediaGroup.MediaFiles)
+                        {
+                            videoFile.FileIndex = videoFile.FileIndex + intDisplayEpisodeOffset;
+
+                            foreach (SubTitleFile subTitleFile in videoFile.SubTitleFiles)
+                            {
+                                subTitleFile.FileIndex = subTitleFile.FileIndex + intDisplayEpisodeOffset;
+                            }
+                        }
 
                         // add episode to new series
                         serSeriesPerMediaGroup.Episodes.Add(epiEpisodePerMediaGroup);

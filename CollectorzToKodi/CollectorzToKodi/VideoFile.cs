@@ -158,17 +158,10 @@ namespace CollectorzToKodi
                         // subtitle file name and type
                         if (srtSubTitleFile.Extension.Contains(".srt") && this.FileIndex == fileIndex)
                         {
-                            while (lstSubTitleFiles.Count < fileIndex)
-                            {
-                                lstSubTitleFiles.Add(null);
-                            }
+                            srtSubTitleFile.FileIndex = fileIndex;
+                            srtSubTitleFile.ReadFromSubTitleFile();
 
-                            if (lstSubTitleFiles[fileIndex - 1] == null)
-                            {
-                                lstSubTitleFiles[fileIndex - 1] = new SrtSubTitleFile(this.Configuration);
-                            }
-
-                            ((SrtSubTitleFile)lstSubTitleFiles[fileIndex - 1]).ReadFromSubTitleFile(srtSubTitleFile, fileIndex);
+                            lstSubTitleFiles.Add(srtSubTitleFile);
                         }
                     }
                 }
@@ -183,9 +176,42 @@ namespace CollectorzToKodi
         /// <param name="swrSH">Bash-Shell-Script</param>
         public void WriteSubTitleToSH(StreamWriter swrSH)
         {
+            this.CreateFinalSubTitleFile();
+
             foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
             {
                 subTitleFile.WriteSubTitleToSH(swrSH);
+            }
+        }
+
+        /// <summary>
+        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleFile (multiple one will be overwritten due to the same filename)
+        /// <remarks>creates new List with just one SubTitleFile and sets this</remarks>
+        /// </summary>
+        private void CreateFinalSubTitleFile()
+        {
+            // check, if transformation is necessary (more than one SubTitleFiles)
+            int numberOfSubTitleFiles = 0;
+
+            if (this.SubTitleFiles != null)
+            {
+                numberOfSubTitleFiles = this.SubTitleFiles.Count;
+            }
+
+            // create new SubTitleFile
+            if (numberOfSubTitleFiles > 1)
+            {
+                SubTitleFile firstSubTitleFile = this.SubTitleFiles[0];
+                SubTitleFile extendedSubTitleFile = (SubTitleFile)firstSubTitleFile.Clone();
+
+                for (int i = 1; i < this.SubTitleFiles.Count; i++)
+                {
+                    extendedSubTitleFile = ((SubTitleFile)this.SubTitleFiles[i]).CreateFinalSubTitleFile(extendedSubTitleFile);
+                }
+
+                // reset SubTitleFiles with one new File
+                this.SubTitleFiles = new List<SubTitleFile>();
+                this.SubTitleFiles.Add(extendedSubTitleFile);
             }
         }
 
@@ -196,7 +222,14 @@ namespace CollectorzToKodi
         {
             foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
             {
-                subTitleFile.Filename = this.Filename.Replace(this.Extension, string.Empty) + subTitleFile.Extension;
+                subTitleFile.Filename = this.Filename;
+
+                if (this.Extension != string.Empty)
+                {
+                    subTitleFile.Filename = this.Filename.Replace(this.Extension, string.Empty);
+                }
+
+                subTitleFile.Filename = subTitleFile.Filename + subTitleFile.Extension;
             }
         }
 

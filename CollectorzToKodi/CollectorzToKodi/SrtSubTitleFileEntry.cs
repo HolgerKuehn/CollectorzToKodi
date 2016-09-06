@@ -121,6 +121,23 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <summary>
+        /// clones SrtSubTitleFileEntry object completely
+        /// </summary>
+        /// <returns>new instance of SrtSubTitleFileEntry</returns>
+        public SrtSubTitleFileEntry Clone()
+        {
+            SrtSubTitleFileEntry srtSubTitleFileEntryClone = new SrtSubTitleFileEntry();
+            srtSubTitleFileEntryClone.EntryNumber = this.EntryNumber;
+            srtSubTitleFileEntryClone.StartTime = this.StartTime;
+            srtSubTitleFileEntryClone.EndTime = this.EndTime;
+            srtSubTitleFileEntryClone.OffsetTime = this.OffsetTime;
+            srtSubTitleFileEntryClone.TimeExtentions = this.TimeExtentions;
+            srtSubTitleFileEntryClone.SubTitleLines.AddRange(this.SubTitleLines);
+
+            return srtSubTitleFileEntryClone;
+        }
+
+        /// <summary>
         /// Writes srtSubTitle entry to provided file
         /// </summary>
         /// <param name="swrSrtSubTitle">StreamWriter for new SRT subtitle file</param>

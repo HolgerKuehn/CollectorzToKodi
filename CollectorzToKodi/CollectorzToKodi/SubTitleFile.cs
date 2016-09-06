@@ -88,6 +88,18 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <summary>
+        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleFile (multiple one will be overwritten due to the same filename)
+        /// <remarks>creates new List with just one SubTitleFile and sets this</remarks>
+        /// </summary>
+        /// <param name="subTitleFile">subTitleFile that should be extended</param>
+        /// <returns>new subTitleFile extended by this object</returns>
+        public virtual SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
+        {
+            // leave object unchanged for generic SubTitle
+            return subTitleFile;
+        }
+
         /// <inheritdoc/>
         public override string ConvertFilename()
         {
