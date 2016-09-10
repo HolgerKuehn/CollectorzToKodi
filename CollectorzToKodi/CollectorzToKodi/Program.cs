@@ -38,17 +38,24 @@ namespace CollectorzToKodi
                     foreach (Movie movie in mediaCollection.ListMovieCollectionPerServer(server))
                     {
                         movie.WriteNFO();
-                        movie.WriteSH(swrSH);
+                        movie.WriteSH(swrSH, true);
                     }
 
                     // series
                     swrSH.WriteLine(string.Empty);
                     swrSH.WriteLine("cd /share/XBMC/Serien/");
 
+                    // remove old Series without MediaGroups
+                    foreach (Series series in mediaCollection.ListSeriesCollectionWithoutMediaGroupPerServer(server))
+                    {
+                        series.WriteSH(swrSH, false);
+                    }
+
+                    // generate new entries
                     foreach (Series series in mediaCollection.ListSeriesCollectionPerServer(server))
                     {
                         series.WriteNFO();
-                        series.WriteSH(swrSH);
+                        series.WriteSH(swrSH, true);
                     }
                 }
             }

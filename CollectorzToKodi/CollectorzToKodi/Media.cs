@@ -333,7 +333,8 @@ namespace CollectorzToKodi
         /// appends copy strings to provided shell-script
         /// </summary>
         /// <param name="swrSH">Bash-Shell script that contains all copy statements for server</param>
-        public abstract void WriteSH(StreamWriter swrSH);
+        /// <param name="createNewMedia">defines, weather copy statements for media are added or not, otherwise only deletion will be added</param>
+        public abstract void WriteSH(StreamWriter swrSH, bool createNewMedia = true);
 
         /// <summary>
         /// Clones media object completely

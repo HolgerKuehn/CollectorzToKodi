@@ -38,6 +38,11 @@ namespace CollectorzToKodi
         /// </summary>
         private List<Series> seriesCollectionGroupedByMediaGroup;
 
+        /// <summary>
+        /// stores non-grouped Collection grouped by MediaGroup, which is used to remove old MediaFiles inside publishing directory, when the Media was published previously outside of one or a different MediaGroup
+        /// </summary>
+        private List<Series> seriesCollectionWithoutMediaGroup;
+
         #endregion
         #region Constructor
 
@@ -52,6 +57,7 @@ namespace CollectorzToKodi
             this.seriesCollection = new List<Series>();
 
             this.seriesCollectionGroupedByMediaGroup = new List<Series>();
+            this.seriesCollectionWithoutMediaGroup = new List<Series>();
         }
 
         #endregion
@@ -91,6 +97,15 @@ namespace CollectorzToKodi
         {
             get { return this.seriesCollectionGroupedByMediaGroup; }
             set { this.seriesCollectionGroupedByMediaGroup = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets stored Collection non-grouped by MediaGroup
+        /// </summary>
+        private List<Series> SeriesCollectionWithoutMediaGroup
+        {
+            get { return this.seriesCollectionWithoutMediaGroup; }
+            set { this.seriesCollectionWithoutMediaGroup = value; }
         }
 
         #endregion
@@ -353,6 +368,37 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// list of series stored at the specified server, that need to be removed as all Series are stored within a new Media Group
+        /// </summary>
+        /// <param name="server">Server containing the Movie; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        /// <returns>new list of series stored at the specified server</returns>
+        public List<Series> ListSeriesCollectionWithoutMediaGroupPerServer(int server)
+        {
+            List<Series> lstSeriesCollectionWithoutMediaGroupPerServer = new List<Series>();
+
+            // list Series for Server
+            foreach (Series series in this.SeriesCollectionWithoutMediaGroup)
+            {
+                bool addSeries = false;
+                foreach (int serverList in series.Server)
+                {
+                    if (serverList.Equals(server))
+                    {
+                        addSeries = true;
+                    }
+                }
+
+                if (addSeries)
+                {
+                    Series seriesClone = (Series)series.Clone(server);
+                    lstSeriesCollectionWithoutMediaGroupPerServer.Add(seriesClone);
+                }
+            }
+
+            return lstSeriesCollectionWithoutMediaGroupPerServer;
+        }
+
+        /// <summary>
         /// list movies, duplicated by language, if multiple video file are used
         /// </summary>
         /// <param name="movieCollection">List of movies, that should be checked for multiple languages</param>
@@ -419,6 +465,8 @@ namespace CollectorzToKodi
         {
             List<Series> lstSeriesCollection = new List<Series>();
             List<Series> lstSeriesCollectionPerMediaGroup = new List<Series>();
+            List<Series> lstSeriesCollectionWithoutMediaGroup = new List<Series>();
+
             Series serSeriesPerMediaGroup = new Series(this.Configuration);
             Episode epiEpisodePerMediaGroup = new Episode(this.Configuration);
             string strActiveMediaGroup = string.Empty;
@@ -433,6 +481,8 @@ namespace CollectorzToKodi
             // create new List of Series with MediaGroup name
             foreach (Series serSeries in lstSeriesCollection.OrderBy(o => o.MediaGroup).ThenBy(o => o.TitleSort).ToList())
             {
+                lstSeriesCollectionWithoutMediaGroup.Add(serSeries);
+
                 // create new Series, when a different MediaGroup is present
                 if (serSeries.MediaGroup != strActiveMediaGroup)
                 {
@@ -507,7 +557,8 @@ namespace CollectorzToKodi
                 }
             }
 
-            this.seriesCollectionGroupedByMediaGroup = lstSeriesCollectionPerMediaGroup;
+            this.SeriesCollectionGroupedByMediaGroup = lstSeriesCollectionPerMediaGroup;
+            this.SeriesCollectionWithoutMediaGroup = lstSeriesCollectionWithoutMediaGroup;
         }
 
         #endregion

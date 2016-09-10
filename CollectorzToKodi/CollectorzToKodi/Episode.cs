@@ -184,8 +184,9 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteSH(StreamWriter swrSH)
+        public override void WriteSH(StreamWriter swrSH, bool createNewMedia)
         {
+            // createNewMedia is only checked for series; episodes are not changed, as not generated
             if (this.Title != string.Empty)
             {
                 swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.actualSeason + "\"");

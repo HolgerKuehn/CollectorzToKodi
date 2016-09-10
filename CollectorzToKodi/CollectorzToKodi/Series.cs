@@ -169,7 +169,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteSH(StreamWriter swrSH)
+        public override void WriteSH(StreamWriter swrSH, bool createNewMedia)
         {
             if (this.Title != string.Empty)
             {
@@ -177,28 +177,32 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("then ");
                 swrSH.WriteLine("    rm -r \"" + this.Filename + "\"");
                 swrSH.WriteLine("fi;");
-                swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
-                for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
+                if (createNewMedia)
                 {
-                    swrSH.WriteLine("mkdir \"Season " + i.ToString() + "\"");
-                }
+                    swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                swrSH.WriteLine("mkdir \"extrafanart\"");
-                swrSH.WriteLine("mkdir \"extrathumbs\"");
+                    swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
+                    for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
+                    {
+                        swrSH.WriteLine("mkdir \"Season " + i.ToString() + "\"");
+                    }
 
-                swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
+                    swrSH.WriteLine("mkdir \"extrafanart\"");
+                    swrSH.WriteLine("mkdir \"extrathumbs\"");
 
-                // Images
-                this.WriteImagesToSH(swrSH);
+                    swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
+                    swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
-                swrSH.WriteLine("cd /share/XBMC/Serien/");
+                    // Images
+                    this.WriteImagesToSH(swrSH);
 
-                foreach (Episode episode in this.Episodes)
-                {
-                    episode.WriteSH(swrSH);
+                    swrSH.WriteLine("cd /share/XBMC/Serien/");
+
+                    foreach (Episode episode in this.Episodes)
+                    {
+                        episode.WriteSH(swrSH, true);
+                    }
                 }
             }
         }

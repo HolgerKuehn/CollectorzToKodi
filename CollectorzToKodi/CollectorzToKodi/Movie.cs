@@ -121,7 +121,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteSH(StreamWriter swrSH)
+        public override void WriteSH(StreamWriter swrSH, bool createNewMedia)
         {
             if (this.Title != string.Empty)
             {
@@ -130,17 +130,20 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("    rm -r \"" + this.Filename + "\"");
                 swrSH.WriteLine("fi;");
 
-                swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
+                if (createNewMedia)
+                {
+                    swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                swrSH.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
-                swrSH.WriteLine("mkdir \"extrafanart\"");
+                    swrSH.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
+                    swrSH.WriteLine("mkdir \"extrafanart\"");
 
-                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                    // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
+                    swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
-                // Videofiles and Images
-                this.WriteVideoFilesToSH(swrSH);
-                this.WriteImagesToSH(swrSH);
+                    // Videofiles and Images
+                    this.WriteVideoFilesToSH(swrSH);
+                    this.WriteImagesToSH(swrSH);
+                }
 
                 swrSH.WriteLine("cd /share/XBMC/Filme/");
             }
