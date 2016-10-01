@@ -298,7 +298,7 @@ namespace CollectorzToKodi
             this.Rating = episode.Rating;
 
             this.IsSpecial = episode.IsSpecial;
-            this.actualSeason = episode.actualSeason;
+            this.actualSeason = episode.ActualSeason;
             this.DisplaySeason = episode.DisplaySeason;
             this.MediaLanguages = episode.MediaLanguages;
         }

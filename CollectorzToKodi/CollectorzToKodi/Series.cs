@@ -353,12 +353,6 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void AddServer(int serverList)
-        {
-            base.AddServer(serverList);
-        }
-
-        /// <inheritdoc/>
         public override void SetFilename()
         {
             base.SetFilename();

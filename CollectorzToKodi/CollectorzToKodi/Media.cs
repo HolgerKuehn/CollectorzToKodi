@@ -519,7 +519,8 @@ namespace CollectorzToKodi
             image.Filename = "poster";
             image.URL = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
 
-            if (this.Configuration.KodiSkin == "Estuary" /* Estuary just displays poster instead of cover; so setting this as poster when empty */ && image.URL == string.Empty)
+            /* Estuary just displays poster instead of cover; so setting this as poster when empty */
+            if (image.URL == string.Empty)
             {
                 image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
             }
@@ -559,7 +560,7 @@ namespace CollectorzToKodi
 
                     // Fanart or Thumb ?
                     if (imageFile.Description.Contains("ExtraBackdrop" /* Backdrops */) ||
-                        (imageFile.Description.Contains("ExtraCover") && imageFile.Media.GetType().ToString().Contains("CSeries")) /* or Covers for TV-Shows as no Extrathumbs are supported */)
+                        (imageFile.Description.Contains("ExtraCover") && imageFile.Media.GetType().ToString().Contains("Series")) /* or Covers for TV-Shows as no Extrathumbs are supported */)
                     {
                         numberOfExtraBackdrop++;
                         imageFile.ImageType = Configuration.ImageType.ExtraBackdrop;
@@ -567,7 +568,7 @@ namespace CollectorzToKodi
                     }
 
                     // Extra-Cover only for movies
-                    else if (imageFile.Description.Contains("ExtraCover") && !imageFile.Media.GetType().ToString().Contains("CSeries"))
+                    else if (imageFile.Description.Contains("ExtraCover") && !imageFile.Media.GetType().ToString().Contains("Series"))
                     {
                         numberOfExtraCover++;
                         imageFile.ImageType = Configuration.ImageType.ExtraCover;
@@ -582,6 +583,11 @@ namespace CollectorzToKodi
                     {
                         imageFile.ImageType = Configuration.ImageType.SeasonCover;
                         imageFile.Filename = "cover";
+                    }
+                    else if (imageFile.Description.Contains("Poster"))
+                    {
+                        imageFile.ImageType = Configuration.ImageType.SeasonPoster;
+                        imageFile.Filename = "poster";
                     }
 
                     if (imageFile.Season == "all")
@@ -620,6 +626,12 @@ namespace CollectorzToKodi
             this.WriteImagesToNFO(swrNFO, Configuration.ImageType.Backdrop);
             this.WriteImagesToNFO(swrNFO, Configuration.ImageType.SeasonBackdrop);
             swrNFO.WriteLine("    </fanart>");
+
+            // poster
+            swrNFO.WriteLine("    <poster>");
+            this.WriteImagesToNFO(swrNFO, Configuration.ImageType.Poster);
+            this.WriteImagesToNFO(swrNFO, Configuration.ImageType.SeasonPoster);
+            swrNFO.WriteLine("    </poster>");
         }
 
         /// <summary>
@@ -634,7 +646,7 @@ namespace CollectorzToKodi
 
                 if (imageFile.Filename != string.Empty && !imageFile.URL.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
-                    if (!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
+                    if (!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {
                         swrSH.WriteLine("cd \"Season " + imageFile.Season + "\"");
                     }
@@ -651,7 +663,7 @@ namespace CollectorzToKodi
 
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
 
-                    if ((!imageFile.Media.GetType().ToString().Contains("CMovie") && imageFile.Season != string.Empty && imageFile.Season != "-1") || imageFile.ImageType == Configuration.ImageType.ExtraBackdrop || imageFile.ImageType == Configuration.ImageType.ExtraCover)
+                    if ((!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1") || imageFile.ImageType == Configuration.ImageType.ExtraBackdrop || imageFile.ImageType == Configuration.ImageType.ExtraCover)
                     {
                         swrSH.WriteLine("cd ..");
                     }
@@ -672,24 +684,28 @@ namespace CollectorzToKodi
 
                 if (imageFile.Filename != string.Empty && imageFile.ImageType == imageType)
                 {
-                    if (imageFile.ImageType == Configuration.ImageType.CoverFront || imageFile.ImageType == Configuration.ImageType.Backdrop)
+                    if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.CoverFront || imageFile.ImageType == Configuration.ImageType.Backdrop ||
+                        /* Poster */ imageFile.ImageType == Configuration.ImageType.Poster)
                     {
-                        if (imageFile.ImageType == Configuration.ImageType.Backdrop)
+                        if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.Backdrop ||
+                            /* Poster */ imageFile.ImageType == Configuration.ImageType.Poster)
                         {
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
                     }
 
-                    if (imageFile.ImageType == Configuration.ImageType.SeasonCover || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop)
+                    if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonCover || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
+                        /* Poster */ imageFile.ImageType == Configuration.ImageType.SeasonPoster)
                     {
-                        if (imageFile.ImageType == Configuration.ImageType.SeasonBackdrop)
+                        if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
+                            /* Poster*/ imageFile.ImageType == Configuration.ImageType.SeasonPoster)
                         {
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("CMovie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + imageFile.Season + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + imageFile.Season + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }

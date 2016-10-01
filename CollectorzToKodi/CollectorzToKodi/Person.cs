@@ -57,5 +57,7 @@ namespace CollectorzToKodi
         }
 
         #endregion
+        #region Functions
+        #endregion
     }
 }

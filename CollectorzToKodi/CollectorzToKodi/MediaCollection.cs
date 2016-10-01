@@ -463,104 +463,211 @@ namespace CollectorzToKodi
         /// </summary>
         private void GroupByMediaGroup()
         {
-            List<Series> lstSeriesCollection = new List<Series>();
-            List<Series> lstSeriesCollectionPerMediaGroup = new List<Series>();
-            List<Series> lstSeriesCollectionWithoutMediaGroup = new List<Series>();
+            List<Series> seriesCollection = this.ClonePerLanguage(this.SeriesCollection); /* original collection, cloned per language */
+            List<Series> seriesCollectionPerMediaGroup = new List<Series>(); /* new collection of grouped series */
+            List<Series> seriesCollectionWithoutMediaGroup = new List<Series>(); /* original series, used to remove old folders  */
 
-            Series serSeriesPerMediaGroup = new Series(this.Configuration);
-            Episode epiEpisodePerMediaGroup = new Episode(this.Configuration);
-            string strActiveMediaGroup = string.Empty;
-            int intSeasonOffset = 0;
-            int intDisplaySeasonOffset = 0;
-            int intEpisodeOffset = 0;
-            int intSpecialsOffset = 0;
-            int intDisplayEpisodeOffset = 0;
+            #region creating seriesListsPerMediaGroup
+            string activeMediaGroup = string.Empty;
+            List<Series> seriesListPerMediaGroup = new List<Series>();
+            List<List<Series>> seriesListsPerMediaGroup = new List<List<Series>>();
 
-            lstSeriesCollection = this.ClonePerLanguage(this.SeriesCollection);
-
-            // create new List of Series with MediaGroup name
-            foreach (Series serSeries in lstSeriesCollection.OrderBy(o => o.MediaGroup).ThenBy(o => o.TitleSort).ToList())
+            // creates new collection of lists of series, each latter one belongs to the same MediaGroup
+            foreach (Series series in seriesCollection.OrderBy(o => o.MediaGroup).ThenBy(o => o.TitleSort).ToList())
             {
-                lstSeriesCollectionWithoutMediaGroup.Add(serSeries);
+                seriesCollectionWithoutMediaGroup.Add(series);
 
                 // create new Series, when a different MediaGroup is present
-                if (serSeries.MediaGroup != strActiveMediaGroup)
+                if (series.MediaGroup != activeMediaGroup)
                 {
-                    serSeriesPerMediaGroup = (Series)serSeries.Clone();
-                    strActiveMediaGroup = serSeries.MediaGroup;
-                    intSeasonOffset = 0;
-                    intDisplaySeasonOffset = 0;
-                    intEpisodeOffset = 0;
-                    intSpecialsOffset = 0;
-                    intDisplayEpisodeOffset = 0;
+                    // when new MediaGroup is found
+                    // set new MediaGroup
+                    activeMediaGroup = series.MediaGroup;
 
-                    lstSeriesCollectionPerMediaGroup.Add(serSeriesPerMediaGroup);
+                    // create new series
+                    seriesListPerMediaGroup = new List<Series>();
+                    seriesListPerMediaGroup.Add(series);
+
+                    // add list to new collection
+                    seriesListsPerMediaGroup.Add(seriesListPerMediaGroup);
                 }
                 else
                 {
-                    serSeriesPerMediaGroup.Title = serSeriesPerMediaGroup.MediaGroup;
-                    intSeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count - 1;
-                    intDisplaySeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count - 1;
-                    intEpisodeOffset = serSeriesPerMediaGroup.NumberOfEpisodes;
-                    intSpecialsOffset = serSeriesPerMediaGroup.NumberOfSpecials;
-                    intDisplayEpisodeOffset = serSeriesPerMediaGroup.Episodes.Count;
+                    // while finding series of same MediaGroup, adding those to seriesPerMediaGroup
+                    seriesListPerMediaGroup.Add(series);
+                }
+            }
+            #endregion
 
-                    foreach (Episode epiEpisode in serSeries.Episodes)
+            // each first-level-List of seriesListsPerMediaGroup contains a series
+            #region creating new Series with appropriate settings
+
+            foreach (List<Series> seriesList in seriesListsPerMediaGroup)
+            {
+                if (seriesList.Count == 1)
+                {
+                    // adding directly, if only one series in MediaGroup
+                    seriesCollectionPerMediaGroup.Add(seriesList[0]);
+                }
+                else
+                {
+                    // create new series per node in seriesListsPerMediaGroup
+                    Series seriesPerMediaGroup = new Series(this.Configuration);
+
+                    // set basic parameters for new Series, according to first member of MediaGroup
+                    Series seriesBasicMember = seriesList[0];
+
+                    seriesPerMediaGroup.Title = seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.TitleSort = seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.TitleOriginal = seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.MediaGroup = seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.Rating = seriesBasicMember.Rating;
+                    seriesPerMediaGroup.PublishingYear = seriesBasicMember.PublishingYear;
+                    seriesPerMediaGroup.PublishingDate = seriesBasicMember.PublishingDate;
+                    seriesPerMediaGroup.RunTime = seriesBasicMember.RunTime;
+                    seriesPerMediaGroup.MPAA = seriesBasicMember.MPAA;
+                    seriesPerMediaGroup.PlayCount = seriesBasicMember.PlayCount;
+                    seriesPerMediaGroup.PlayDate = seriesBasicMember.PlayDate;
+                    seriesPerMediaGroup.IMDbId = seriesBasicMember.IMDbId;
+                    seriesPerMediaGroup.Country = seriesBasicMember.Country;
+                    seriesPerMediaGroup.Genres = seriesBasicMember.Genres;
+                    seriesPerMediaGroup.Studios = seriesBasicMember.Studios;
+                    seriesPerMediaGroup.VideoCodec = seriesBasicMember.VideoCodec;
+                    seriesPerMediaGroup.VideoDefinition = seriesBasicMember.VideoDefinition;
+                    seriesPerMediaGroup.VideoAspectRatio = seriesBasicMember.VideoAspectRatio;
+                    seriesPerMediaGroup.AudioStreams = seriesBasicMember.AudioStreams;
+                    seriesPerMediaGroup.SubTitles = seriesBasicMember.SubTitles;
+                    seriesPerMediaGroup.MediaLanguages = seriesBasicMember.MediaLanguages;
+                    seriesPerMediaGroup.NumberOfEpisodesPerSeason = new List<int>();
+                    seriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+
+                    // adding basic images (without season) from seriesBasicMember
+                    foreach (ImageFile imageFile in seriesBasicMember.Images)
                     {
-                        // create new Episode and set reference to series
-                        epiEpisodePerMediaGroup = (Episode)epiEpisode.Clone();
-                        epiEpisodePerMediaGroup.Series = serSeriesPerMediaGroup;
-
-                        // set DisplaySeason, DisplayEpisode and Season for new Episode
-                        epiEpisodePerMediaGroup.DisplaySeason = (int.Parse(epiEpisodePerMediaGroup.DisplaySeason) + intDisplaySeasonOffset).ToString();
-                        epiEpisodePerMediaGroup.DisplayEpisode = (int.Parse(epiEpisodePerMediaGroup.DisplayEpisode) + intDisplayEpisodeOffset).ToString();
-                        epiEpisodePerMediaGroup.ActualSeason = epiEpisodePerMediaGroup.ActualSeason == "0" /* Special */ ? "0" : (int.Parse(epiEpisodePerMediaGroup.ActualSeason) + intSeasonOffset).ToString();
-
-                        // add new Season to NumberOfEpisodesPerSeason if necessary
-                        int intSeason = int.Parse(epiEpisodePerMediaGroup.ActualSeason);
-                        while (serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count < intSeason + 1)
+                        if (imageFile.ImageType == Configuration.ImageType.CoverFront ||
+                            imageFile.ImageType == Configuration.ImageType.CoverBack ||
+                            imageFile.ImageType == Configuration.ImageType.Backdrop ||
+                            imageFile.ImageType == Configuration.ImageType.Poster)
                         {
-                            serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+                            ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
+
+                            seriesPerMediaGroup.Images.Add(imageFilePerMediaGroup);
                         }
+                    }
 
-                        // set new Numbers per Series
-                        serSeriesPerMediaGroup.NumberOfEpisodes = serSeriesPerMediaGroup.NumberOfEpisodes + (!epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
-                        serSeriesPerMediaGroup.NumberOfSpecials = serSeriesPerMediaGroup.NumberOfSpecials + (epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
-                        serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] + 1;
-                        serSeriesPerMediaGroup.NumberOfTotalEpisodes = serSeriesPerMediaGroup.NumberOfTotalEpisodes + 1;
+                    seriesPerMediaGroup.Content = "MediaCollection for " + seriesBasicMember.MediaGroup;
 
-                        // set Episode-Number accordingly
-                        epiEpisodePerMediaGroup.ActualEpisode = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason].ToString();
+                    // adding each series to seriesPerMediaGroup
+                    foreach (Series series in seriesList)
+                    {
+                        int fistSeasonInSeries = seriesPerMediaGroup.NumberOfEpisodesPerSeason.Count;
 
-                        // add Server for serSeriesPerMediaGroup
-                        serSeriesPerMediaGroup.AddServer(epiEpisode.Server);
-
-                        // TODO: Add cover as season-art
-
-                        // set VideoIndex and FileIndex for Episode and associated Files
-                        epiEpisodePerMediaGroup.VideoIndex = epiEpisodePerMediaGroup.VideoIndex + intDisplayEpisodeOffset;
-                        foreach (VideoFile videoFile in epiEpisodePerMediaGroup.MediaFiles)
+                        // series based attributes
+                        foreach (ImageFile imageFile in series.Images)
                         {
-                            videoFile.FileIndex = videoFile.FileIndex + intDisplayEpisodeOffset;
+                            ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
 
-                            foreach (SubTitleFile subTitleFile in videoFile.SubTitleFiles)
+                            // setting Image without Season for first season
+                            if (imageFilePerMediaGroup.Season == string.Empty)
                             {
-                                subTitleFile.FileIndex = subTitleFile.FileIndex + intDisplayEpisodeOffset;
+                                imageFilePerMediaGroup.Season = "1";
+                            }
+
+                            imageFilePerMediaGroup.Season = (int.Parse(imageFilePerMediaGroup.Season) + fistSeasonInSeries - 1).ToString();
+
+                            // change type from basic image to season image
+                            if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.Backdrop)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonBackdrop;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.CoverFront)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonCover;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraBackdrop)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.ExtraBackdrop;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraCover)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.ExtraCover;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.Poster)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonPoster;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.SeasonBackdrop)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonBackdrop;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.SeasonCover)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonCover;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.SeasonPoster)
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.SeasonPoster;
+                            }
+                            else
+                            {
+                                imageFilePerMediaGroup.ImageType = Configuration.ImageType.Unknown;
+                            }
+
+                            if (imageFilePerMediaGroup.ImageType != Configuration.ImageType.Unknown)
+                            {
+                                seriesPerMediaGroup.Images.Add(imageFilePerMediaGroup);
                             }
                         }
 
-                        // add episode to new series
-                        serSeriesPerMediaGroup.Episodes.Add(epiEpisodePerMediaGroup);
+                        // add server to new series
+                        seriesPerMediaGroup.AddServer(series.Server);
+
+                        foreach (Episode episode in series.Episodes)
+                        {
+                            Episode episodePerMediaGroup = (Episode)episode.Clone();
+                            episodePerMediaGroup.Series = seriesPerMediaGroup;
+
+                            // set new season and prepare NumberOfEpisodesPerSeason
+                            episodePerMediaGroup.ActualSeason = episode.ActualSeason == "0" ? "0" : (int.Parse(episode.ActualSeason) + fistSeasonInSeries - 1).ToString();
+                            episodePerMediaGroup.DisplaySeason = (int.Parse(episode.DisplaySeason) + fistSeasonInSeries - 1).ToString();
+                            while (seriesPerMediaGroup.NumberOfEpisodesPerSeason.Count - 1 < (int)int.Parse(episodePerMediaGroup.ActualSeason))
+                            {
+                                seriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+                            }
+
+                            seriesPerMediaGroup.NumberOfEpisodes = seriesPerMediaGroup.NumberOfEpisodes + (episode.IsSpecial ? 0 : 1);
+                            seriesPerMediaGroup.NumberOfSpecials = seriesPerMediaGroup.NumberOfSpecials + (episode.IsSpecial ? 1 : 0);
+                            seriesPerMediaGroup.NumberOfEpisodesPerSeason[(int)int.Parse(episodePerMediaGroup.ActualSeason)]++;
+
+                            episodePerMediaGroup.ActualEpisode = (string)seriesPerMediaGroup.NumberOfEpisodesPerSeason.ElementAt((int)int.Parse(episodePerMediaGroup.ActualSeason)).ToString();
+                            episodePerMediaGroup.DisplayEpisode = (string)(seriesPerMediaGroup.NumberOfSpecials + seriesPerMediaGroup.NumberOfEpisodes).ToString();
+
+                            // set plot - each content episode gets content from series, if empty
+                            if (!episodePerMediaGroup.IsSpecial && episodePerMediaGroup.Content == string.Empty)
+                            {
+                                episodePerMediaGroup.Content = series.Content;
+                            }
+
+                            // add series director, writer and actors to episodes within
+                            episodePerMediaGroup.AddDirector(series.Directors);
+                            episodePerMediaGroup.AddWriter(series.Writers);
+                            episodePerMediaGroup.AddActor(series.Actors);
+
+                            seriesPerMediaGroup.Episodes.Add(episodePerMediaGroup);
+                        }
                     }
 
-                    serSeriesPerMediaGroup.SetFilename();
+                    seriesPerMediaGroup.SetFilename();
+
+                    seriesCollectionPerMediaGroup.Add(seriesPerMediaGroup);
                 }
             }
 
-            this.SeriesCollectionGroupedByMediaGroup = lstSeriesCollectionPerMediaGroup;
-            this.SeriesCollectionWithoutMediaGroup = lstSeriesCollectionWithoutMediaGroup;
-        }
+            #endregion
 
-        #endregion
+            this.SeriesCollectionGroupedByMediaGroup = seriesCollectionPerMediaGroup;
+            this.SeriesCollectionWithoutMediaGroup = seriesCollectionWithoutMediaGroup;
+        }
     }
+    #endregion
 }

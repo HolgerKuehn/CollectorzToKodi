@@ -29,7 +29,7 @@
         /// sets filename for SubTitleFile suitable for Movies
         /// </summary>
         /// <param name="movie">Movie, the SubTilte is referring to</param>
-        public virtual void SetFilename(CMovie movie)
+        public virtual void SetFilename(Movie movie)
         {
             foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
             {
@@ -41,7 +41,7 @@
         /// sets filename for SubTitleFile suitable for Series
         /// </summary>
         /// <param name="series">Series, the SubTilte is referring to</param>
-        public virtual void SetFilename(CSeries series)
+        public virtual void SetFilename(Series series)
         {
             foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
             {
@@ -82,7 +82,7 @@
         /// sets filename for SubTitleFile suitable for Movies
         /// </summary>
         /// <param name="movie">Movie, the SubTilte is referring to</param>
-        public void SetFilename(CMovie movie)
+        public void SetFilename(Movie movie)
         {
             this.Filename = movie.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
@@ -91,7 +91,7 @@
         /// sets filename for SubTitleFile suitable for Series
         /// </summary>
         /// <param name="series">Series, the SubTilte is referring to</param>
-        public void SetFilename(CSeries series)
+        public void SetFilename(Series series)
         {
             this.Filename = series.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
@@ -166,7 +166,7 @@
         /// sets filename for SubTitleFile suitable for Movies
         /// </summary>
         /// <param name="movie">Movie, the SubTilte is referring to</param>
-        public override void SetFilename(CMovie movie)
+        public override void SetFilename(Movie movie)
         {
             base.SetFilename(movie);
         }
@@ -175,7 +175,7 @@
         /// sets filename for SubTitleFile suitable for Series
         /// </summary>
         /// <param name="series">Series, the SubTilte is referring to</param>
-        public override void SetFilename(CSeries series)
+        public override void SetFilename(Series series)
         {
             base.SetFilename(series);
         }
@@ -214,3 +214,288 @@
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
             }
         }
+
+
+
+
+
+
+		
+        //    List<Series> lstSeriesCollection = new List<Series>();
+        //    List<Series> lstSeriesCollectionPerMediaGroup = new List<Series>();
+        //    List<Series> lstSeriesCollectionWithoutMediaGroup = new List<Series>();
+
+        //    Series serSeriesPerMediaGroup = new Series(this.Configuration);
+        //    Episode epiEpisodePerMediaGroup = new Episode(this.Configuration);
+        //    string strActiveMediaGroup = string.Empty;
+        //    int intSeasonOffset = 0;
+        //    int intDisplaySeasonOffset = 0;
+        //    int intEpisodeOffset = 0;
+        //    int intSpecialsOffset = 0;
+        //    int intDisplayEpisodeOffset = 0;
+        //    int numberOfSeriesInSeriesPerMediaGroup = 0;
+
+        //    lstSeriesCollection = this.ClonePerLanguage(this.SeriesCollection);
+
+        //    // create new List of Series with MediaGroup name
+        //    foreach (Series serSeries in lstSeriesCollection.OrderBy(o => o.MediaGroup).ThenBy(o => o.TitleSort).ToList())
+        //    {
+        //        lstSeriesCollectionWithoutMediaGroup.Add(serSeries);
+
+        //        // create new Series, when a different MediaGroup is present
+        //        if (serSeries.MediaGroup != strActiveMediaGroup)
+        //        {
+        //            numberOfSeriesInSeriesPerMediaGroup = 1;
+        //            serSeriesPerMediaGroup = (Series)serSeries.Clone();
+        //            strActiveMediaGroup = serSeries.MediaGroup;
+        //            intSeasonOffset = 0;
+        //            intDisplaySeasonOffset = 0;
+        //            intEpisodeOffset = 0;
+        //            intSpecialsOffset = 0;
+        //            intDisplayEpisodeOffset = 0;
+
+        //            lstSeriesCollectionPerMediaGroup.Add(serSeriesPerMediaGroup);
+        //        }
+        //        else
+        //        {
+        //            #region adjust plot, actors, cast and images for series
+        //            bool personExistsInSeriesPerMediaGroup = false;
+
+        //            if (numberOfSeriesInSeriesPerMediaGroup == 1)
+        //            {
+        //                List<Actor> serSeriesPerMediaGroupExtendedActors = new List<Actor>();
+        //                List<Person> serSeriesPerMediaGroupExtendedDirectors = new List<Person>();
+        //                List<Person> serSeriesPerMediaGroupExtendedWriters = new List<Person>();
+
+        //                foreach (Actor actor in serSeriesPerMediaGroup.Actors)
+        //                {
+        //                    serSeriesPerMediaGroupExtendedActors.Add(actor);
+        //                }
+
+        //                foreach (Person director in serSeriesPerMediaGroup.Directors)
+        //                {
+        //                    serSeriesPerMediaGroupExtendedDirectors.Add(director);
+        //                }
+
+        //                foreach (Person writer in serSeriesPerMediaGroup.Writers)
+        //                {
+        //                    serSeriesPerMediaGroupExtendedWriters.Add(writer);
+        //                }
+
+        //                foreach (Episode epiEpisode in serSeriesPerMediaGroup.Episodes)
+        //                {
+        //                    // set series plot for empty one in episode (used mainly for movies)
+        //                    if (!epiEpisode.IsSpecial && epiEpisode.Content == string.Empty)
+        //                    {
+        //                        epiEpisode.Content = serSeriesPerMediaGroup.Content;
+        //                    }
+
+        //                    // adds actors to Episodes
+        //                    foreach (Actor actorInSeriesPerMediaGroup in serSeriesPerMediaGroup.Actors)
+        //                    {
+        //                        foreach (Actor actorInEpisode in epiEpisode.Actors)
+        //                        {
+        //                            if (actorInSeriesPerMediaGroup.Name == actorInEpisode.Name)
+        //                            {
+        //                                personExistsInSeriesPerMediaGroup = true;
+        //                            }
+        //                        }
+
+        //                        if (!personExistsInSeriesPerMediaGroup)
+        //                        {
+        //                            serSeriesPerMediaGroupExtendedActors.Add(actorInSeriesPerMediaGroup);
+        //                        }
+        //                    }
+
+        //                    // adds directors to Episodes
+        //                    foreach (Person directorInSeriesPerMediaGroup in serSeriesPerMediaGroup.Directors)
+        //                    {
+        //                        foreach (Person directorInEpisode in epiEpisode.Directors)
+        //                        {
+        //                            if (directorInSeriesPerMediaGroup.Name == directorInEpisode.Name)
+        //                            {
+        //                                personExistsInSeriesPerMediaGroup = true;
+        //                            }
+        //                        }
+
+        //                        if (!personExistsInSeriesPerMediaGroup)
+        //                        {
+        //                            serSeriesPerMediaGroupExtendedDirectors.Add(directorInSeriesPerMediaGroup);
+        //                        }
+        //                    }
+
+        //                    // adds writers to Episodes
+        //                    foreach (Person writerInSeriesPerMediaGroup in serSeriesPerMediaGroup.Writers)
+        //                    {
+        //                        foreach (Person writerInEpisode in epiEpisode.Writers)
+        //                        {
+        //                            if (writerInSeriesPerMediaGroup.Name == writerInEpisode.Name)
+        //                            {
+        //                                personExistsInSeriesPerMediaGroup = true;
+        //                            }
+        //                        }
+
+        //                        if (!personExistsInSeriesPerMediaGroup)
+        //                        {
+        //                            serSeriesPerMediaGroupExtendedWriters.Add(writerInSeriesPerMediaGroup);
+        //                        }
+        //                    }
+
+        //                    serSeriesPerMediaGroup.Actors = serSeriesPerMediaGroupExtendedActors;
+        //                    serSeriesPerMediaGroup.Directors = serSeriesPerMediaGroupExtendedDirectors;
+        //                    serSeriesPerMediaGroup.Writers = serSeriesPerMediaGroupExtendedWriters;
+        //                }
+
+        //                // set season-images
+        //                bool serSeriesPerMediaGroupContainsSeasonCover = false;
+        //                bool serSeriesPerMediaGroupContainsSeasonPoster = false;
+
+        //                // determine, if images need to be added (mainly for movies)
+        //                foreach (ImageFile imgImageFile in serSeriesPerMediaGroup.Images)
+        //                {
+        //                    if (imgImageFile.ImageType == Configuration.ImageType.SeasonCover)
+        //                    {
+        //                        serSeriesPerMediaGroupContainsSeasonCover = true;
+        //                    }
+
+        //                    if (imgImageFile.ImageType == Configuration.ImageType.SeasonPoster)
+        //                    {
+        //                        serSeriesPerMediaGroupContainsSeasonPoster = true;
+        //                    }
+        //                }
+
+        //                // adding images if necessary
+        //                foreach (ImageFile imgImageFile in serSeriesPerMediaGroup.Images)
+        //                {
+        //                    ImageFile imageFileClone = (ImageFile)imgImageFile.Clone();
+        //                    imageFileClone.Season = "1";
+
+        //                    if (!serSeriesPerMediaGroupContainsSeasonCover && imgImageFile.ImageType == Configuration.ImageType.SeasonCover)
+        //                    {
+        //                        imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
+        //                    }
+
+        //                    if (!serSeriesPerMediaGroupContainsSeasonPoster && imgImageFile.ImageType == Configuration.ImageType.SeasonPoster)
+        //                    {
+        //                        imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
+        //                    }
+
+        //                    if (serSeriesPerMediaGroupContainsSeasonCover || serSeriesPerMediaGroupContainsSeasonPoster)
+        //                    {
+        //                        serSeriesPerMediaGroup.Images.Add(imageFileClone);
+        //                    }
+        //                }
+        //            }
+        //            #endregion
+
+        //            serSeriesPerMediaGroup.Title = serSeriesPerMediaGroup.MediaGroup;
+        //            intSeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count - 1;
+        //            intDisplaySeasonOffset = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count - 1;
+        //            intEpisodeOffset = serSeriesPerMediaGroup.NumberOfEpisodes;
+        //            intSpecialsOffset = serSeriesPerMediaGroup.NumberOfSpecials;
+        //            intDisplayEpisodeOffset = serSeriesPerMediaGroup.Episodes.Count;
+
+        //            #region episode related settings
+        //            foreach (Episode epiEpisode in serSeries.Episodes)
+        //            {
+        //                // create new Episode and set reference to series
+        //                epiEpisodePerMediaGroup = (Episode)epiEpisode.Clone();
+        //                epiEpisodePerMediaGroup.Series = serSeriesPerMediaGroup;
+
+        //                // set DisplaySeason, DisplayEpisode and Season for new Episode
+        //                epiEpisodePerMediaGroup.DisplaySeason = (int.Parse(epiEpisodePerMediaGroup.DisplaySeason) + intDisplaySeasonOffset).ToString();
+        //                epiEpisodePerMediaGroup.DisplayEpisode = (int.Parse(epiEpisodePerMediaGroup.DisplayEpisode) + intDisplayEpisodeOffset).ToString();
+        //                epiEpisodePerMediaGroup.ActualSeason = epiEpisodePerMediaGroup.ActualSeason == "0" /* Special */ ? "0" : (int.Parse(epiEpisodePerMediaGroup.ActualSeason) + intSeasonOffset).ToString();
+
+        //                // add new Season to NumberOfEpisodesPerSeason if necessary
+        //                int intSeason = int.Parse(epiEpisodePerMediaGroup.ActualSeason);
+        //                while (serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Count < intSeason + 1)
+        //                {
+        //                    serSeriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+        //                }
+
+        //                // set new Numbers per Series
+        //                serSeriesPerMediaGroup.NumberOfEpisodes = serSeriesPerMediaGroup.NumberOfEpisodes + (!epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
+        //                serSeriesPerMediaGroup.NumberOfSpecials = serSeriesPerMediaGroup.NumberOfSpecials + (epiEpisodePerMediaGroup.IsSpecial ? 1 : 0);
+        //                serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason] + 1;
+        //                serSeriesPerMediaGroup.NumberOfTotalEpisodes = serSeriesPerMediaGroup.NumberOfTotalEpisodes + 1;
+
+        //                // set Episode-Number accordingly
+        //                epiEpisodePerMediaGroup.ActualEpisode = serSeriesPerMediaGroup.NumberOfEpisodesPerSeason[intSeason].ToString();
+
+        //                // add Server for serSeriesPerMediaGroup
+        //                serSeriesPerMediaGroup.AddServer(epiEpisode.Server);
+
+        //                // TODO: add actors
+        //                // TODO: add directors
+        //                // TODO: add writers
+
+        //                // set VideoIndex and FileIndex for Episode and associated Files
+        //                epiEpisodePerMediaGroup.VideoIndex = epiEpisodePerMediaGroup.VideoIndex + intDisplayEpisodeOffset;
+        //                foreach (VideoFile videoFile in epiEpisodePerMediaGroup.MediaFiles)
+        //                {
+        //                    videoFile.FileIndex = videoFile.FileIndex + intDisplayEpisodeOffset;
+
+        //                    foreach (SubTitleFile subTitleFile in videoFile.SubTitleFiles)
+        //                    {
+        //                        subTitleFile.FileIndex = subTitleFile.FileIndex + intDisplayEpisodeOffset;
+        //                    }
+        //                }
+
+        //                // add episode to new series
+        //                serSeriesPerMediaGroup.Episodes.Add(epiEpisodePerMediaGroup);
+
+        //                #region series related settings
+
+        //                // must be done here, as actual season depends on episodes added
+
+        //                // set season-images
+        //                bool serSeriesPerMediaGroupContainsSeasonCoverForActualSeason = false;
+        //                bool serSeriesPerMediaGroupContainsSeasonPosterForActualSeason = false;
+
+        //                // determine, if images need to be added (mainly for movies)
+        //                foreach (ImageFile imgImageFile in serSeriesPerMediaGroup.Images)
+        //                {
+        //                    if (imgImageFile.ImageType == Configuration.ImageType.SeasonCover && (int.Parse(imgImageFile.Season) + intSeasonOffset).ToString() == epiEpisodePerMediaGroup.ActualSeason)
+        //                    {
+        //                        serSeriesPerMediaGroupContainsSeasonCoverForActualSeason = true;
+        //                    }
+
+        //                    if (imgImageFile.ImageType == Configuration.ImageType.SeasonPoster && (int.Parse(imgImageFile.Season) + intSeasonOffset).ToString() == epiEpisodePerMediaGroup.ActualSeason)
+        //                    {
+        //                        serSeriesPerMediaGroupContainsSeasonPosterForActualSeason = true;
+        //                    }
+        //                }
+
+        //                // adding images if necessary
+        //                foreach (ImageFile imgImageFile in serSeriesPerMediaGroup.Images)
+        //                {
+        //                    ImageFile imageFileClone = (ImageFile)imgImageFile.Clone();
+        //                    imageFileClone.Season = epiEpisodePerMediaGroup.ActualSeason;
+
+        //                    if (!serSeriesPerMediaGroupContainsSeasonCoverForActualSeason && imgImageFile.ImageType == Configuration.ImageType.SeasonCover && (int.Parse(imgImageFile.Season) + intSeasonOffset).ToString() == epiEpisodePerMediaGroup.ActualSeason)
+        //                    {
+        //                        imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
+        //                    }
+
+        //                    if (!serSeriesPerMediaGroupContainsSeasonCoverForActualSeason && imgImageFile.ImageType == Configuration.ImageType.SeasonPoster && (int.Parse(imgImageFile.Season) + intSeasonOffset).ToString() == epiEpisodePerMediaGroup.ActualSeason)
+        //                    {
+        //                        imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
+        //                    }
+
+        //                    if (serSeriesPerMediaGroupContainsSeasonCoverForActualSeason || serSeriesPerMediaGroupContainsSeasonPosterForActualSeason)
+        //                    {
+        //                        serSeriesPerMediaGroup.Images.Add(imageFileClone);
+        //                    }
+        //                }
+        //            }
+        //            #endregion
+
+        //            serSeriesPerMediaGroup.SetFilename();
+        //        }
+        //        #endregion
+        //    }
+
+        //    this.SeriesCollectionGroupedByMediaGroup = lstSeriesCollectionPerMediaGroup;
+        //    this.SeriesCollectionWithoutMediaGroup = lstSeriesCollectionWithoutMediaGroup;
+        //}

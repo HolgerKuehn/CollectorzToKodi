@@ -372,6 +372,11 @@ namespace CollectorzToKodi
             SeasonCover,
 
             /// <summary>
+            /// image of poster used for seasons
+            /// </summary>
+            SeasonPoster,
+
+            /// <summary>
             /// image of back drop used for seasons
             /// </summary>
             SeasonBackdrop,

@@ -595,6 +595,105 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// Adds director to Video
+        /// </summary>
+        /// <param name="director">Person, to be added as director</param>
+        public void AddDirector(Person director)
+        {
+            bool addDirector = true;
+            foreach (Person currentDirector in this.Directors)
+            {
+                if (currentDirector.Name == director.Name)
+                {
+                    addDirector = false;
+                }
+            }
+
+            if (addDirector)
+            {
+                this.Directors.Add(director);
+            }
+        }
+
+        /// <summary>
+        /// Adds director to Video
+        /// </summary>
+        /// <param name="directors">List of Persons, to be added as directors</param>
+        public void AddDirector(List<Person> directors)
+        {
+            foreach (Person director in directors)
+            {
+                this.AddDirector(director);
+            }
+        }
+
+        /// <summary>
+        /// Adds writer to Video
+        /// </summary>
+        /// <param name="writer">Person, to be added as writer</param>
+        public void AddWriter(Person writer)
+        {
+            bool addWriter = true;
+            foreach (Person currentWriter in this.Writers)
+            {
+                if (currentWriter.Name == writer.Name)
+                {
+                    addWriter = false;
+                }
+            }
+
+            if (addWriter)
+            {
+                this.Writers.Add(writer);
+            }
+        }
+
+        /// <summary>
+        /// Adds writer to Video
+        /// </summary>
+        /// <param name="writers">List of Persons, to be added as writers</param>
+        public void AddWriter(List<Person> writers)
+        {
+            foreach (Person writer in writers)
+            {
+                this.AddWriter(writer);
+            }
+        }
+
+        /// <summary>
+        /// Adds actor to Video
+        /// </summary>
+        /// <param name="actor">Person, to be added as actor</param>
+        public void AddActor(Actor actor)
+        {
+            bool addActor = true;
+            foreach (Actor currentActor in this.Actors)
+            {
+                if (currentActor.Name == actor.Name && currentActor.Role == actor.Role)
+                {
+                    addActor = false;
+                }
+            }
+
+            if (addActor)
+            {
+                this.Actors.Add(actor);
+            }
+        }
+
+        /// <summary>
+        /// Adds actor to Video
+        /// </summary>
+        /// <param name="actors">List of Persons, to be added as actors</param>
+        public void AddActor(List<Actor> actors)
+        {
+            foreach (Actor actor in actors)
+            {
+                this.AddActor(actor);
+            }
+        }
+
+        /// <summary>
         /// Reads stream data representing video information
         /// </summary>
         /// <param name="xMLMedia">Part of XML-file representing stream information</param>
