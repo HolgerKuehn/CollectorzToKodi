@@ -3,7 +3,7 @@ This project has been created to get my movie collection from Collextorz' Movie 
 
 Both are individual trademarks and more information about them can be found under the following links:
 
-[http://www.collectorz.com/](http://www.collectorz.com/ "http://www.collectorz.com/")
+[http://www.collectorz.com/](http://www.collectorz.com/ "http://www.collectorz.com/")  
 [https://kodi.tv/](https://kodi.tv/ "https://kodi.tv/")
 
 I've used Movie Collector May 2012 to organize my movie collection and started to use Kodi Helix in June 2014. So I had a lot of content allready catalogued and did not want to do it again.
