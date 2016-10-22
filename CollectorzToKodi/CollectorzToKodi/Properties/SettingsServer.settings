@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CollectorzToKodi.Properties" GeneratedClassName="SettingsServer">
+  <Profiles />
+  <Settings>
+    <Setting Name="NumberOfServer" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="ListOfServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DOCUMENTS,YOBISOOCHI,SHIRYOUSOOCHI,JOUSETSUSOOCHI</Value>
+    </Setting>
+    <Setting Name="DriveMappingOfServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P,U,V,X</Value>
+    </Setting>
+    <Setting Name="MappingType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UNIX</Value>
+    </Setting>
+    <Setting Name="LocalPathOfServerForMediaStorage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video</Value>
+    </Setting>
+    <Setting Name="MovieDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Filme</Value>
+    </Setting>
+    <Setting Name="SeriesDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Serien</Value>
+    </Setting>
+    <Setting Name="LocalPathOfServerForMediaPublication" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
