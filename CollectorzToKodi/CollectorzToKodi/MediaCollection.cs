@@ -544,10 +544,11 @@ namespace CollectorzToKodi
                     // adding basic images (without season) from seriesBasicMember
                     foreach (ImageFile imageFile in seriesBasicMember.Images)
                     {
-                        if (imageFile.ImageType == Configuration.ImageType.CoverFront ||
+                        if ((imageFile.ImageType == Configuration.ImageType.CoverFront ||
                             imageFile.ImageType == Configuration.ImageType.CoverBack ||
                             imageFile.ImageType == Configuration.ImageType.Backdrop ||
-                            imageFile.ImageType == Configuration.ImageType.Poster)
+                            imageFile.ImageType == Configuration.ImageType.Poster) &&
+                           imageFile.Season != "0")
                         {
                             ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
 
@@ -619,9 +620,22 @@ namespace CollectorzToKodi
                             }
                         }
 
+                        // change Season for Actors accordingly
+                        foreach (SeriesActor seriesActor in series.Actors)
+                        {
+                            for (int i = 0; i < seriesActor.Seasons.Count; i++)
+                            {
+                                if (seriesActor.Seasons[i] != string.Empty)
+                                {
+                                    seriesActor.Seasons[i] = (int.Parse(seriesActor.Seasons[i]) + fistSeasonInSeries - 1).ToString();
+                                }
+                            }
+                        }
+
                         // add server to new series
                         seriesPerMediaGroup.AddServer(series.Server);
 
+                        // episodes
                         foreach (Episode episode in series.Episodes)
                         {
                             Episode episodePerMediaGroup = (Episode)episode.Clone();

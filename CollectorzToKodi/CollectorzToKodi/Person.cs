@@ -12,6 +12,11 @@ namespace CollectorzToKodi
         #region Attributes
 
         /// <summary>
+        /// Current configuration of CollectorzToKodi
+        /// </summary>
+        private Configuration configuration;
+
+        /// <summary>
         /// full name displayed in Kodi<br/>
         /// </summary>
         private string name;
@@ -28,14 +33,25 @@ namespace CollectorzToKodi
         /// <summary>
         /// Initializes a new instance of the <see cref="Person"/> class.
         /// </summary>
-        public Person()
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
+        public Person(Configuration configuration)
         {
+            this.configuration = configuration;
             this.name = string.Empty;
             this.thumb = string.Empty;
         }
 
         #endregion
         #region Properties
+
+        /// <summary>
+        /// Gets or sets current configuration of CollectorzToKodi
+        /// </summary>
+        public Configuration Configuration
+        {
+            get { return this.configuration; }
+            set { this.configuration = value; }
+        }
 
         /// <summary>
         /// Gets or sets full name displayed in Kodi

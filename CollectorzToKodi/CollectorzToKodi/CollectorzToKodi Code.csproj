@@ -53,6 +53,7 @@
     <Compile Include="Actor.cs" />
     <Compile Include="AudioStream.cs" />
     <Compile Include="BaseClassExtention.cs" />
+    <Compile Include="SeriesActor.cs" />
     <Compile Include="ImageFile.cs" />
     <Compile Include="Episode.cs" />
     <Compile Include="Configuration.cs" />

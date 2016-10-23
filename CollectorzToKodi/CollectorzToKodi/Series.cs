@@ -4,7 +4,6 @@
 
 namespace CollectorzToKodi
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
@@ -111,6 +110,24 @@ namespace CollectorzToKodi
 
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
+        public override void ReadCast(XmlNode xMLNode)
+        {
+            foreach (XmlNode xMLCast in xMLNode.XMLReadSubnode("cast").XMLReadSubnodes("star"))
+            {
+                if (xMLCast.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfActor")
+                {
+                    SeriesActor actor = new SeriesActor(this.Configuration);
+
+                    actor.Name = xMLCast.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                    actor.Role = actor.OverrideSeason(xMLCast.XMLReadSubnode("character").XMLReadInnerText(string.Empty));
+                    actor.Thumb = xMLCast.XMLReadSubnode("person").XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
+
+                    this.Actors.Add(actor);
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public override void ReadMediaFiles(XmlNode xMLMedia)

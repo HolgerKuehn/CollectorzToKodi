@@ -5,6 +5,7 @@
 namespace CollectorzToKodi
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -435,6 +436,21 @@ namespace CollectorzToKodi
         {
             base.AddServer(serverList);
             this.Series.AddServer(serverList);
+        }
+
+        /// <summary>
+        /// Adds SeriesActor to Episode
+        /// </summary>
+        /// <param name="seriesActors">List of Persons, to be added as actors</param>
+        public override void AddActor(List<Actor> seriesActors)
+        {
+            foreach (SeriesActor seriesActor in seriesActors)
+            {
+                if (seriesActor.Seasons.Contains(this.DisplaySeason) || (seriesActor.Seasons.Count > 0 && seriesActor.Seasons[0] == string.Empty))
+                {
+                    this.AddActor(seriesActor);
+                }
+            }
         }
 
         /// <inheritdoc/>

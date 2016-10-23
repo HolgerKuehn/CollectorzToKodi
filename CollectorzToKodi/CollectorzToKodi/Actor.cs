@@ -24,8 +24,9 @@ namespace CollectorzToKodi
         /// <br/>
         /// Initializes actor with blank values.
         /// </summary>
-        public Actor()
-            : base()
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
+        public Actor(Configuration configuration)
+            : base(configuration)
         {
             this.role = string.Empty;
         }

@@ -280,7 +280,7 @@ namespace CollectorzToKodi
         {
             foreach (XmlNode xMLCrewmember in xMLNode.XMLReadSubnode("crew").XMLReadSubnodes("crewmember"))
             {
-                Person person = new Person();
+                Person person = new Person(this.Configuration);
 
                 bool isDirector = xMLCrewmember.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfDirector";
                 bool isWriter = xMLCrewmember.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfWriter";
@@ -328,13 +328,13 @@ namespace CollectorzToKodi
         /// Reads cast information from MovieCollector XML-file
         /// </summary>
         /// <param name="xMLNode">Part of XML-file representing cast information</param>
-        public void ReadCast(XmlNode xMLNode)
+        public virtual void ReadCast(XmlNode xMLNode)
         {
             foreach (XmlNode xMLCast in xMLNode.XMLReadSubnode("cast").XMLReadSubnodes("star"))
             {
                 if (xMLCast.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfActor")
                 {
-                    Actor actor = new Actor();
+                    Actor actor = new Actor(this.Configuration);
 
                     actor.Name = xMLCast.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
                     actor.Role = xMLCast.XMLReadSubnode("character").XMLReadInnerText(string.Empty);
@@ -685,7 +685,7 @@ namespace CollectorzToKodi
         /// Adds actor to Video
         /// </summary>
         /// <param name="actors">List of Persons, to be added as actors</param>
-        public void AddActor(List<Actor> actors)
+        public virtual void AddActor(List<Actor> actors)
         {
             foreach (Actor actor in actors)
             {
