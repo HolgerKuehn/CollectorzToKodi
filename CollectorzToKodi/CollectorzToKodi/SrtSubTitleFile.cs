@@ -116,9 +116,17 @@ namespace CollectorzToKodi
                 while (true)
                 {
                     string srtLine = srdSrtFile.ReadLine();
+
+                    // end of file
                     if (srtLine == null)
                     {
                         break;
+                    }
+
+                    // additional empty lines (on end); just skipping
+                    if (srtLine == string.Empty && lineType == Configuration.SrtSubTitleLineType.EntryNumber)
+                    {
+                        continue;
                     }
 
                     srtSubTitleFileEntry.OffsetTime = this.OffsetTime;
