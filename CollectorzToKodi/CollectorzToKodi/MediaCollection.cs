@@ -513,6 +513,15 @@ namespace CollectorzToKodi
                 {
                     // create new series per node in seriesListsPerMediaGroup
                     Series seriesPerMediaGroup = new Series(this.Configuration);
+                    bool imagesContainsOneWithSeasonOne = false;
+                    List<bool> seriesPerMediagroupContainsImageWithSeasonSpecial = new List<bool>();
+                    List<bool> seriesPerMediagroupContainsImageWithSeasonAll = new List<bool>();
+
+                    for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
+                    {
+                        seriesPerMediagroupContainsImageWithSeasonSpecial.Add(false);
+                        seriesPerMediagroupContainsImageWithSeasonAll.Add(false);
+                    }
 
                     // set basic parameters for new Series, according to first member of MediaGroup
                     Series seriesBasicMember = seriesList[0];
@@ -548,7 +557,7 @@ namespace CollectorzToKodi
                             imageFile.ImageType == Configuration.ImageType.CoverBack ||
                             imageFile.ImageType == Configuration.ImageType.Backdrop ||
                             imageFile.ImageType == Configuration.ImageType.Poster) &&
-                           imageFile.Season != "0")
+                           imageFile.Season != "-1" && imageFile.Season != "0")
                         {
                             ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
 
@@ -564,17 +573,21 @@ namespace CollectorzToKodi
                         int fistSeasonInSeries = seriesPerMediaGroup.NumberOfEpisodesPerSeason.Count;
 
                         // series based attributes
+                        // checking if images of series contains one with Season 1
+                        imagesContainsOneWithSeasonOne = false;
+                        foreach (ImageFile imageContainsOneWithSeasonOne in series.Images)
+                        {
+                            if (imageContainsOneWithSeasonOne.Season == "1")
+                            {
+                                imagesContainsOneWithSeasonOne = true;
+                                break;
+                            }
+                        }
+
                         foreach (ImageFile imageFile in series.Images)
                         {
                             ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
-
-                            // setting Image without Season for first season
-                            if (imageFilePerMediaGroup.Season == string.Empty)
-                            {
-                                imageFilePerMediaGroup.Season = "1";
-                            }
-
-                            imageFilePerMediaGroup.Season = (int.Parse(imageFilePerMediaGroup.Season) + fistSeasonInSeries - 1).ToString();
+                            imageFilePerMediaGroup.Media = seriesPerMediaGroup;
 
                             // change type from basic image to season image
                             if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.Backdrop)
@@ -612,6 +625,40 @@ namespace CollectorzToKodi
                             else
                             {
                                 imageFilePerMediaGroup.ImageType = Configuration.ImageType.Unknown;
+                            }
+
+                            // exclude multiple special images for complete Series and Specials
+                            if (imageFilePerMediaGroup.Season == string.Empty && !imagesContainsOneWithSeasonOne /* default images overruled by image per season */)
+                            {
+                                // setting Image without Season for first season
+                                imageFilePerMediaGroup.Season = "1";
+                            }
+                            else if (imageFilePerMediaGroup.Season == "-1" && !seriesPerMediagroupContainsImageWithSeasonAll[(int)imageFilePerMediaGroup.ImageType] /* image for AllSeasons already added */)
+                            {
+                                seriesPerMediagroupContainsImageWithSeasonAll[(int)imageFilePerMediaGroup.ImageType] = true;
+                            }
+                            else if (imageFilePerMediaGroup.Season == "-1")
+                            {
+                                imageFilePerMediaGroup.Season = string.Empty;
+                            }
+                            else if (imageFilePerMediaGroup.Season == "0" && !seriesPerMediagroupContainsImageWithSeasonSpecial[(int)imageFilePerMediaGroup.ImageType] /* image for specials already added */)
+                            {
+                                seriesPerMediagroupContainsImageWithSeasonSpecial[(int)imageFilePerMediaGroup.ImageType] = true;
+                            }
+                            else if (imageFilePerMediaGroup.Season == "0")
+                            {
+                                imageFilePerMediaGroup.Season = string.Empty;
+                            }
+
+                            if (imageFilePerMediaGroup.Season == string.Empty)
+                            {
+                                // exclude multiple images for seasons
+                                continue;
+                            }
+                            else if (imageFilePerMediaGroup.Season != "-1" && imageFilePerMediaGroup.Season != "0")
+                            {
+                                // Season for Specials ("0") and AllSeasons ("-1") stays unchanged
+                                imageFilePerMediaGroup.Season = (int.Parse(imageFilePerMediaGroup.Season) + fistSeasonInSeries - 1).ToString();
                             }
 
                             if (imageFilePerMediaGroup.ImageType != Configuration.ImageType.Unknown)
