@@ -609,6 +609,51 @@ namespace CollectorzToKodi
                     }
                 }
             }
+
+            // checking, if poster are present for season
+            List<bool> posterPerSeason = new List<bool>();
+            List<ImageFile> posterForImageFiles = new List<ImageFile>();
+
+            posterPerSeason.Add(false); // Season -1
+            posterPerSeason.Add(false); // Season  0
+
+            foreach (ImageFile imageFile in this.Images)
+            {
+                string season = imageFile.Season;
+                if (season == string.Empty)
+                {
+                    season = "0";
+                }
+
+                while (posterPerSeason.Count < int.Parse(season) + 2)
+                {
+                    posterPerSeason.Add(false);
+                }
+
+                if (imageFile.ImageType == Configuration.ImageType.SeasonPoster)
+                {
+                    posterPerSeason[int.Parse(season) + 1] = true;
+                }
+            }
+
+            foreach (ImageFile imageFile in this.Images)
+            {
+                string season = imageFile.Season;
+                if (season == string.Empty)
+                {
+                    season = "0";
+                }
+
+                if (imageFile.ImageType == Configuration.ImageType.SeasonCover && !posterPerSeason[int.Parse(season) + 1])
+                {
+                    ImageFile imageFileClone = (ImageFile)imageFile.Clone();
+                    imageFileClone.ImageType = Configuration.ImageType.SeasonPoster;
+                    imageFileClone.Filename = imageFileClone.Filename.Replace("cover", "poster");
+                    posterForImageFiles.Add(imageFileClone);
+                }
+            }
+
+            this.Images.AddRange(posterForImageFiles);
         }
 
         /// <summary>
@@ -648,7 +693,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {
-                        swrSH.WriteLine("cd \"Season " + imageFile.Season + "\"");
+                        swrSH.WriteLine("cd \"Season " + this.ConvertSeason(imageFile.Season) + "\"");
                     }
 
                     if (imageFile.ImageType == Configuration.ImageType.ExtraBackdrop)
@@ -667,8 +712,51 @@ namespace CollectorzToKodi
                     {
                         swrSH.WriteLine("cd ..");
                     }
+
+                    // adding season-poster and fanart in base folder
+                    if (imageFile.ImageType == Configuration.ImageType.SeasonPoster || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop)
+                    {
+                        string filename = "season";
+
+                        if (imageFile.Season == "-1")
+                        {
+                            filename = filename + "-all";
+                        }
+                        else if (imageFile.Season == "0")
+                        {
+                            filename = filename + "-specials";
+                        }
+                        else
+                        {
+                            filename = filename + imageFile.Media.ConvertSeason(imageFile.Season);
+                        }
+
+                        if (imageFile.ImageType == Configuration.ImageType.SeasonPoster)
+                        {
+                            filename = filename + "-poster";
+                        }
+                        else if (imageFile.ImageType == Configuration.ImageType.SeasonBackdrop)
+                        {
+                            filename = filename + "-fanart";
+                        }
+
+                        filename = filename + imageFile.Extension;
+
+                        swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + filename + "\"");
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// converts season according to Kodi-Version
+        /// </summary>
+        /// <param name="season">season to be prepared for Kodi</param>
+        /// <returns>string of season used in Kodi</returns>
+        public string ConvertSeason(string season)
+        {
+            // maybe changed depending on Kodi-Version
+            return ("00" + season).Substring(season.ToString().Length);
         }
 
         /// <summary>
@@ -705,7 +793,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + imageFile.Season + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }

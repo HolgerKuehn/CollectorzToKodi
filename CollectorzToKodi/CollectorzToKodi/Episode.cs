@@ -190,7 +190,7 @@ namespace CollectorzToKodi
             // createNewMedia is only checked for series; episodes are not changed, as not generated
             if (this.Title != string.Empty)
             {
-                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.actualSeason + "\"");
+                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
 
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
@@ -462,6 +462,12 @@ namespace CollectorzToKodi
             {
                 videoFile.Filename = this.Filename;
                 videoFile.ConvertFilename();
+            }
+
+            foreach (ImageFile imageFile in this.Images)
+            {
+                imageFile.Filename = this.Filename + "-thumb";
+                imageFile.ConvertFilename();
             }
         }
 

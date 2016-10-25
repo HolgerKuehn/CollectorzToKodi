@@ -553,13 +553,13 @@ namespace CollectorzToKodi
                     // adding basic images (without season) from seriesBasicMember
                     foreach (ImageFile imageFile in seriesBasicMember.Images)
                     {
-                        if ((imageFile.ImageType == Configuration.ImageType.CoverFront ||
+                        if (imageFile.ImageType == Configuration.ImageType.CoverFront ||
                             imageFile.ImageType == Configuration.ImageType.CoverBack ||
                             imageFile.ImageType == Configuration.ImageType.Backdrop ||
-                            imageFile.ImageType == Configuration.ImageType.Poster) &&
-                           imageFile.Season != "-1" && imageFile.Season != "0")
+                            imageFile.ImageType == Configuration.ImageType.Poster)
                         {
                             ImageFile imageFilePerMediaGroup = (ImageFile)imageFile.Clone();
+                            imageFilePerMediaGroup.Media = seriesPerMediaGroup;
 
                             seriesPerMediaGroup.Images.Add(imageFilePerMediaGroup);
                         }

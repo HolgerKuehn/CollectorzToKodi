@@ -202,7 +202,7 @@ namespace CollectorzToKodi
                     swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
                     for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
                     {
-                        swrSH.WriteLine("mkdir \"Season " + i.ToString() + "\"");
+                        swrSH.WriteLine("mkdir \"Season " + this.ConvertSeason(i.ToString()) + "\"");
                     }
 
                     swrSH.WriteLine("mkdir \"extrafanart\"");
