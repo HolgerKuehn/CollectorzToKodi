@@ -112,6 +112,7 @@
     </None>
     <AdditionalFiles Include="stylecop.json" />
     <None Include="README.md" />
+    <None Include="Sample Files\Library.sh" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
@@ -121,6 +122,7 @@
   <ItemGroup>
     <Content Include="Codefragmente.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

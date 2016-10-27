@@ -486,6 +486,11 @@ namespace CollectorzToKodi
         public virtual void ReadImages(XmlNode xMLNode)
         {
             ImageFile image;
+            ImageFile cover = null;
+            ImageFile poster = null;
+            ImageFile seaonCover = null;
+            ImageFile backdrop = null;
+            ImageFile imageFileClone = null;
 
             // Cover-Front-Image
             image = new ImageFile(this.Configuration);
@@ -498,6 +503,7 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
+                cover = image;
             }
 
             // Cover-Back-Image
@@ -531,6 +537,7 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
+                poster = image;
             }
 
             // Backdrop-Image
@@ -544,9 +551,19 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
+                backdrop = image;
             }
 
             // Covers / Backdrops per Season
+            List<List<int>> imagesPerSeason = new List<List<int>>();
+
+            // initialize ImagePerSeason-List with imageTypes
+            for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
+            {
+                imagesPerSeason.Add(new List<int>());
+            }
+
+            // add images from Links section
             int numberOfExtraBackdrop = 0;
             int numberOfExtraCover = 0;
             foreach (XmlNode xMLImageFile in xMLNode.XMLReadSubnode("links").XMLReadSubnodes("link"))
@@ -607,53 +624,71 @@ namespace CollectorzToKodi
                     {
                         imageFile.Media.Images.Add(imageFile);
                     }
+
+                    // adding image data to posterPerSeason-list
+                    string season = imageFile.Season;
+                    if (season == string.Empty)
+                    {
+                        season = "0";
+                    }
+
+                    while (imagesPerSeason[(int)imageFile.ImageType].Count < int.Parse(season) + 2)
+                    {
+                        for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
+                        {
+                            imagesPerSeason[i].Add(0);
+                        }
+                    }
+
+                    imagesPerSeason[(int)imageFile.ImageType][int.Parse(imageFile.Season) + 1]++;
                 }
             }
 
-            // checking, if poster are present for season
-            List<bool> posterPerSeason = new List<bool>();
-            List<ImageFile> posterForImageFiles = new List<ImageFile>();
-
-            posterPerSeason.Add(false); // Season -1
-            posterPerSeason.Add(false); // Season  0
-
-            foreach (ImageFile imageFile in this.Images)
+            // for all Seasons (i)
+            for (int i = 0; i < imagesPerSeason[(int)Configuration.ImageType.CoverFront].Count; i++)
             {
-                string season = imageFile.Season;
-                if (season == string.Empty)
+                // add SeasonCover if missing
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i] == 0 && cover != null)
                 {
-                    season = "0";
+                    imageFileClone = (ImageFile)cover.Clone();
+                    imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
+                    imageFileClone.Season = (i - 1).ToString();
+
+                    this.Images.Add(imageFileClone);
+                    imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i]++;
+                    seaonCover = imageFileClone;
                 }
 
-                while (posterPerSeason.Count < int.Parse(season) + 2)
+                // add SeasonPoster if missing
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] == 0)
                 {
-                    posterPerSeason.Add(false);
-                }
+                    if (poster != null)
+                    {
+                        imageFileClone = (ImageFile)poster.Clone();
+                    }
+                    else if (seaonCover != null)
+                    {
+                        imageFileClone = (ImageFile)seaonCover.Clone();
+                    }
 
-                if (imageFile.ImageType == Configuration.ImageType.SeasonPoster)
-                {
-                    posterPerSeason[int.Parse(season) + 1] = true;
-                }
-            }
-
-            foreach (ImageFile imageFile in this.Images)
-            {
-                string season = imageFile.Season;
-                if (season == string.Empty)
-                {
-                    season = "0";
-                }
-
-                if (imageFile.ImageType == Configuration.ImageType.SeasonCover && !posterPerSeason[int.Parse(season) + 1])
-                {
-                    ImageFile imageFileClone = (ImageFile)imageFile.Clone();
                     imageFileClone.ImageType = Configuration.ImageType.SeasonPoster;
-                    imageFileClone.Filename = imageFileClone.Filename.Replace("cover", "poster");
-                    posterForImageFiles.Add(imageFileClone);
+                    imageFileClone.Season = (i - 1).ToString();
+
+                    this.Images.Add(imageFileClone);
+                    imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i]++;
+                }
+
+                // add SeasonBackdrop if missing
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i] == 0 && backdrop != null)
+                {
+                    imageFileClone = (ImageFile)backdrop.Clone();
+                    imageFileClone.ImageType = Configuration.ImageType.SeasonBackdrop;
+                    imageFileClone.Season = (i - 1).ToString();
+
+                    this.Images.Add(imageFileClone);
+                    imagesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i]++;
                 }
             }
-
-            this.Images.AddRange(posterForImageFiles);
         }
 
         /// <summary>
