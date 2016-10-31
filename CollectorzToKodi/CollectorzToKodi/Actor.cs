@@ -16,6 +16,11 @@ namespace CollectorzToKodi
         /// </summary>
         private string role;
 
+        /// <summary>
+        /// url to profile
+        /// </summary>
+        private string url;
+
         #endregion
         #region Constructor
 
@@ -29,6 +34,7 @@ namespace CollectorzToKodi
             : base(configuration)
         {
             this.role = string.Empty;
+            this.url = string.Empty;
         }
 
         #endregion
@@ -41,6 +47,15 @@ namespace CollectorzToKodi
         {
             get { return this.role; }
             set { this.role = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets url to profile of actor
+        /// </summary>
+        public string URL
+        {
+            get { return this.url; }
+            set { this.url = value; }
         }
 
         #endregion

@@ -338,6 +338,7 @@ namespace CollectorzToKodi
 
                     actor.Name = xMLCast.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
                     actor.Role = xMLCast.XMLReadSubnode("character").XMLReadInnerText(string.Empty);
+                    actor.URL = xMLCast.XMLReadSubnode("person").XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     actor.Thumb = xMLCast.XMLReadSubnode("person").XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
 
                     this.Actors.Add(actor);
@@ -358,9 +359,14 @@ namespace CollectorzToKodi
                 swrNFO.WriteLine("        <name>" + actor.Name + "</name>");
                 swrNFO.WriteLine("        <role>" + actor.Role + "</role>");
 
-                if (actor.Thumb.StartsWith("http:"))
+                if (actor.Thumb.StartsWith("http"))
                 {
                     swrNFO.WriteLine("        <thumb>" + actor.Thumb + "</thumb>");
+                }
+
+                if (actor.URL.StartsWith("http"))
+                {
+                    swrNFO.WriteLine("        <url>" + actor.URL + "</url>");
                 }
 
                 swrNFO.WriteLine("    </actor>");

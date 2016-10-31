@@ -122,6 +122,7 @@ namespace CollectorzToKodi
 
                     actor.Name = xMLCast.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
                     actor.Role = actor.OverrideSeason(xMLCast.XMLReadSubnode("character").XMLReadInnerText(string.Empty));
+                    actor.URL = xMLCast.XMLReadSubnode("person").XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     actor.Thumb = xMLCast.XMLReadSubnode("person").XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
 
                     this.Actors.Add(actor);

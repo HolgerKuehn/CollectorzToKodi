@@ -488,9 +488,21 @@ namespace CollectorzToKodi
             ImageFile image;
             ImageFile cover = null;
             ImageFile poster = null;
-            ImageFile seaonCover = null;
+            ImageFile seasonCover = null;
             ImageFile backdrop = null;
             ImageFile imageFileClone = null;
+
+            // Covers / Backdrops per Season
+            List<List<int>> imagesPerSeason = new List<List<int>>();
+
+            // initialize ImagePerSeason-List with imageTypes
+            for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
+            {
+                imagesPerSeason.Add(new List<int>());
+                imagesPerSeason[i].Add(0); // allSeasons
+                imagesPerSeason[i].Add(0); // Specials
+                imagesPerSeason[i].Add(0); // Season 1
+            }
 
             // Cover-Front-Image
             image = new ImageFile(this.Configuration);
@@ -504,6 +516,7 @@ namespace CollectorzToKodi
             {
                 image.Media.Images.Add(image);
                 cover = image;
+                imagesPerSeason[(int)Configuration.ImageType.CoverFront][0]++;
             }
 
             // Cover-Back-Image
@@ -517,6 +530,7 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
+                imagesPerSeason[(int)Configuration.ImageType.CoverBack][0]++;
             }
 
             // Poster-Image
@@ -538,6 +552,7 @@ namespace CollectorzToKodi
             {
                 image.Media.Images.Add(image);
                 poster = image;
+                imagesPerSeason[(int)Configuration.ImageType.Poster][0]++;
             }
 
             // Backdrop-Image
@@ -552,15 +567,7 @@ namespace CollectorzToKodi
             {
                 image.Media.Images.Add(image);
                 backdrop = image;
-            }
-
-            // Covers / Backdrops per Season
-            List<List<int>> imagesPerSeason = new List<List<int>>();
-
-            // initialize ImagePerSeason-List with imageTypes
-            for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
-            {
-                imagesPerSeason.Add(new List<int>());
+                imagesPerSeason[(int)Configuration.ImageType.Backdrop][0]++;
             }
 
             // add images from Links section
@@ -645,7 +652,7 @@ namespace CollectorzToKodi
             }
 
             // for all Seasons (i)
-            for (int i = 0; i < imagesPerSeason[(int)Configuration.ImageType.CoverFront].Count; i++)
+            for (int i = 0; i < imagesPerSeason[(int)Configuration.ImageType.SeasonCover].Count; i++)
             {
                 // add SeasonCover if missing
                 if (imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i] == 0 && cover != null)
@@ -656,19 +663,19 @@ namespace CollectorzToKodi
 
                     this.Images.Add(imageFileClone);
                     imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i]++;
-                    seaonCover = imageFileClone;
+                    seasonCover = imageFileClone;
                 }
 
                 // add SeasonPoster if missing
-                if (imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] == 0)
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] == 0 && (poster != null || seasonCover != null))
                 {
                     if (poster != null)
                     {
                         imageFileClone = (ImageFile)poster.Clone();
                     }
-                    else if (seaonCover != null)
+                    else if (seasonCover != null)
                     {
-                        imageFileClone = (ImageFile)seaonCover.Clone();
+                        imageFileClone = (ImageFile)seasonCover.Clone();
                     }
 
                     imageFileClone.ImageType = Configuration.ImageType.SeasonPoster;
