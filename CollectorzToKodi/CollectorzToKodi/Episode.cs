@@ -454,6 +454,12 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
+        public override Actor ActorFactory(Configuration configuration)
+        {
+            return new SeriesActor(configuration);
+        }
+
+        /// <inheritdoc/>
         public override void SetFilename()
         {
             this.Filename = this.Series.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);

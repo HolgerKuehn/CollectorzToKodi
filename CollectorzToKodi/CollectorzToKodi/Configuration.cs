@@ -337,14 +337,6 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets number of ImageTypes; needs to be updated, when new ImageTypes are indroduced
-        /// </summary>
-        public int NumberOfImageTypes
-        {
-            get { return 11; }
-        }
-
-        /// <summary>
         /// List of image types used for publishing in Kodi
         /// </summary>
         public enum ImageType
@@ -433,6 +425,14 @@ namespace CollectorzToKodi
             /// empty line ending the entry
             /// </summary>
             EmptyLine
+        }
+
+        /// <summary>
+        /// Gets number of ImageTypes; needs to be updated, when new ImageTypes are indroduced
+        /// </summary>
+        public int NumberOfImageTypes
+        {
+            get { return 11; }
         }
 
         #endregion

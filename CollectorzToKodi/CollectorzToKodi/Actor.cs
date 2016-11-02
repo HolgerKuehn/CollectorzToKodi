@@ -4,6 +4,9 @@
 
 namespace CollectorzToKodi
 {
+    using System.IO;
+    using System.Xml;
+
     /// <summary>
     /// class to mange Actors
     /// </summary>
@@ -15,11 +18,6 @@ namespace CollectorzToKodi
         /// role played by actor
         /// </summary>
         private string role;
-
-        /// <summary>
-        /// url to profile
-        /// </summary>
-        private string url;
 
         #endregion
         #region Constructor
@@ -34,7 +32,6 @@ namespace CollectorzToKodi
             : base(configuration)
         {
             this.role = string.Empty;
-            this.url = string.Empty;
         }
 
         #endregion
@@ -49,17 +46,31 @@ namespace CollectorzToKodi
             set { this.role = value; }
         }
 
-        /// <summary>
-        /// Gets or sets url to profile of actor
-        /// </summary>
-        public string URL
-        {
-            get { return this.url; }
-            set { this.url = value; }
-        }
-
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
+        public override void ReadPerson(XmlNode xmlActor)
+        {
+            // extract person and set basic properties
+            XmlNode xmlPerson = xmlActor.XMLReadSubnode("person");
+            base.ReadPerson(xmlPerson);
+
+            // add role
+            this.Role = xmlActor.XMLReadSubnode("character").XMLReadInnerText(string.Empty);
+        }
+
+        /// <inheritdoc/>
+        public override void WritePerson(StreamWriter swrNFO, bool isFirst = false)
+        {
+            swrNFO.WriteLine("    <actor" + (isFirst ? " clear=\"true\"" : string.Empty) + ">");
+            swrNFO.WriteLine("        <role>" + this.Role + "</role>");
+
+            base.WritePerson(swrNFO, isFirst);
+
+            swrNFO.WriteLine("    </actor>");
+        }
+
         #endregion
     }
 }

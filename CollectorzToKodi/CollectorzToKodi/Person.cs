@@ -4,10 +4,13 @@
 
 namespace CollectorzToKodi
 {
+    using System.IO;
+    using System.Xml;
+
     /// <summary>
     /// class to manage persons from CollectorzToKodi-Programs<br/>
     /// </summary>
-    public class Person
+    public abstract class Person
     {
         #region Attributes
 
@@ -20,6 +23,11 @@ namespace CollectorzToKodi
         /// full name displayed in Kodi<br/>
         /// </summary>
         private string name;
+
+        /// <summary>
+        /// url to profile
+        /// </summary>
+        private string url;
 
         /// <summary>
         /// link to thumb of person<br/>
@@ -38,6 +46,7 @@ namespace CollectorzToKodi
         {
             this.configuration = configuration;
             this.name = string.Empty;
+            this.url = string.Empty;
             this.thumb = string.Empty;
         }
 
@@ -63,6 +72,15 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// Gets or sets url to profile of actor
+        /// </summary>
+        public string URL
+        {
+            get { return this.url; }
+            set { this.url = value; }
+        }
+
+        /// <summary>
         /// Gets or sets link to thumb of person<br/>
         /// can hold url or local-file link to thumb
         /// </summary>
@@ -74,6 +92,38 @@ namespace CollectorzToKodi
 
         #endregion
         #region Functions
+
+        /// <summary>
+        /// extracts properties of person from XML-node representing a person
+        /// </summary>
+        /// <param name="xmlPerson">xml-node representing a person</param>
+        public virtual void ReadPerson(XmlNode xmlPerson)
+        {
+            this.Name = xmlPerson.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+            this.URL = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+            this.Thumb = xmlPerson.XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
+        }
+
+        /// <summary>
+        /// Writes person to provided NFO file
+        /// </summary>
+        /// <param name="swrNFO">NFO file that the image information should be added to</param>
+        /// <param name="isFirst">states, weather the written Person is the fist in the generated list or not; resets list in Kodi, if so</param>
+        public virtual void WritePerson(StreamWriter swrNFO, bool isFirst = false)
+        {
+            swrNFO.WriteLine("        <name>" + this.Name + "</name>");
+
+            if (this.URL.StartsWith("http"))
+            {
+                swrNFO.WriteLine("        <url>" + this.URL + "</url>");
+            }
+
+            if (this.Thumb.StartsWith("http"))
+            {
+                swrNFO.WriteLine("        <thumb>" + this.Thumb + "</thumb>");
+            }
+        }
+
         #endregion
     }
 }

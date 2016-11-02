@@ -40,12 +40,12 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of directors of video
         /// </summary>
-        private List<Person> directors;
+        private List<Director> directors;
 
         /// <summary>
         /// list of writers of video
         /// </summary>
-        private List<Person> writers;
+        private List<Writer> writers;
 
         /// <summary>
         /// list of actors of video
@@ -96,8 +96,8 @@ namespace CollectorzToKodi
             this.playCount = "0";
             this.playDate = string.Empty;
             this.iMDbId = string.Empty;
-            this.directors = new List<Person>();
-            this.writers = new List<Person>();
+            this.directors = new List<Director>();
+            this.writers = new List<Writer>();
             this.actors = new List<Actor>();
             this.videoIndex = 1;
 
@@ -151,7 +151,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of directors of video
         /// </summary>
-        public List<Person> Directors
+        public List<Director> Directors
         {
             get { return this.directors; }
             set { this.directors = value; }
@@ -160,7 +160,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of writers of video
         /// </summary>
-        public List<Person> Writers
+        public List<Writer> Writers
         {
             get { return this.writers; }
             set { this.writers = value; }
@@ -280,25 +280,21 @@ namespace CollectorzToKodi
         {
             foreach (XmlNode xMLCrewmember in xMLNode.XMLReadSubnode("crew").XMLReadSubnodes("crewmember"))
             {
-                Person person = new Person(this.Configuration);
-
                 bool isDirector = xMLCrewmember.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfDirector";
                 bool isWriter = xMLCrewmember.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfWriter";
 
-                person.Name = xMLCrewmember.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                person.Thumb = xMLCrewmember.XMLReadSubnode("person").XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
-
-                if (isDirector || isWriter)
+                if (isDirector)
                 {
-                    if (isDirector)
-                    {
-                        this.Directors.Add(person);
-                    }
+                    Director director = new Director(this.Configuration);
+                    director.ReadPerson(xMLCrewmember.XMLReadSubnode("person"));
+                    this.Directors.Add(director);
+                }
 
-                    if (isWriter)
-                    {
-                        this.Writers.Add(person);
-                    }
+                if (isWriter)
+                {
+                    Writer writer = new Writer(this.Configuration);
+                    writer.ReadPerson(xMLCrewmember.XMLReadSubnode("person"));
+                    this.Writers.Add(writer);
                 }
             }
         }
@@ -310,18 +306,28 @@ namespace CollectorzToKodi
         public void WriteCrew(StreamWriter swrNFO)
         {
             int i = 0;
-            foreach (Person director in this.Directors)
+            foreach (Director director in this.Directors)
             {
-                swrNFO.WriteLine("    <director" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + director.Name + "</director>");
+                director.WritePerson(swrNFO, i == 0);
                 i++;
             }
 
             i = 0;
-            foreach (Person writer in this.Writers)
+            foreach (Writer writer in this.Writers)
             {
-                swrNFO.WriteLine("    <credits" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + writer.Name + "</credits>");
+                writer.WritePerson(swrNFO, i == 0);
                 i++;
             }
+        }
+
+        /// <summary>
+        /// return new Actor or SeriesActor depending on referring class
+        /// </summary>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
+        /// <returns>new Actor</returns>
+        public virtual Actor ActorFactory(Configuration configuration)
+        {
+            return new Actor(configuration);
         }
 
         /// <summary>
@@ -334,12 +340,9 @@ namespace CollectorzToKodi
             {
                 if (xMLCast.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfActor")
                 {
-                    Actor actor = new Actor(this.Configuration);
+                    Actor actor = this.ActorFactory(this.Configuration);
 
-                    actor.Name = xMLCast.XMLReadSubnode("person").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                    actor.Role = xMLCast.XMLReadSubnode("character").XMLReadInnerText(string.Empty);
-                    actor.URL = xMLCast.XMLReadSubnode("person").XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    actor.Thumb = xMLCast.XMLReadSubnode("person").XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
+                    actor.ReadPerson(xMLCast);
 
                     this.Actors.Add(actor);
                 }
@@ -355,22 +358,7 @@ namespace CollectorzToKodi
             int i = 0;
             foreach (Actor actor in this.Actors)
             {
-                swrNFO.WriteLine("    <actor" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">");
-                swrNFO.WriteLine("        <name>" + actor.Name + "</name>");
-                swrNFO.WriteLine("        <role>" + actor.Role + "</role>");
-
-                if (actor.Thumb.StartsWith("http"))
-                {
-                    swrNFO.WriteLine("        <thumb>" + actor.Thumb + "</thumb>");
-                }
-
-                if (actor.URL.StartsWith("http"))
-                {
-                    swrNFO.WriteLine("        <url>" + actor.URL + "</url>");
-                }
-
-                swrNFO.WriteLine("    </actor>");
-
+                actor.WritePerson(swrNFO, i == 0);
                 i++;
             }
         }
@@ -604,10 +592,10 @@ namespace CollectorzToKodi
         /// Adds director to Video
         /// </summary>
         /// <param name="director">Person, to be added as director</param>
-        public void AddDirector(Person director)
+        public void AddDirector(Director director)
         {
             bool addDirector = true;
-            foreach (Person currentDirector in this.Directors)
+            foreach (Director currentDirector in this.Directors)
             {
                 if (currentDirector.Name == director.Name)
                 {
@@ -625,9 +613,9 @@ namespace CollectorzToKodi
         /// Adds director to Video
         /// </summary>
         /// <param name="directors">List of Persons, to be added as directors</param>
-        public void AddDirector(List<Person> directors)
+        public void AddDirector(List<Director> directors)
         {
-            foreach (Person director in directors)
+            foreach (Director director in directors)
             {
                 this.AddDirector(director);
             }
@@ -637,10 +625,10 @@ namespace CollectorzToKodi
         /// Adds writer to Video
         /// </summary>
         /// <param name="writer">Person, to be added as writer</param>
-        public void AddWriter(Person writer)
+        public void AddWriter(Writer writer)
         {
             bool addWriter = true;
-            foreach (Person currentWriter in this.Writers)
+            foreach (Writer currentWriter in this.Writers)
             {
                 if (currentWriter.Name == writer.Name)
                 {
@@ -658,9 +646,9 @@ namespace CollectorzToKodi
         /// Adds writer to Video
         /// </summary>
         /// <param name="writers">List of Persons, to be added as writers</param>
-        public void AddWriter(List<Person> writers)
+        public void AddWriter(List<Writer> writers)
         {
-            foreach (Person writer in writers)
+            foreach (Writer writer in writers)
             {
                 this.AddWriter(writer);
             }

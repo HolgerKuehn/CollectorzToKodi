@@ -240,6 +240,12 @@ namespace CollectorzToKodi
                             episode.TitleOriginal = episode.Title;
                             episode.MediaGroup = episode.Series.MediaGroup;
                             episode.Content = xMLEpisode.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
+
+                            if (!episode.IsSpecial && episode.Content == string.Empty)
+                            {
+                                episode.Content = episode.Series.Content;
+                            }
+
                             episode.RunTime = xMLEpisode.XMLReadSubnode("runtimeminutes").XMLReadInnerText(string.Empty);
                             episode.PublishingDate = xMLEpisode.XMLReadSubnode("firstairdate").XMLReadSubnode("date").XMLReadInnerText(episode.Series.PublishingDate);
                             episode.PlayCount = xMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Yes" || xMLEpisode.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Ja" ? "1" : "0";
@@ -703,11 +709,11 @@ namespace CollectorzToKodi
                             episodePerMediaGroup.ActualEpisode = (string)seriesPerMediaGroup.NumberOfEpisodesPerSeason.ElementAt((int)int.Parse(episodePerMediaGroup.ActualSeason)).ToString();
                             episodePerMediaGroup.DisplayEpisode = (string)(seriesPerMediaGroup.NumberOfSpecials + seriesPerMediaGroup.NumberOfEpisodes).ToString();
 
-                            // set plot - each content episode gets content from series, if empty
-                            if (!episodePerMediaGroup.IsSpecial && episodePerMediaGroup.Content == string.Empty)
-                            {
-                                episodePerMediaGroup.Content = series.Content;
-                            }
+                            // // set plot - each content episode gets content from series, if empty
+                            // if (!episodePerMediaGroup.IsSpecial && episodePerMediaGroup.Content == string.Empty)
+                            // {
+                            //     episodePerMediaGroup.Content = series.Content;
+                            // }
 
                             // add series director, writer and actors to episodes within
                             episodePerMediaGroup.AddDirector(series.Directors);
