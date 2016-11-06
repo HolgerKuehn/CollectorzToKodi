@@ -5,6 +5,7 @@
 namespace CollectorzToKodi
 {
     using System.Collections.Generic;
+    using System.Xml;
 
     /// <summary>
     /// class to mange Actors in Series
@@ -81,6 +82,16 @@ namespace CollectorzToKodi
             this.Seasons = season.Split(",");
 
             return role.Trim();
+        }
+
+        /// <inheritdoc/>
+        public override void ReadPerson(XmlNode xmlActor)
+        {
+            // extract actor from xmlActor
+            base.ReadPerson(xmlActor);
+
+            // extract Seasons from role
+            this.Role = this.OverrideSeason(this.Role);
         }
 
         #endregion

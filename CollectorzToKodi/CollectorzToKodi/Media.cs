@@ -12,7 +12,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Base class for media content
     /// </summary>
-    public abstract class Media
+    public abstract class Media : IMedia
     {
         #region Attributes
 
@@ -486,14 +486,11 @@ namespace CollectorzToKodi
         public virtual void ReadImages(XmlNode xMLNode)
         {
             ImageFile image;
-            ImageFile cover = null;
-            ImageFile poster = null;
-            ImageFile seasonCover = null;
-            ImageFile backdrop = null;
             ImageFile imageFileClone = null;
 
             // Covers / Backdrops per Season
             List<List<int>> imagesPerSeason = new List<List<int>>();
+            List<List<ImageFile>> imageFilesPerSeason = new List<List<ImageFile>>();
 
             // initialize ImagePerSeason-List with imageTypes
             for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
@@ -502,6 +499,11 @@ namespace CollectorzToKodi
                 imagesPerSeason[i].Add(0); // allSeasons
                 imagesPerSeason[i].Add(0); // Specials
                 imagesPerSeason[i].Add(0); // Season 1
+
+                imageFilesPerSeason.Add(new List<ImageFile>());
+                imageFilesPerSeason[i].Add(null); // allSeasons
+                imageFilesPerSeason[i].Add(null); // Specials
+                imageFilesPerSeason[i].Add(null); // Season 1
             }
 
             // Cover-Front-Image
@@ -515,8 +517,8 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
-                cover = image;
                 imagesPerSeason[(int)Configuration.ImageType.CoverFront][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.CoverFront][0] /* Cover */ = image;
             }
 
             // Cover-Back-Image
@@ -531,6 +533,7 @@ namespace CollectorzToKodi
             {
                 image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.CoverBack][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.CoverBack][0] /* Cover-Back */ = image;
             }
 
             // Poster-Image
@@ -551,8 +554,8 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
-                poster = image;
                 imagesPerSeason[(int)Configuration.ImageType.Poster][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.Poster][0] /* Poster */ = image;
             }
 
             // Backdrop-Image
@@ -566,8 +569,8 @@ namespace CollectorzToKodi
             if (image.URL != string.Empty)
             {
                 image.Media.Images.Add(image);
-                backdrop = image;
                 imagesPerSeason[(int)Configuration.ImageType.Backdrop][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0] /* Backdrop */ = image;
             }
 
             // add images from Links section
@@ -644,10 +647,12 @@ namespace CollectorzToKodi
                         for (int i = 0; i < this.Configuration.NumberOfImageTypes; i++)
                         {
                             imagesPerSeason[i].Add(0);
+                            imageFilesPerSeason[i].Add(null);
                         }
                     }
 
                     imagesPerSeason[(int)imageFile.ImageType][int.Parse(imageFile.Season) + 1]++;
+                    imageFilesPerSeason[(int)imageFile.ImageType][int.Parse(imageFile.Season) + 1] = imageFile;
                 }
             }
 
@@ -655,27 +660,28 @@ namespace CollectorzToKodi
             for (int i = 0; i < imagesPerSeason[(int)Configuration.ImageType.SeasonCover].Count; i++)
             {
                 // add SeasonCover if missing
-                if (imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i] == 0 && cover != null)
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i] == 0 && imageFilesPerSeason[(int)Configuration.ImageType.CoverFront][0] /* Cover */ != null)
                 {
-                    imageFileClone = (ImageFile)cover.Clone();
+                    imageFileClone = (ImageFile)imageFilesPerSeason[(int)Configuration.ImageType.CoverFront][0].Clone() /* Cover */;
                     imageFileClone.ImageType = Configuration.ImageType.SeasonCover;
                     imageFileClone.Season = (i - 1).ToString();
 
                     this.Images.Add(imageFileClone);
                     imagesPerSeason[(int)Configuration.ImageType.SeasonCover][i]++;
-                    seasonCover = imageFileClone;
+                    imageFilesPerSeason[(int)Configuration.ImageType.SeasonCover][i] /* Season-Cover */ = imageFileClone;
                 }
 
                 // add SeasonPoster if missing
-                if (imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] == 0 && (poster != null || seasonCover != null))
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] == 0 && (imageFilesPerSeason[(int)Configuration.ImageType.Poster][0] /* Poster */ != null || imageFilesPerSeason[(int)Configuration.ImageType.SeasonCover][i] /* Season-Cover */ != null))
                 {
-                    if (poster != null)
+                    // add Season-Cover first
+                    if (imageFilesPerSeason[(int)Configuration.ImageType.SeasonCover][i] != null)
                     {
-                        imageFileClone = (ImageFile)poster.Clone();
-                    }
-                    else if (seasonCover != null)
+                        imageFileClone = (ImageFile)imageFilesPerSeason[(int)Configuration.ImageType.SeasonCover][i].Clone();
+                    } // or add series poster instead
+                    else if (imageFilesPerSeason[(int)Configuration.ImageType.Poster][0] /* Poster */ != null)
                     {
-                        imageFileClone = (ImageFile)seasonCover.Clone();
+                        imageFileClone = (ImageFile)imageFilesPerSeason[(int)Configuration.ImageType.Poster][0].Clone() /* Poster */;
                     }
 
                     imageFileClone.ImageType = Configuration.ImageType.SeasonPoster;
@@ -683,17 +689,19 @@ namespace CollectorzToKodi
 
                     this.Images.Add(imageFileClone);
                     imagesPerSeason[(int)Configuration.ImageType.SeasonPoster][i]++;
+                    imageFilesPerSeason[(int)Configuration.ImageType.SeasonPoster][i] /* SeasonPoster */ = imageFileClone;
                 }
 
                 // add SeasonBackdrop if missing
-                if (imagesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i] == 0 && backdrop != null)
+                if (imagesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i] == 0 && imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0] /* Backdrop */ != null)
                 {
-                    imageFileClone = (ImageFile)backdrop.Clone();
+                    imageFileClone = (ImageFile)imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0].Clone() /* Backdrop */;
                     imageFileClone.ImageType = Configuration.ImageType.SeasonBackdrop;
                     imageFileClone.Season = (i - 1).ToString();
 
                     this.Images.Add(imageFileClone);
                     imagesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i]++;
+                    imageFilesPerSeason[(int)Configuration.ImageType.SeasonBackdrop][i] /* SeasonBackdrop */ = imageFileClone;
                 }
             }
         }

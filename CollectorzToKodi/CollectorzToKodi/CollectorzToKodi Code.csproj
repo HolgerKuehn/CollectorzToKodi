@@ -54,6 +54,7 @@
     <Compile Include="AudioStream.cs" />
     <Compile Include="BaseClassExtention.cs" />
     <Compile Include="Director.cs" />
+    <Compile Include="IMedia.cs" />
     <Compile Include="SeriesActor.cs" />
     <Compile Include="ImageFile.cs" />
     <Compile Include="Episode.cs" />
