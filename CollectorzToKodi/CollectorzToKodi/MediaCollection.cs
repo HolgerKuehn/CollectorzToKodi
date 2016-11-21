@@ -571,12 +571,14 @@ namespace CollectorzToKodi
                         }
                     }
 
-                    seriesPerMediaGroup.Content = "MediaCollection for " + seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.Content = "MediaCollection for " + seriesBasicMember.MediaGroup + " containing" + "\r\n" + "\r\n";
 
                     // adding each series to seriesPerMediaGroup
                     foreach (Series series in seriesList)
                     {
                         int fistSeasonInSeries = seriesPerMediaGroup.NumberOfEpisodesPerSeason.Count;
+
+                        seriesPerMediaGroup.Content = seriesPerMediaGroup.Content + "Season " + fistSeasonInSeries.ToString() + ": " + series.Title + "\r\n";
 
                         // series based attributes
                         // checking if images of series contains one with Season 1
