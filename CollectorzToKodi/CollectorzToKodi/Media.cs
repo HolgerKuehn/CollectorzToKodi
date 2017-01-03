@@ -22,6 +22,11 @@ namespace CollectorzToKodi
         private Configuration configuration;
 
         /// <summary>
+        /// ID of media
+        /// </summary>
+        private string iD;
+
+        /// <summary>
         /// Title of media
         /// </summary>
         private string title;
@@ -118,6 +123,7 @@ namespace CollectorzToKodi
         public Media(Configuration configuration)
         {
             this.configuration = configuration;
+            this.iD = string.Empty;
             this.title = string.Empty;
             this.titleSort = string.Empty;
             this.titleOriginal = string.Empty;
@@ -146,6 +152,15 @@ namespace CollectorzToKodi
         {
             get { return this.configuration; }
             set { this.configuration = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets id of media
+        /// </summary>
+        public string ID
+        {
+            get { return this.iD; }
+            set { this.iD = value; }
         }
 
         /// <summary>

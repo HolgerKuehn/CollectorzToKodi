@@ -38,6 +38,16 @@ namespace CollectorzToKodi
         private string iMDbId;
 
         /// <summary>
+        /// type of movie or series on TheMovieDB.org
+        /// </summary>
+        private string tMDbType;
+
+        /// <summary>
+        /// number of movie or series on TheMovieDB.org
+        /// </summary>
+        private string tMDbId;
+
+        /// <summary>
         /// list of directors of video
         /// </summary>
         private List<Director> directors;
@@ -96,6 +106,8 @@ namespace CollectorzToKodi
             this.playCount = "0";
             this.playDate = string.Empty;
             this.iMDbId = string.Empty;
+            this.tMDbType = string.Empty;
+            this.tMDbId = string.Empty;
             this.directors = new List<Director>();
             this.writers = new List<Writer>();
             this.actors = new List<Actor>();
@@ -146,6 +158,24 @@ namespace CollectorzToKodi
         {
             get { return this.iMDbId; }
             set { this.iMDbId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets type of movie or series on TheMovieDB.org
+        /// </summary>
+        public string TMDbType
+        {
+            get { return this.tMDbType; }
+            set { this.tMDbType = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets number of movie or series on TheMovieDB.org
+        /// </summary>
+        public string TMDbId
+        {
+            get { return this.tMDbId; }
+            set { this.tMDbId = value; }
         }
 
         /// <summary>
@@ -268,7 +298,7 @@ namespace CollectorzToKodi
 
             foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
             {
-                this.IMDbId = this.IMDbId.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                this.ID = this.ID.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
             }
         }
 

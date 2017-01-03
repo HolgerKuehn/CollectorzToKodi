@@ -122,23 +122,17 @@ namespace CollectorzToKodi
         /// <param name="eingabeXML">File that was used while export from MovieCollector - complete local path</param>
         public void ReadXML(string eingabeXML)
         {
-            bool xMLMovieIsMovie = false;
+            bool xMLMovieIsMovie = true;
             bool xMLMovieIsSeries = false;
             Video media = null;
+
             foreach (XmlNode xMLMovie in BaseClassExtention.XMLReadFile(eingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
                 #region evaluate Type and create media-object
-                foreach (XmlNode xMLUserDefinedValue in xMLMovie.XMLReadSubnode("userdefinedvalues").XMLReadSubnodes("userdefinedvalue"))
+                if (xMLMovie.XMLReadSubnode("istvseries").XMLReadInnerText(string.Empty) == "Yes")
                 {
-                    if (xMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText(string.Empty) == "XBMC Movie")
-                    {
-                        xMLMovieIsMovie = xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Yes" || xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Ja";
-                    }
-
-                    if (xMLUserDefinedValue.XMLReadSubnode("userdefinedfield").XMLReadSubnode("label").XMLReadInnerText(string.Empty) == "XBMC Serie")
-                    {
-                        xMLMovieIsSeries = xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Yes" || xMLUserDefinedValue.XMLReadSubnode("value").XMLReadInnerText(string.Empty) == "Ja";
-                    }
+                    xMLMovieIsMovie = false;
+                    xMLMovieIsSeries = true;
                 }
 
                 if (xMLMovieIsMovie)
@@ -177,7 +171,21 @@ namespace CollectorzToKodi
                 media.Content = xMLMovie.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
                 media.RunTime = xMLMovie.XMLReadSubnode("runtime").XMLReadInnerText(string.Empty);
                 media.MPAA = xMLMovie.XMLReadSubnode("mpaarating").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                media.IMDbId = "tt" + xMLMovie.XMLReadSubnode("imdbnum").XMLReadInnerText(string.Empty);
+
+                string iMDbId = xMLMovie.XMLReadSubnode("imdbnum").XMLReadInnerText(string.Empty);
+                string iMDbIdId = iMDbId.LeftOf(" ");
+                string iMDbIdExtention = " " + iMDbId.RightOf(" ");
+
+                media.ID = xMLMovie.XMLReadSubnode("id").XMLReadInnerText(string.Empty) + iMDbIdExtention;
+                media.IMDbId = iMDbIdId;
+
+                media.TMDbType = "movie";
+                if (xMLMovie.XMLReadSubnode("istvseries").XMLReadInnerText(string.Empty) == "Yes")
+                {
+                    media.TMDbType = "tv";
+                }
+
+                media.TMDbId = xMLMovie.XMLReadSubnode("tmdbid").XMLReadInnerText(string.Empty);
                 media.Country = xMLMovie.XMLReadSubnode("country").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
                 media.ReadImages(xMLMovie);
                 media.ReadGenre(xMLMovie);
@@ -532,6 +540,7 @@ namespace CollectorzToKodi
                     // set basic parameters for new Series, according to first member of MediaGroup
                     Series seriesBasicMember = seriesList[0];
 
+                    seriesPerMediaGroup.ID = seriesBasicMember.ID;
                     seriesPerMediaGroup.Title = seriesBasicMember.MediaGroup;
                     seriesPerMediaGroup.TitleSort = seriesBasicMember.MediaGroup;
                     seriesPerMediaGroup.TitleOriginal = seriesBasicMember.MediaGroup;
@@ -544,6 +553,8 @@ namespace CollectorzToKodi
                     seriesPerMediaGroup.PlayCount = seriesBasicMember.PlayCount;
                     seriesPerMediaGroup.PlayDate = seriesBasicMember.PlayDate;
                     seriesPerMediaGroup.IMDbId = seriesBasicMember.IMDbId;
+                    seriesPerMediaGroup.TMDbType = seriesBasicMember.TMDbType;
+                    seriesPerMediaGroup.TMDbId = seriesBasicMember.TMDbId;
                     seriesPerMediaGroup.Country = seriesBasicMember.Country;
                     seriesPerMediaGroup.Genres = seriesBasicMember.Genres;
                     seriesPerMediaGroup.Studios = seriesBasicMember.Studios;
@@ -711,16 +722,18 @@ namespace CollectorzToKodi
                             episodePerMediaGroup.ActualEpisode = (string)seriesPerMediaGroup.NumberOfEpisodesPerSeason.ElementAt((int)int.Parse(episodePerMediaGroup.ActualSeason)).ToString();
                             episodePerMediaGroup.DisplayEpisode = (string)(seriesPerMediaGroup.NumberOfSpecials + seriesPerMediaGroup.NumberOfEpisodes).ToString();
 
-                            // // set plot - each content episode gets content from series, if empty
-                            // if (!episodePerMediaGroup.IsSpecial && episodePerMediaGroup.Content == string.Empty)
-                            // {
-                            //     episodePerMediaGroup.Content = series.Content;
-                            // }
+                            // set IMDB and TMDB id's
+                            episodePerMediaGroup.IMDbId = episode.IMDbId != string.Empty ? episode.IMDbId : series.IMDbId;
+                            episodePerMediaGroup.TMDbType = series.TMDbType;
+                            episodePerMediaGroup.TMDbId = episode.TMDbId != string.Empty ? episode.TMDbId : series.TMDbId;
 
                             // add series director, writer and actors to episodes within
                             episodePerMediaGroup.AddDirector(series.Directors);
                             episodePerMediaGroup.AddWriter(series.Writers);
-                            episodePerMediaGroup.AddActor(series.Actors);
+                            if (!episodePerMediaGroup.IsSpecial)
+                            {
+                                episodePerMediaGroup.AddActor(series.Actors);
+                            }
 
                             seriesPerMediaGroup.Episodes.Add(episodePerMediaGroup);
                         }

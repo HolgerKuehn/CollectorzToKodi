@@ -155,7 +155,7 @@ namespace CollectorzToKodi
                 swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
                 swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
                 swrNFO.WriteLine("    <MediaGroup>" + this.MediaGroup + "</MediaGroup>");
-                swrNFO.WriteLine("    <id>" + this.IMDbId + "</id>");
+                swrNFO.WriteLine("    <id>" + this.ID + "</id>");
                 swrNFO.WriteLine("    <country>" + this.Country + "</country>");
 
                 this.WriteGenre(swrNFO);
@@ -165,6 +165,16 @@ namespace CollectorzToKodi
                 this.WriteImagesToNFO(swrNFO);
 
                 swrNFO.WriteLine("</tvshow>");
+
+                if (this.IMDbId != string.Empty)
+                {
+                    swrNFO.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
+                }
+
+                if (this.TMDbId != string.Empty)
+                {
+                    swrNFO.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
+                }
             }
 
             foreach (Episode episode in this.Episodes)
@@ -216,6 +226,7 @@ namespace CollectorzToKodi
         public override Media Clone()
         {
             Series seriesClone = new Series(this.Configuration);
+            seriesClone.ID = this.ID;
             seriesClone.Title = this.Title;
             seriesClone.TitleSort = this.TitleSort;
             seriesClone.TitleOriginal = this.TitleOriginal;
@@ -230,6 +241,8 @@ namespace CollectorzToKodi
             seriesClone.PlayCount = this.PlayCount;
             seriesClone.PlayDate = this.PlayDate;
             seriesClone.IMDbId = this.IMDbId;
+            seriesClone.TMDbType = this.TMDbType;
+            seriesClone.TMDbId = this.TMDbId;
             seriesClone.Country = this.Country;
             seriesClone.Genres = this.Genres;
             seriesClone.Studios = this.Studios;
@@ -285,6 +298,7 @@ namespace CollectorzToKodi
             if (cloneSeries)
             {
                 seriesClone = new Series(this.Configuration);
+                seriesClone.ID = this.ID;
                 seriesClone.Title = this.Title;
                 seriesClone.TitleSort = this.TitleSort;
                 seriesClone.TitleOriginal = this.TitleOriginal;
@@ -299,6 +313,8 @@ namespace CollectorzToKodi
                 seriesClone.PlayCount = this.PlayCount;
                 seriesClone.PlayDate = this.PlayDate;
                 seriesClone.IMDbId = this.IMDbId;
+                seriesClone.TMDbType = this.TMDbType;
+                seriesClone.TMDbId = this.TMDbId;
                 seriesClone.Country = this.Country;
                 seriesClone.Genres = this.Genres;
                 seriesClone.Studios = this.Studios;

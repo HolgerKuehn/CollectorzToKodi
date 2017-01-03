@@ -206,6 +206,7 @@ namespace CollectorzToKodi
         public override Media Clone()
         {
             Episode episodeClone = new Episode(this.Configuration);
+            episodeClone.ID = this.ID;
             episodeClone.Title = this.Title;
             episodeClone.TitleSort = this.TitleSort;
             episodeClone.TitleOriginal = this.TitleOriginal;
@@ -220,6 +221,8 @@ namespace CollectorzToKodi
             episodeClone.PlayCount = this.PlayCount;
             episodeClone.PlayDate = this.PlayDate;
             episodeClone.IMDbId = this.IMDbId;
+            episodeClone.TMDbType = this.TMDbType;
+            episodeClone.TMDbId = this.TMDbId;
             episodeClone.Country = this.Country;
             episodeClone.Genres = this.Genres;
             episodeClone.Studios = this.Studios;

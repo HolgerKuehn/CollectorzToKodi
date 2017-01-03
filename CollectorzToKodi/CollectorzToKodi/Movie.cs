@@ -106,7 +106,7 @@ namespace CollectorzToKodi
 
                 swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
                 swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
-                swrNFO.WriteLine("    <id>" + this.IMDbId + "</id>");
+                swrNFO.WriteLine("    <id>" + this.ID + "</id>");
                 swrNFO.WriteLine("    <country>" + this.Country + "</country>");
 
                 this.WriteGenre(swrNFO);
@@ -117,6 +117,16 @@ namespace CollectorzToKodi
                 this.WriteImagesToNFO(swrNFO);
 
                 swrNFO.WriteLine("</movie>");
+
+                if (this.IMDbId != string.Empty)
+                {
+                    swrNFO.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
+                }
+
+                if (this.TMDbId != string.Empty)
+                {
+                    swrNFO.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
+                }
             }
         }
 
@@ -153,6 +163,8 @@ namespace CollectorzToKodi
         public override Media Clone()
         {
             Movie movieClone = new Movie(this.Configuration);
+
+            movieClone.ID = this.ID;
             movieClone.Title = this.Title;
             movieClone.TitleSort = this.TitleSort;
             movieClone.TitleOriginal = this.TitleOriginal;
@@ -167,6 +179,8 @@ namespace CollectorzToKodi
             movieClone.PlayCount = this.PlayCount;
             movieClone.PlayDate = this.PlayDate;
             movieClone.IMDbId = this.IMDbId;
+            movieClone.TMDbType = this.TMDbType;
+            movieClone.TMDbId = this.TMDbId;
             movieClone.Country = this.Country;
             movieClone.Genres = this.Genres;
             movieClone.Directors = this.Directors;
@@ -223,6 +237,7 @@ namespace CollectorzToKodi
             if (cloneMovie && hasSpecials == isSpecial)
             {
                 movieClone = new Movie(this.Configuration);
+                movieClone.ID = this.ID;
                 movieClone.Title = this.Title;
                 movieClone.TitleSort = this.TitleSort;
                 movieClone.TitleOriginal = this.TitleOriginal;
@@ -237,6 +252,8 @@ namespace CollectorzToKodi
                 movieClone.PlayCount = this.PlayCount;
                 movieClone.PlayDate = this.PlayDate;
                 movieClone.IMDbId = this.IMDbId;
+                movieClone.TMDbType = this.TMDbType;
+                movieClone.TMDbId = this.TMDbId;
                 movieClone.Country = this.Country;
                 movieClone.Genres = this.Genres;
                 movieClone.Studios = this.Studios;
