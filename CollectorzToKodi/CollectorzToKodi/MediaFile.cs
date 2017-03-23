@@ -183,7 +183,7 @@ namespace CollectorzToKodi
         /// <returns>URLLocalFilesystem</returns>
         protected string ConvertFilename(bool setMediaServer = false)
         {
-            if (this.URL == string.Empty || this.URL.Contains(".m2ts"))
+            if (this.URL == string.Empty || this.URL.Contains(".m2ts") || this.URL.Contains(".m4v"))
             {
                 return string.Empty; // ###
             }

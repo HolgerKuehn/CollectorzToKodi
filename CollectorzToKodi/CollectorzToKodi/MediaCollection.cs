@@ -168,7 +168,7 @@ namespace CollectorzToKodi
                 media.TitleOriginal = xMLMovie.XMLReadSubnode("originaltitle").XMLReadInnerText(string.Empty);
                 media.MediaGroup = xMLMovie.XMLReadSubnode("series").XMLReadSubnode("displayname").XMLReadInnerText(media.Title);
                 media.Rating = xMLMovie.XMLReadSubnode("imdbrating").XMLReadInnerText(string.Empty);
-                media.Content = xMLMovie.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
+                media.Content = xMLMovie.XMLReadSubnode("plot").XMLReadInnerText(string.Empty).ReplaceAll("</p><p>", System.Environment.NewLine + System.Environment.NewLine).ReplaceAll("<p>", string.Empty).ReplaceAll("</p>", string.Empty);
                 media.RunTime = xMLMovie.XMLReadSubnode("runtime").XMLReadInnerText(string.Empty);
                 media.MPAA = xMLMovie.XMLReadSubnode("mpaarating").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
 
@@ -247,7 +247,7 @@ namespace CollectorzToKodi
                             episode.TitleSort = episode.Title;
                             episode.TitleOriginal = episode.Title;
                             episode.MediaGroup = episode.Series.MediaGroup;
-                            episode.Content = xMLEpisode.XMLReadSubnode("plot").XMLReadInnerText(string.Empty);
+                            episode.Content = xMLEpisode.XMLReadSubnode("plot").XMLReadInnerText(string.Empty).ReplaceAll("</p><p>", System.Environment.NewLine + System.Environment.NewLine).ReplaceAll("<p>", string.Empty).ReplaceAll("</p>", string.Empty);
 
                             if (!episode.IsSpecial && episode.Content == string.Empty)
                             {

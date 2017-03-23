@@ -1,39 +1,4 @@
-﻿<movie>
-    <genre clear="true">Action</genre>
-    <genre>Horror</genre>
-    <genre>Thriller</genre>
-    <director clear="true">Frank Miller</director>
-    <director>Robert Rodriguez</director>
-    <director>Quentin Tarantino</director>
-</movie>
-http://www.imdb.com/title/tt0401792/
-
-Currently supported tags for the clear attribute are genre, director, studio, actor, credits and artist for Music Videos.
-
-
-4 Movie sets
-<movie>
-        <title>Hellboy - Uncut Extended</title>
-        <set>Hellboy Collection</set>
-        <sorttitle>Hellboy 1</sorttitle>
-</movie>
-http://www.themoviedb.org/movie/1487
-
-
-
- typically use this type of command to mount a cifs/smb share.
-
-mount -t cifs -o rw,netbiosname=nasserver1,credentials=/etc/user_credentials.txt //192.168.1.11/someshare /mnt
-
-the credentials file looks like so:
-
-username=mydomain\user1
-password=somepass
-
-
-
-
-        /// <summary>
+﻿        /// <summary>
         /// Gets or sets SubTitle containing this SubTitleFile
         /// </summary>
         public SubTitle SubTitle
