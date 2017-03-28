@@ -19,24 +19,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>Build\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>bin\Debug\CollectorzToKodi.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>Build\bin\Debug\CollectorzToKodi.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Configuration\CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>Build\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\CollectorzToKodi.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>Build\bin\Release\CollectorzToKodi.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>Configuration\CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>CollectorzToKodi.Program</StartupObject>
@@ -52,28 +52,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actor.cs" />
-    <Compile Include="AudioStream.cs" />
-    <Compile Include="BaseClassExtention.cs" />
-    <Compile Include="Director.cs" />
-    <Compile Include="IMedia.cs" />
-    <Compile Include="SeriesActor.cs" />
-    <Compile Include="ImageFile.cs" />
-    <Compile Include="Episode.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Media.cs" />
-    <Compile Include="Series.cs" />
-    <Compile Include="Movie.cs" />
-    <Compile Include="MediaFile.cs" />
-    <Compile Include="SubTitle.cs" />
-    <Compile Include="Video.cs" />
-    <Compile Include="SrtSubTitleFile.cs" />
-    <Compile Include="SrtSubTitleFileEntry.cs" />
-    <Compile Include="VideoFile.cs" />
-    <Compile Include="SubTitleFile.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="MediaCollection.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Media\Video\Actor.cs" />
+    <Compile Include="Media\Audio\AudioStream.cs" />
+    <Compile Include="Base\BaseClassExtention.cs" />
+    <Compile Include="Media\Video\Director.cs" />
+    <Compile Include="Interfaces\Media\IMedia.cs" />
+    <Compile Include="Media\NfoFile.cs" />
+    <Compile Include="Media\Video\Series\SeriesActor.cs" />
+    <Compile Include="Media\Image\ImageFile.cs" />
+    <Compile Include="Media\Video\Episode\Episode.cs" />
+    <Compile Include="Base\Configuration.cs" />
+    <Compile Include="Media\Media.cs" />
+    <Compile Include="Media\Video\Series\Series.cs" />
+    <Compile Include="Media\Video\Movie\Movie.cs" />
+    <Compile Include="Media\MediaFile.cs" />
+    <Compile Include="Media\Video\SubTitle.cs" />
+    <Compile Include="Media\Video\Video.cs" />
+    <Compile Include="Media\Video\SrtSubTitleFile.cs" />
+    <Compile Include="Media\Video\SrtSubTitleFileEntry.cs" />
+    <Compile Include="Media\Video\VideoFile.cs" />
+    <Compile Include="Media\Video\SubTitleFile.cs" />
+    <Compile Include="Media\Person.cs" />
+    <Compile Include="Media\MediaCollection.cs" />
+    <Compile Include="Base\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SettingsServer.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -93,13 +94,14 @@
       <DependentUpon>SettingsMovieCollector.settings</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Writer.cs" />
+    <Compile Include="Media\Video\Writer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="CollectorzToKodi.ruleset" />
+    <None Include="Configuration\App.config" />
+    <None Include="Configuration\CollectorzToKodi.ruleset" />
+    <None Include="Configuration\CollectorzToKodi Code.csproj.vsspell" />
     <None Include="LICENSE.md" />
-    <None Include="packages.config" />
+    <None Include="Configuration\packages.config" />
     <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SettingsServer.Designer.cs</LastGenOutput>
@@ -115,7 +117,7 @@
       <LastGenOutput>SettingsMovieCollector.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <AdditionalFiles Include="stylecop.json" />
+    <AdditionalFiles Include="Configuration\stylecop.json" />
     <None Include="README.md" />
     <None Include="Sample Files\Library.sh" />
   </ItemGroup>
@@ -125,7 +127,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-rc1\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Codefragmente.txt" />
+    <Content Include="Base\Codefragmente.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
