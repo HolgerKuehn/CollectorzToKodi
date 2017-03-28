@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Regeln für CollectorzToKodi" Description="Codeanalyseregeln für CollectorzToKodi.csproj." ToolsVersion="14.0">
+<RuleSet Name="Regeln für CollectorzToKodi" Description="Codeanalyseregeln für CollectorzToKodi.csproj." ToolsVersion="15.0">
   <Include Path="allrules.ruleset" Action="Default" />
   <Include Path="p:\visual studio\repository\collectorztokodi\collectorztokodi\collectorztokodi\collectorztokodi.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
