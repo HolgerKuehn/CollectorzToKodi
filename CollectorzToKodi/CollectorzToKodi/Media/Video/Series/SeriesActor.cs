@@ -75,7 +75,7 @@ namespace CollectorzToKodi
 
             if (role.Contains(seasonIdentifierLeft))
             {
-                season = role.RightOfLast(seasonIdentifierLeft).LeftOf(seasonIdentifierRight);
+                season = role.RightOfLast(seasonIdentifierLeft).LeftOf(seasonIdentifierRight).ReplaceAll(" ", string.Empty);
                 role = role.LeftOfLast(seasonIdentifierLeft);
             }
 

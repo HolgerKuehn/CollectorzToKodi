@@ -374,7 +374,7 @@ namespace CollectorzToKodi
 
                     actor.ReadPerson(xMLCast);
 
-                    this.Actors.Add(actor);
+                    this.AddActor(actor);
                 }
             }
         }
@@ -693,6 +693,7 @@ namespace CollectorzToKodi
             bool addActor = true;
             foreach (Actor currentActor in this.Actors)
             {
+                // needs to be added: check for Season
                 if (currentActor.Name == actor.Name && currentActor.Role == actor.Role)
                 {
                     addActor = false;
