@@ -57,6 +57,18 @@ namespace CollectorzToKodi
         /// </summary>
         private int fileIndex;
 
+        /// <summary>
+        /// local paths used on the associated server names to store media<br/>
+        /// <returns>local path used on the associated server names to store media</returns>
+        /// </summary>
+        private string serverLocalPathOfServerForMediaStorage;
+
+        /// <summary>
+        /// local path used on the associated server names for publication<br/>
+        /// <returns>local paths used on the associated server names for publication</returns>
+        /// </summary>
+        private string serverLocalPathOfServerForMediaPublication;
+
         #endregion
         #region Constructor
 

@@ -191,7 +191,8 @@ namespace CollectorzToKodi
                 media.ReadGenre(xMLMovie);
                 media.ReadStudio(xMLMovie);
                 media.ReadCrew(xMLMovie);
-                media.ReadCast(xMLMovie);
+
+                // media.ReadCast(xMLMovie); moved behind reading Episodes, to read
                 media.ReadStreamData(xMLMovie);
 
                 #endregion
@@ -273,6 +274,8 @@ namespace CollectorzToKodi
 
                     // add SubTitles on series-level
                     ((Series)media).ReadMediaFiles(xMLMovie);
+
+                    media.ReadCast(xMLMovie);
 
                     this.SeriesCollection.Add((Series)media);
                 }
