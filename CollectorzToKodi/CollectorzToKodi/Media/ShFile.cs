@@ -1,4 +1,4 @@
-﻿// <copyright file="NfoFile.cs" company="Holger Kühn">
+﻿// <copyright file="ShFile.cs" company="Holger Kühn">
 // Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
 // </copyright>
 
@@ -11,17 +11,17 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage video files
     /// </summary>
-    public class NfoFile : MediaFile
+    public class ShFile : MediaFile
     {
         #region Attributes
         #endregion
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NfoFile"/> class.
+        /// Initializes a new instance of the <see cref="ShFile"/> class.
         /// </summary>
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
-        public NfoFile(Configuration configuration)
+        public ShFile(Configuration configuration)
             : base(configuration)
         {
         }
@@ -34,17 +34,17 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override MediaFile Clone()
         {
-            NfoFile nfoFileClone = new NfoFile(this.Configuration);
-            nfoFileClone.Description = this.Description;
-            nfoFileClone.URL = this.URL;
-            nfoFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
-            nfoFileClone.Filename = this.Filename;
-            nfoFileClone.Extension = this.Extension;
-            nfoFileClone.Server = this.Server;
-            nfoFileClone.Media = this.Media;
-            nfoFileClone.FileIndex = this.FileIndex;
+            ShFile shFileClone = new ShFile(this.Configuration);
+            shFileClone.Description = this.Description;
+            shFileClone.URL = this.URL;
+            shFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
+            shFileClone.Filename = this.Filename;
+            shFileClone.Extension = this.Extension;
+            shFileClone.Server = this.Server;
+            shFileClone.Media = this.Media;
+            shFileClone.FileIndex = this.FileIndex;
 
-            return (NfoFile)nfoFileClone;
+            return (ShFile)shFileClone;
         }
 
         /// <inheritdoc/>
