@@ -52,13 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Media\ShFile.cs" />
+    <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
+    <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Video\Actor.cs" />
     <Compile Include="Media\Audio\AudioStream.cs" />
     <Compile Include="Base\BaseClassExtention.cs" />
     <Compile Include="Media\Video\Director.cs" />
     <Compile Include="Interfaces\Media\IMedia.cs" />
-    <Compile Include="Media\NfoFile.cs" />
+    <Compile Include="Media\Metadata\NfoFile.cs" />
     <Compile Include="Media\Video\Series\SeriesActor.cs" />
     <Compile Include="Media\Image\ImageFile.cs" />
     <Compile Include="Media\Video\Episode\Episode.cs" />

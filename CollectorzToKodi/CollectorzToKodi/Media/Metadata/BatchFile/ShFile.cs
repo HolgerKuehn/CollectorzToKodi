@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage video files
     /// </summary>
-    public class ShFile : MediaFile
+    public class ShFile : BatchFile
     {
         #region Attributes
         #endregion

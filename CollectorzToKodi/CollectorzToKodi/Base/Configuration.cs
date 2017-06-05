@@ -19,6 +19,14 @@ namespace CollectorzToKodi
     {
         #region Attributes
 
+        #region Configuration
+
+        /// <summary>
+        /// batch file used to execute on either UNIX or Windows
+        /// </summary>
+        private readonly BatchFile batchFile;
+
+        #endregion
         #region Kodi
 
         /// <summary>
@@ -232,6 +240,20 @@ namespace CollectorzToKodi
             this.serverListsOfServers = listOfServers;
 
             #endregion
+            #region Configuration
+            if (this.serverMappingType.Equals("UNIX"))
+            {
+                this.batchFile = new ShFile(this);
+            }
+
+            /*
+            else if (this.serverMappingType.Equals("Windows"))
+            {
+                 this.batchFile = new CmdFile(this);
+            }
+            */
+
+            #endregion
         }
 
         #endregion
@@ -438,6 +460,19 @@ namespace CollectorzToKodi
         #endregion
         #region Properties
 
+        #region Configuration
+
+        /// <summary>
+        /// Gets batch file used to execute commands on either UNIX or Windows<br/>
+        /// this is used to MediaGroup some attributes to skin-specific values
+        /// </summary>
+        /// <returns>current batch file</returns>
+        public BatchFile BatchFile
+        {
+            get { return this.batchFile; }
+        }
+
+        #endregion
         #region Kodi
 
         /// <summary>
