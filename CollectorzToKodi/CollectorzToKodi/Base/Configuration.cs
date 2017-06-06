@@ -19,14 +19,6 @@ namespace CollectorzToKodi
     {
         #region Attributes
 
-        #region Configuration
-
-        /// <summary>
-        /// batch file used to execute on either UNIX or Windows
-        /// </summary>
-        private readonly BatchFile batchFile;
-
-        #endregion
         #region Kodi
 
         /// <summary>
@@ -177,7 +169,14 @@ namespace CollectorzToKodi
         private readonly List<Dictionary<string, string>> serverListsOfServers;
 
         #endregion
+        #region Configuration
 
+        /// <summary>
+        /// batch file used to execute on either UNIX or Windows
+        /// </summary>
+        private readonly List<BatchFile> listOfBatchFiles;
+
+        #endregion
         #endregion
         #region Constructor
 
@@ -218,9 +217,11 @@ namespace CollectorzToKodi
             this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory;
 
             #endregion
-            #region Dictionaries
+            #region Dictionaries / Configuration
 
             List<Dictionary<string, string>> listOfServers = new List<Dictionary<string, string>>();
+            List<BatchFile> listOfBatchFiles = new List<BatchFile>();
+
             int i = 0;
             for (i = 0; i < 6 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
             {
@@ -235,23 +236,21 @@ namespace CollectorzToKodi
                 listOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaPublication[i]);
                 listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
                 listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
+
+                if (this.serverMappingType.Equals("UNIX"))
+                {
+                    this.listOfBatchFiles.Add(new ShFile(this));
+                }
+
+                /*
+                else if (this.serverMappingType.Equals("Windows"))
+                {
+                     this.batchFile = new CmdFile(this);
+                }
+                */
             }
 
             this.serverListsOfServers = listOfServers;
-
-            #endregion
-            #region Configuration
-            if (this.serverMappingType.Equals("UNIX"))
-            {
-                this.batchFile = new ShFile(this);
-            }
-
-            /*
-            else if (this.serverMappingType.Equals("Windows"))
-            {
-                 this.batchFile = new CmdFile(this);
-            }
-            */
 
             #endregion
         }
@@ -459,20 +458,6 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
-
-        #region Configuration
-
-        /// <summary>
-        /// Gets batch file used to execute commands on either UNIX or Windows<br/>
-        /// this is used to MediaGroup some attributes to skin-specific values
-        /// </summary>
-        /// <returns>current batch file</returns>
-        public BatchFile BatchFile
-        {
-            get { return this.batchFile; }
-        }
-
-        #endregion
         #region Kodi
 
         /// <summary>
@@ -629,6 +614,19 @@ namespace CollectorzToKodi
         public string ServerSeriesDirectory
         {
             get { return this.serverSeriesDirectory; }
+        }
+
+        #endregion
+        #region Configuration
+
+        /// <summary>
+        /// Gets batch file used to execute commands on either UNIX or Windows<br/>
+        /// this is used to MediaGroup some attributes to skin-specific values
+        /// </summary>
+        /// <returns>current batch file</returns>
+        public List<BatchFile> ListOfBatchFiles
+        {
+            get { return this.listOfBatchFiles; }
         }
 
         #endregion

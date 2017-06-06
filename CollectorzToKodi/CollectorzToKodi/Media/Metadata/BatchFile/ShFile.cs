@@ -43,6 +43,7 @@ namespace CollectorzToKodi
             shFileClone.Server = this.Server;
             shFileClone.Media = this.Media;
             shFileClone.FileIndex = this.FileIndex;
+            shFileClone.SwrBatchFile = this.SwrBatchFile;
 
             return (ShFile)shFileClone;
         }
@@ -51,6 +52,14 @@ namespace CollectorzToKodi
         public override string ConvertFilename()
         {
             return this.ConvertFilename(false);
+        }
+
+        /// <inheritdoc/>
+        public override void WriteHeader()
+        {
+            // SH file header
+            this.SwrBatchFile.WriteLine("#!/bin/bash");
+            this.SwrBatchFile.WriteLine(string.Empty);
         }
 
         #endregion

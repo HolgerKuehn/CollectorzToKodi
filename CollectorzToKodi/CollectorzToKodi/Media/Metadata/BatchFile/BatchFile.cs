@@ -4,12 +4,20 @@
 
 namespace CollectorzToKodi
 {
+    using System.IO;
+
     /// <summary>
     /// Class to manage video files
     /// </summary>
     public abstract class BatchFile : MediaFile
     {
         #region Attributes
+
+        /// <summary>
+        /// StreamWriter representing the actual batch file
+        /// </summary>
+        private StreamWriter swrBatchFile;
+
         #endregion
         #region Constructor
 
@@ -24,8 +32,24 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
+
+        /// <summary>
+        /// Gets or sets StreamWriter representing the actual batch file
+        /// </summary>
+        public StreamWriter SwrBatchFile
+        {
+            get { return this.swrBatchFile; }
+            set { this.swrBatchFile = value; }
+        }
+
         #endregion
         #region Functions
+
+        /// <summary>
+        /// writes Header to BatchFile
+        /// </summary>
+        public abstract void WriteHeader();
+
         #endregion
     }
 }
