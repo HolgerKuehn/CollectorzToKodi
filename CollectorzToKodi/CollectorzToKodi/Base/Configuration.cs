@@ -219,23 +219,23 @@ namespace CollectorzToKodi
             #endregion
             #region Dictionaries / Configuration
 
-            List<Dictionary<string, string>> listOfServers = new List<Dictionary<string, string>>();
-            List<BatchFile> listOfBatchFiles = new List<BatchFile>();
+            this.serverListsOfServers = new List<Dictionary<string, string>>();
+            this.listOfBatchFiles = new List<BatchFile>();
 
             int i = 0;
             for (i = 0; i < 6 /* number of possible conversion - defined by enum ListOfServerTypes */; i++)
             {
-                listOfServers.Add(new Dictionary<string, string>());
+                this.serverListsOfServers.Add(new Dictionary<string, string>());
             }
 
             for (i = 0; i < this.ServerNumberOfServers; i++)
             {
-                listOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerListOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDriveMappingOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaStorage[i]);
-                listOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaPublication[i]);
-                listOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
-                listOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerListOfServers[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDriveMappingOfServers[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaStorage[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaPublication[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
 
                 if (this.serverMappingType.Equals("UNIX"))
                 {
@@ -245,12 +245,13 @@ namespace CollectorzToKodi
                 /*
                 else if (this.serverMappingType.Equals("Windows"))
                 {
-                     this.batchFile = new CmdFile(this);
+                    listOfBatchFiles.Add(new CmdFile(this));
                 }
                 */
+
+                this.listOfBatchFiles[i].Server = i;
             }
 
-            this.serverListsOfServers = listOfServers;
 
             #endregion
         }

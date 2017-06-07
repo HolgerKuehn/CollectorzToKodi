@@ -20,13 +20,6 @@ namespace CollectorzToKodi
         {
             Configuration configuration = new Configuration();
 
-            for (int i = 0; i < configuration.ServerNumberOfServers; i++)
-            {
-                int server = (int)i;
-
-                configuration.ListOfBatchFiles[server].SwrBatchFile = new StreamWriter(configuration.MovieCollectorLocalPathToXMLExportPath + "NFO" + configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][server.ToString()] + "Win.sh", false, Encoding.UTF8, 512);
-            }
-
             MediaCollection mediaCollection = new MediaCollection(configuration);
             mediaCollection.ReadXML(configuration.MovieCollectorLocalPathToXMLExport);
 
@@ -34,32 +27,32 @@ namespace CollectorzToKodi
             {
                 int server = (int)i;
 
-                using (configuration.ListOfBatchFiles[server].SwrBatchFile)
+                using (configuration.ListOfBatchFiles[server].StreamWriter)
                 {
                     // Movie
-                    configuration.ListOfBatchFiles[server].SwrBatchFile.WriteLine("cd /share/XBMC/Filme/");
+                    configuration.ListOfBatchFiles[server].StreamWriter.WriteLine("cd /share/XBMC/Filme/");
 
                     foreach (Movie movie in mediaCollection.ListMovieCollectionPerServer(server))
                     {
                         movie.WriteNFO();
-                        movie.WriteSH(configuration.ListOfBatchFiles[server].SwrBatchFile, true);
+                        movie.WriteSH(configuration.ListOfBatchFiles[server].StreamWriter, true);
                     }
 
                     // series
-                    configuration.ListOfBatchFiles[server].SwrBatchFile.WriteLine(string.Empty);
-                    configuration.ListOfBatchFiles[server].SwrBatchFile.WriteLine("cd /share/XBMC/Serien/");
+                    configuration.ListOfBatchFiles[server].StreamWriter.WriteLine(string.Empty);
+                    configuration.ListOfBatchFiles[server].StreamWriter.WriteLine("cd /share/XBMC/Serien/");
 
                     // remove old Series without MediaGroups
                     foreach (Series series in mediaCollection.ListSeriesCollectionWithoutMediaGroupPerServer(server))
                     {
-                        series.WriteSH(configuration.ListOfBatchFiles[server].SwrBatchFile, false);
+                        series.WriteSH(configuration.ListOfBatchFiles[server].StreamWriter, false);
                     }
 
                     // generate new entries
                     foreach (Series series in mediaCollection.ListSeriesCollectionPerServer(server))
                     {
                         series.WriteNFO();
-                        series.WriteSH(configuration.ListOfBatchFiles[server].SwrBatchFile, true);
+                        series.WriteSH(configuration.ListOfBatchFiles[server].StreamWriter, true);
                     }
                 }
             }

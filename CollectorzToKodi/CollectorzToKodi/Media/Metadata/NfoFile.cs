@@ -4,9 +4,8 @@
 
 namespace CollectorzToKodi
 {
-    using System.Collections.Generic;
     using System.IO;
-    using System.Xml;
+    using System.Text;
 
     /// <summary>
     /// Class to manage video files
@@ -28,6 +27,25 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
+
+        /// <inheritdoc/>
+        public override Media Media
+        {
+            get
+            {
+                return base.Media;
+            }
+
+            set
+            {
+                base.Media = value;
+                this.Filename = this.Media.Filename + ".nfo";
+                this.URL = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+
+                this.StreamWriter = new StreamWriter(this.URL, false, Encoding.UTF8, 512);
+            }
+        }
+
         #endregion
         #region Functions
 
@@ -45,6 +63,11 @@ namespace CollectorzToKodi
             nfoFileClone.FileIndex = this.FileIndex;
 
             return (NfoFile)nfoFileClone;
+        }
+
+        /// <inheritdoc/>
+        public override void ExportLibrary()
+        {
         }
 
         /// <inheritdoc/>

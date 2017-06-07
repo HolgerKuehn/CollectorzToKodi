@@ -12,7 +12,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Base class for media content
     /// </summary>
-    public abstract class Media : IMedia
+    public abstract class Media
     {
         #region Attributes
 
@@ -124,6 +124,11 @@ namespace CollectorzToKodi
         /// <returns>local paths used on the associated server names for publication</returns>
         /// </summary>
         private string serverLocalPathOfServerForMediaPublication;
+
+        /// <summary>
+        /// StreamWriter representing the actual media file
+        /// </summary>
+        private StreamWriter streamWriter;
 
         #endregion
         #region Constructor
@@ -342,6 +347,15 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <summary>
+        /// Gets or sets StreamWriter representing the actual media file
+        /// </summary>
+        public StreamWriter StreamWriter
+        {
+            get { return this.streamWriter; }
+            set { this.streamWriter = value; }
+        }
+
         #endregion
         #region Functions
 
@@ -352,16 +366,9 @@ namespace CollectorzToKodi
         public abstract void ReadMediaFiles(XmlNode xMLMedia);
 
         /// <summary>
-        /// Writes data to new nfo-file according to Kodi specifics for movie, series, episode or music
+        /// exports Library to Disk
         /// </summary>
-        public abstract void WriteNFO();
-
-        /// <summary>
-        /// appends copy strings to provided shell-script
-        /// </summary>
-        /// <param name="swrSH">Bash-Shell script that contains all copy statements for server</param>
-        /// <param name="createNewMedia">defines, weather copy statements for media are added or not, otherwise only deletion will be added</param>
-        public abstract void WriteSH(StreamWriter swrSH, bool createNewMedia = true);
+        public abstract void ExportLibrary();
 
         /// <summary>
         /// Clones media object completely

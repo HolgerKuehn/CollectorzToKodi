@@ -4,6 +4,8 @@
 
 namespace CollectorzToKodi
 {
+    using System.IO;
+
     /// <summary>
     /// base type for media files, e.g. images, videos, etc.
     /// </summary>
@@ -68,6 +70,11 @@ namespace CollectorzToKodi
         /// <returns>local paths used on the associated server names for publication</returns>
         /// </summary>
         private string serverLocalPathOfServerForMediaPublication;
+
+        /// <summary>
+        /// StreamWriter representing the actual batch file
+        /// </summary>
+        private StreamWriter streamWriter;
 
         #endregion
         #region Constructor
@@ -148,7 +155,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets media containing file
         /// </summary>
-        public Media Media
+        public virtual Media Media
         {
             get { return this.media; }
             set { this.media = value; }
@@ -158,7 +165,7 @@ namespace CollectorzToKodi
         /// Gets or sets list of servers containing parts of media
         /// </summary>
         /// <remarks>number is translated via CConfiguration.ServerListsOfServers[ListOfServerTypes]</remarks>
-        public int Server
+        public virtual int Server
         {
             get { return this.server; }
             set { this.server = value; }
@@ -173,6 +180,15 @@ namespace CollectorzToKodi
             set { this.fileIndex = value; }
         }
 
+        /// <summary>
+        /// Gets or sets StreamWriter representing the actual batch file
+        /// </summary>
+        public StreamWriter StreamWriter
+        {
+            get { return this.streamWriter; }
+            set { this.streamWriter = value; }
+        }
+
         #endregion
         #region Functions
 
@@ -181,6 +197,11 @@ namespace CollectorzToKodi
         /// </summary>
         /// <returns>new instance of MediaFile</returns>
         public abstract MediaFile Clone();
+
+        /// <summary>
+        /// exports Library to Disk
+        /// </summary>
+        public abstract void ExportLibrary();
 
         /// <summary>
         /// converts mapped drives to network names and adds used server to media

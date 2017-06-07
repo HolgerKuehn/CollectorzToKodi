@@ -146,7 +146,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteNFO()
+        public override void ExportLibrary()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {

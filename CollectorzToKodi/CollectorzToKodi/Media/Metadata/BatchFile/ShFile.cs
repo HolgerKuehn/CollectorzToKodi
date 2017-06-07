@@ -4,9 +4,8 @@
 
 namespace CollectorzToKodi
 {
-    using System.Collections.Generic;
     using System.IO;
-    using System.Xml;
+    using System.Text;
 
     /// <summary>
     /// Class to manage video files
@@ -28,6 +27,26 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
+
+        /// <inheritdoc/>
+        public override int Server
+        {
+            get
+            {
+                return base.Server;
+            }
+
+            set
+            {
+                base.Server = value;
+                this.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
+                this.URL = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+
+                this.StreamWriter = new StreamWriter(this.URL, false, Encoding.UTF8, 512);
+                this.ExportLibrary();
+            }
+        }
+
         #endregion
         #region Functions
 
@@ -43,7 +62,7 @@ namespace CollectorzToKodi
             shFileClone.Server = this.Server;
             shFileClone.Media = this.Media;
             shFileClone.FileIndex = this.FileIndex;
-            shFileClone.SwrBatchFile = this.SwrBatchFile;
+            shFileClone.StreamWriter = this.StreamWriter;
 
             return (ShFile)shFileClone;
         }
@@ -55,11 +74,11 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteHeader()
+        public override void ExportLibrary()
         {
             // SH file header
-            this.SwrBatchFile.WriteLine("#!/bin/bash");
-            this.SwrBatchFile.WriteLine(string.Empty);
+            this.StreamWriter.WriteLine("#!/bin/bash");
+            this.StreamWriter.WriteLine(string.Empty);
         }
 
         #endregion

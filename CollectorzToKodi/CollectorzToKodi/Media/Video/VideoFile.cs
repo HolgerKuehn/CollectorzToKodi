@@ -184,6 +184,11 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <inheritdoc/>
+        public override void ExportLibrary()
+        {
+        }
+
         /// <summary>
         /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleFile (multiple one will be overwritten due to the same filename)
         /// <remarks>creates new List with just one SubTitleFile and sets this</remarks>
