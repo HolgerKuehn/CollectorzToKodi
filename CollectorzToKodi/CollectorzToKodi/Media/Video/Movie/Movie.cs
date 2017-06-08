@@ -45,7 +45,7 @@ namespace CollectorzToKodi
                     videoFile.Description = xMLVideodatei.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
                     videoFile.Description = videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
                     videoFile.FileIndex = k;
-                    videoFile.URL = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    videoFile.UrlForMediaStorage = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     videoFile.Media = this;
 
                     this.MediaFiles.Add(videoFile);
@@ -65,7 +65,7 @@ namespace CollectorzToKodi
                     videoFile.Description = xMLEpisode.XMLReadSubnode("title").XMLReadInnerText(string.Empty);
                     videoFile.OverrideSpecial(discTitle);
                     videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
-                    videoFile.URL = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+                    videoFile.UrlForMediaStorage = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
                     videoFile.FileIndex = k;
                     videoFile.Media = this;
 

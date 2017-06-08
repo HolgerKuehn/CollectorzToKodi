@@ -41,6 +41,22 @@ namespace CollectorzToKodi
         #endregion
         #region Properties
 
+        /// <inheritdoc/>
+        public override string UrlForMediaStorage
+        {
+            get
+            {
+                return base.UrlForMediaStorage;
+            }
+
+            set
+            {
+                base.UrlForMediaStorage = value;
+
+                this.Media.AddServer(this.Server);
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the video files is a special or not
         /// </summary>
@@ -80,7 +96,7 @@ namespace CollectorzToKodi
             VideoFile videoFileClone = new VideoFile(this.Configuration);
             videoFileClone.IsSpecial = this.IsSpecial;
             videoFileClone.Description = this.Description;
-            videoFileClone.URL = this.URL;
+            videoFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
             videoFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
             videoFileClone.Filename = this.Filename;
             videoFileClone.Extension = this.Extension;
@@ -142,7 +158,7 @@ namespace CollectorzToKodi
 
                         // name and filenames
                         srtSubTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
-                        srtSubTitleFile.URL = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                        srtSubTitleFile.UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                         srtSubTitleFile.ConvertFilename();
 
                         // check for fileIndex
@@ -185,7 +201,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ExportLibrary()
+        public override void WriteToLibrary()
         {
         }
 

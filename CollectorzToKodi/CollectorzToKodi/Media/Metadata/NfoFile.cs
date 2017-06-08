@@ -10,7 +10,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage video files
     /// </summary>
-    public class NfoFile : MediaFile
+    public class NfoFile : MetadataFile
     {
         #region Attributes
         #endregion
@@ -40,9 +40,9 @@ namespace CollectorzToKodi
             {
                 base.Media = value;
                 this.Filename = this.Media.Filename + ".nfo";
-                this.URL = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+                this.UrlForMediaStorage = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
 
-                this.StreamWriter = new StreamWriter(this.URL, false, Encoding.UTF8, 512);
+                this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
             }
         }
 
@@ -54,7 +54,7 @@ namespace CollectorzToKodi
         {
             NfoFile nfoFileClone = new NfoFile(this.Configuration);
             nfoFileClone.Description = this.Description;
-            nfoFileClone.URL = this.URL;
+            nfoFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
             nfoFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
             nfoFileClone.Filename = this.Filename;
             nfoFileClone.Extension = this.Extension;
@@ -66,7 +66,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ExportLibrary()
+        public override void WriteToLibrary()
         {
         }
 

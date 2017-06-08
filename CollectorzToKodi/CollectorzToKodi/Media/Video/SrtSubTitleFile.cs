@@ -71,7 +71,7 @@ namespace CollectorzToKodi
         {
             SrtSubTitleFile srtSubTitleFileClone = new SrtSubTitleFile(this.Configuration);
             srtSubTitleFileClone.Description = this.Description;
-            srtSubTitleFileClone.URL = this.URL;
+            srtSubTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
             srtSubTitleFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
             srtSubTitleFileClone.Filename = this.Filename;
             srtSubTitleFileClone.Extension = this.Extension;
@@ -102,12 +102,12 @@ namespace CollectorzToKodi
             this.OffsetTime = timOffsetTime;
 
             // reading subtitle content
-            if (this.URL == string.Empty || !File.Exists(this.URL))
+            if (this.UrlForMediaStorage == string.Empty || !File.Exists(this.UrlForMediaStorage))
             {
                 return;
             }
 
-            using (StreamReader srdSrtFile = new StreamReader(this.URL, Encoding.UTF8))
+            using (StreamReader srdSrtFile = new StreamReader(this.UrlForMediaStorage, Encoding.UTF8))
             {
                 Configuration.SrtSubTitleLineType lineType = default(Configuration.SrtSubTitleLineType);
                 SrtSubTitleFileEntry srtSubTitleFileEntry = new SrtSubTitleFileEntry();

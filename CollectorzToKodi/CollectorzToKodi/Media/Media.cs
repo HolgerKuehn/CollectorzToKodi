@@ -126,9 +126,9 @@ namespace CollectorzToKodi
         private string serverLocalPathOfServerForMediaPublication;
 
         /// <summary>
-        /// StreamWriter representing the actual media file
+        /// NFO-File representing the actual media file
         /// </summary>
-        private StreamWriter streamWriter;
+        private NfoFile nfoFile;
 
         #endregion
         #region Constructor
@@ -348,12 +348,32 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets StreamWriter representing the actual media file
+        /// Gets or sets local paths used on the associated server names to store media<br/>
+        /// <returns>local path used on the associated server names to store media</returns>
         /// </summary>
-        public StreamWriter StreamWriter
+        public string ServerLocalPathOfServerForMediaStorage
         {
-            get { return this.streamWriter; }
-            set { this.streamWriter = value; }
+            get { return this.serverLocalPathOfServerForMediaStorage; }
+            set { this.serverLocalPathOfServerForMediaStorage = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets local path used on the associated server names for publication<br/>
+        /// <returns>local paths used on the associated server names for publication</returns>
+        /// </summary>
+        public string ServerLocalPathOfServerForMediaPublication
+        {
+            get { return this.serverLocalPathOfServerForMediaPublication; }
+            set { this.serverLocalPathOfServerForMediaPublication = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets NFO-File representing the actual media file
+        /// </summary>
+        public NfoFile NfoFile
+        {
+            get { return this.nfoFile; }
+            set { this.nfoFile = value; }
         }
 
         #endregion
@@ -366,9 +386,14 @@ namespace CollectorzToKodi
         public abstract void ReadMediaFiles(XmlNode xMLMedia);
 
         /// <summary>
+        /// delete from Library
+        /// </summary>
+        public abstract void DeleteFromLibrary();
+
+        /// <summary>
         /// exports Library to Disk
         /// </summary>
-        public abstract void ExportLibrary();
+        public abstract void WriteToLibrary();
 
         /// <summary>
         /// Clones media object completely
@@ -395,8 +420,10 @@ namespace CollectorzToKodi
             }
 
             // replace all associated languages
-            this.MediaLanguages = new List<string>();
-            this.MediaLanguages.Add(isoCodeForReplacemant);
+            this.MediaLanguages = new List<string>
+            {
+                isoCodeForReplacemant
+            };
 
             foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
             {
@@ -419,11 +446,13 @@ namespace CollectorzToKodi
                         mediaFile.Filename = string.Empty;
                     }
 
-                    mediaFile.Filename = mediaFile.Filename.ReplaceAll("(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                    mediaFile.Filename = mediaFile.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                     mediaFile.Filename = mediaFile.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-                    mediaFile.URL = mediaFile.URL.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
-                    mediaFile.URLLocalFilesystem = mediaFile.URLLocalFilesystem.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
+                    mediaFile.UrlForMediaStorage = mediaFile.UrlForMediaStorage.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
+                    mediaFile.UrlForMediaStorageLocalFilesystem = mediaFile.UrlForMediaStorageLocalFilesystem.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
+                    mediaFile.UrlForMediaPublication = mediaFile.UrlForMediaPublication.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
+                    mediaFile.UrlForMediaPublicationLocalFilesystem = mediaFile.UrlForMediaPublicationLocalFilesystem.ReplaceAll(isoCodeToBeReplaced + mediaFile.Extension, isoCodeForReplacemant + mediaFile.Extension);
                 }
             }
         }
@@ -541,12 +570,15 @@ namespace CollectorzToKodi
             }
 
             // Cover-Front-Image
-            image = new ImageFile(this.Configuration);
-            image.Media = this;
-            image.Filename = "cover";
-            image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+            image = new ImageFile(this.Configuration)
+            {
+                Media = this,
+                Filename = "cover",
+                UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty),
+                ImageType = Configuration.ImageType.CoverFront
+            };
+
             image.ConvertFilename();
-            image.ImageType = Configuration.ImageType.CoverFront;
 
             if (image.URL != string.Empty)
             {
@@ -614,8 +646,10 @@ namespace CollectorzToKodi
             {
                 if (xMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Image")
                 {
-                    ImageFile imageFile = new ImageFile(this.Configuration);
-                    imageFile.Media = this;
+                    ImageFile imageFile = new ImageFile(this.Configuration)
+                    {
+                        Media = this
+                    };
 
                     imageFile.Description = imageFile.OverrideSeason(xMLImageFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty));
 
@@ -773,7 +807,7 @@ namespace CollectorzToKodi
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != string.Empty && !imageFile.URL.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
+                if (imageFile.Filename != string.Empty && !imageFile.UrlForMediaStorage.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
                     if (!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {

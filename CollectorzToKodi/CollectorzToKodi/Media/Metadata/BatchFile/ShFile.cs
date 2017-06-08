@@ -40,10 +40,10 @@ namespace CollectorzToKodi
             {
                 base.Server = value;
                 this.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
-                this.URL = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+                this.UrlForMediaStorage = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
 
-                this.StreamWriter = new StreamWriter(this.URL, false, Encoding.UTF8, 512);
-                this.ExportLibrary();
+                this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
+                this.WriteToLibrary();
             }
         }
 
@@ -53,16 +53,18 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override MediaFile Clone()
         {
-            ShFile shFileClone = new ShFile(this.Configuration);
-            shFileClone.Description = this.Description;
-            shFileClone.URL = this.URL;
-            shFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
-            shFileClone.Filename = this.Filename;
-            shFileClone.Extension = this.Extension;
-            shFileClone.Server = this.Server;
-            shFileClone.Media = this.Media;
-            shFileClone.FileIndex = this.FileIndex;
-            shFileClone.StreamWriter = this.StreamWriter;
+            ShFile shFileClone = new ShFile(this.Configuration)
+            {
+                Description = this.Description,
+                UrlForMediaStorage = this.UrlForMediaStorage,
+                URLLocalFilesystem = this.URLLocalFilesystem,
+                Filename = this.Filename,
+                Extension = this.Extension,
+                Server = this.Server,
+                Media = this.Media,
+                FileIndex = this.FileIndex,
+                StreamWriter = null
+            };
 
             return (ShFile)shFileClone;
         }
@@ -74,7 +76,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ExportLibrary()
+        public override void WriteToLibrary()
         {
             // SH file header
             this.StreamWriter.WriteLine("#!/bin/bash");

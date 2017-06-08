@@ -7,7 +7,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage video files
     /// </summary>
-    public abstract class BatchFile : MediaFile
+    public abstract class BatchFile : MetadataFile
     {
         #region Attributes
         #endregion

@@ -228,8 +228,10 @@ namespace CollectorzToKodi
                     // episodes
                     foreach (XmlNode xMLSeriesDisc in xMLMovie.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
                     {
-                        Episode seriesDiscEpisode = new Episode(this.Configuration);
-                        seriesDiscEpisode.Series = (Series)media;
+                        Episode seriesDiscEpisode = new Episode(this.Configuration)
+                        {
+                            Series = (Series)media
+                        };
                         seriesDiscEpisode.ExtractSeriesData((Series)media);
                         seriesDiscEpisode.OverrideSeason(seriesDiscEpisode.OverrideVideoStreamData(xMLSeriesDisc.XMLReadSubnode("title").XMLReadInnerText(string.Empty)), false);
 
@@ -455,14 +457,16 @@ namespace CollectorzToKodi
                     Series seriesClone = (Series)series.Clone();
                     List<string> mediaLanguagesToBeReplaced;
 
-                    mediaLanguagesToBeReplaced = new List<string>();
-                    mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                    mediaLanguagesToBeReplaced = new List<string>
+                    {
+                        series.MediaLanguages[0] // series title
+                    };
                     seriesClone.ClonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
 
                     foreach (Episode episodeClone in seriesClone.Episodes)
                     {
                         mediaLanguagesToBeReplaced = new List<string>();
-                        mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]);  // series title
+                        mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]); // series title
                         mediaLanguagesToBeReplaced.Add(episodeClone.MediaLanguages[0]); // and episode data, when available languages change during series
 
                         episodeClone.ClonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);

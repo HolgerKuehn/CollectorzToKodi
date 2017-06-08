@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
+    <Compile Include="Media\Metadata\MetadataFile.cs" />
     <Compile Include="Media\Video\Actor.cs" />
     <Compile Include="Media\Audio\AudioStream.cs" />
     <Compile Include="Base\BaseClassExtention.cs" />

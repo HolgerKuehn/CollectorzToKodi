@@ -4,8 +4,6 @@
 
 namespace CollectorzToKodi
 {
-    using System.IO;
-
     /// <summary>
     /// base type for media files, e.g. images, videos, etc.
     /// </summary>
@@ -24,14 +22,24 @@ namespace CollectorzToKodi
         private string description;
 
         /// <summary>
-        /// url or uri of file
+        /// url or uri of file; used for storage
         /// </summary>
-        private string uRL;
+        private string urlForMediaStorage;
 
         /// <summary>
-        /// path and filename on local machine
+        /// path and filename on local machine; used for storage
         /// </summary>
-        private string uRLLocalFilesystem;
+        private string urlForMediaStorageLocalFilesystem;
+
+        /// <summary>
+        /// url or uri of file; used for publication
+        /// </summary>
+        private string urlForMediaPublication;
+
+        /// <summary>
+        /// path and filename on local machine; used for publication
+        /// </summary>
+        private string urlForMediaPublicationLocalFilesystem;
 
         /// <summary>
         /// filename without extension
@@ -59,23 +67,6 @@ namespace CollectorzToKodi
         /// </summary>
         private int fileIndex;
 
-        /// <summary>
-        /// local paths used on the associated server names to store media<br/>
-        /// <returns>local path used on the associated server names to store media</returns>
-        /// </summary>
-        private string serverLocalPathOfServerForMediaStorage;
-
-        /// <summary>
-        /// local path used on the associated server names for publication<br/>
-        /// <returns>local paths used on the associated server names for publication</returns>
-        /// </summary>
-        private string serverLocalPathOfServerForMediaPublication;
-
-        /// <summary>
-        /// StreamWriter representing the actual batch file
-        /// </summary>
-        private StreamWriter streamWriter;
-
         #endregion
         #region Constructor
 
@@ -87,8 +78,10 @@ namespace CollectorzToKodi
         {
             this.configuration = configuration;
             this.description = string.Empty;
-            this.uRL = string.Empty;
-            this.uRLLocalFilesystem = string.Empty;
+            this.urlForMediaStorage = string.Empty;
+            this.urlForMediaStorageLocalFilesystem = string.Empty;
+            this.urlForMediaPublication = string.Empty;
+            this.urlForMediaPublicationLocalFilesystem = string.Empty;
             this.filename = string.Empty;
             this.extension = string.Empty;
             this.media = null;
@@ -117,21 +110,139 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets url or uri of file
+        /// Gets or sets url or uri of file; used for media storage
         /// </summary>
-        public string URL
+        public virtual string UrlForMediaStorage
         {
-            get { return this.uRL; }
-            set { this.uRL = value; }
+            get
+            {
+                return this.urlForMediaStorage;
+            }
+
+            set
+            {
+                this.urlForMediaStorage = value;
+
+                this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorage;
+
+                if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
+                {
+                    this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorageLocalFilesystem.ReplaceAll("\\", "/");
+                }
+
+                for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
+                {
+                    string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
+                    string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
+
+                    // determine used servers from assigned driveLetters
+                    if (this.UrlForMediaStorage.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
+                    {
+                        this.Server = i;
+                    }
+
+                    // and replace them for local paths
+                    this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorageLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
+                }
+
+                // determine file extension
+                string extension = this.urlForMediaStorage.ToLower().RightOfLast(".");
+                string filename = this.urlForMediaStorage.ToLower().LeftOfLast(".");
+
+                if (extension == "jpeg")
+                {
+                    extension = "jpg";
+                }
+
+                switch (extension)
+                {
+                    case "m2ts":
+                    case "m4v":
+                    case "mkv":
+                    case "mp4":
+                    case "mpg":
+                    case "vob":
+
+                    case "gif":
+                    case "jpg":
+                    case "png":
+                        this.Extension = "." + extension;
+                        break;
+
+                    case "srt":
+                        extension = filename.RightOfLast(".") + "." + extension;
+                        filename = filename.LeftOfLast(".");
+
+                        switch (extension)
+                        {
+                            case "de.srt":
+                            case "en.srt":
+                            case "jp.srt":
+                                this.Extension = "." + extension;
+                                break;
+                        }
+
+                        break;
+
+                    default:
+                        throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
+                }
+
+                if (!this.Filename.Contains(this.Extension))
+                {
+                    this.Filename = this.Filename + this.Extension;
+                }
+            }
         }
 
         /// <summary>
-        /// Gets or sets path and filename on local machine
+        /// Gets or sets path and filename on local machine; used for media storage
         /// </summary>
-        public string URLLocalFilesystem
+        public string UrlForMediaStorageLocalFilesystem
         {
-            get { return this.uRLLocalFilesystem; }
-            set { this.uRLLocalFilesystem = value; }
+            get { return this.urlForMediaStorageLocalFilesystem; }
+            set { this.urlForMediaStorageLocalFilesystem = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets url or uri of file; used for media publication
+        /// </summary>
+        public string UrlForMediaPublication
+        {
+            get
+            {
+                return this.urlForMediaPublication;
+            }
+
+            set
+            {
+                this.urlForMediaPublication = value;
+
+                this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublication;
+
+                if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
+                {
+                    this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublicationLocalFilesystem.ReplaceAll("\\", "/");
+                }
+
+                for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
+                {
+                    string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
+                    string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][i.ToString()];
+
+                    // replace drive-letter with local paths
+                    this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublicationLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets path and filename on local machine; used for media publication
+        /// </summary>
+        public string UrlForMediaPublicationLocalFilesystem
+        {
+            get { return this.urlForMediaPublicationLocalFilesystem; }
+            set { this.urlForMediaPublicationLocalFilesystem = value; }
         }
 
         /// <summary>
@@ -180,15 +291,6 @@ namespace CollectorzToKodi
             set { this.fileIndex = value; }
         }
 
-        /// <summary>
-        /// Gets or sets StreamWriter representing the actual batch file
-        /// </summary>
-        public StreamWriter StreamWriter
-        {
-            get { return this.streamWriter; }
-            set { this.streamWriter = value; }
-        }
-
         #endregion
         #region Functions
 
@@ -201,103 +303,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// exports Library to Disk
         /// </summary>
-        public abstract void ExportLibrary();
-
-        /// <summary>
-        /// converts mapped drives to network names and adds used server to media
-        /// </summary>
-        /// <returns>URLLocalFilesystem</returns>
-        public abstract string ConvertFilename();
-
-        /// <summary>
-        /// converts mapped drives to network names and adds used server to media
-        /// </summary>
-        /// <param name="setMediaServer">defines, if Server is set for Media containing this MediaFile</param>
-        /// <returns>URLLocalFilesystem</returns>
-        protected string ConvertFilename(bool setMediaServer = false)
-        {
-            if (this.URL == string.Empty || this.URL.Contains(".m2ts") || this.URL.Contains(".m4v"))
-            {
-                return string.Empty; // ###
-            }
-
-            this.URLLocalFilesystem = this.URL;
-
-            if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
-            {
-                this.URLLocalFilesystem = this.URLLocalFilesystem.ReplaceAll("\\", "/");
-            }
-
-            for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
-            {
-                string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
-                string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
-
-                // determine used servers from assigned driveLetters
-                if (this.URL.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
-                {
-                    if (setMediaServer)
-                    {
-                        this.Media.AddServer(i);
-                    }
-
-                    this.Server = i;
-                }
-
-                // and replace them for local paths
-                this.URLLocalFilesystem = this.URLLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
-            }
-
-            // determine file extension
-            string extension = this.URLLocalFilesystem.ToLower().RightOfLast(".");
-            string filename = this.URLLocalFilesystem.ToLower().LeftOfLast(".");
-
-            if (extension == "jpeg")
-            {
-                extension = "jpg";
-            }
-
-            switch (extension)
-            {
-                case "m2ts":
-                case "m4v":
-                case "mkv":
-                case "mp4":
-                case "mpg":
-                case "vob":
-
-                case "gif":
-                case "jpg":
-                case "png":
-                    this.Extension = "." + extension;
-                    break;
-
-                case "srt":
-                    extension = filename.RightOfLast(".") + "." + extension;
-                    filename = filename.LeftOfLast(".");
-
-                    switch (extension)
-                    {
-                        case "de.srt":
-                        case "en.srt":
-                        case "jp.srt":
-                            this.Extension = "." + extension;
-                            break;
-                    }
-
-                    break;
-
-                default:
-                    throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
-            }
-
-            if (!this.Filename.Contains(this.Extension))
-            {
-                this.Filename = this.Filename + this.Extension;
-            }
-
-            return this.URLLocalFilesystem;
-        }
+        public abstract void WriteToLibrary();
 
         #endregion
     }

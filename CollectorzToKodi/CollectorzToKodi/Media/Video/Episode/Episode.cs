@@ -137,7 +137,7 @@ namespace CollectorzToKodi
 
             videoFile.IsSpecial = this.IsSpecial;
             videoFile.Description = "EpisodeVideoFile";
-            videoFile.URL = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+            videoFile.UrlForMediaStorage = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
             videoFile.Media = this;
             videoFile.FileIndex = this.VideoIndex;
             videoFile.ConvertFilename();
@@ -146,7 +146,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ExportLibrary()
+        public override void WriteToLibrary()
         {
             using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
             {
@@ -373,11 +373,11 @@ namespace CollectorzToKodi
             image.Media = this;
             image.Season = ((Episode)image.Media).actualSeason;
             image.Filename = image.Media.Filename;
-            image.URL = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
+            image.UrlForMediaStorage = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
             image.ConvertFilename();
             image.ImageType = Configuration.ImageType.EpisodeCover;
 
-            if (image.URL != string.Empty)
+            if (image.UrlForMediaStorage != string.Empty)
             {
                 image.Media.Images.Add(image);
             }
@@ -392,13 +392,13 @@ namespace CollectorzToKodi
 
                 if (imageFile.Filename != string.Empty && imageFile.ImageType == Configuration.ImageType.EpisodeCover)
                 {
-                    if (!imageFile.URL.Contains("http://"))
+                    if (!imageFile.UrlForMediaStorage.Contains("http://"))
                     {
                         swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {
-                        swrNFO.WriteLine("    <thumb>" + imageFile.URL + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>" + imageFile.UrlForMediaStorage + "</thumb>");
                     }
                 }
             }
@@ -411,7 +411,7 @@ namespace CollectorzToKodi
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Filename != string.Empty && !imageFile.URL.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
+                if (imageFile.Filename != string.Empty && !imageFile.UrlForMediaStorage.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
                     swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
                 }

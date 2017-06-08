@@ -52,7 +52,7 @@ namespace CollectorzToKodi
         {
             SubTitleFile subTitleFileClone = new SubTitleFile(this.Configuration);
             subTitleFileClone.Description = this.Description;
-            subTitleFileClone.URL = this.URL;
+            subTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
             subTitleFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
             subTitleFileClone.Filename = this.Filename;
             subTitleFileClone.Extension = this.Extension;
