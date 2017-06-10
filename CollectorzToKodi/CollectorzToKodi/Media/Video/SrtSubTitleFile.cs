@@ -38,8 +38,7 @@ namespace CollectorzToKodi
         {
             this.subTitleEntries = new List<SrtSubTitleFileEntry>();
 
-            TimeSpan offsetTime;
-            TimeSpan.TryParse("00:00:00.000", out offsetTime);
+            TimeSpan.TryParse("00:00:00.000", out TimeSpan offsetTime);
         }
 
         #endregion
@@ -72,15 +71,15 @@ namespace CollectorzToKodi
             SrtSubTitleFile srtSubTitleFileClone = new SrtSubTitleFile(this.Configuration);
             srtSubTitleFileClone.Description = this.Description;
             srtSubTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
-            srtSubTitleFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
-            srtSubTitleFileClone.Filename = this.Filename;
             srtSubTitleFileClone.Extension = this.Extension;
-            srtSubTitleFileClone.Server = this.Server;
-            srtSubTitleFileClone.Media = this.Media;
             srtSubTitleFileClone.SubTitle = this.SubTitle;
-            srtSubTitleFileClone.FileIndex = this.FileIndex;
             srtSubTitleFileClone.SubTitleEntries.AddRange(this.SubTitleEntries);
+            srtSubTitleFileClone.FileIndex = this.FileIndex;
             srtSubTitleFileClone.OffsetTime = this.OffsetTime;
+
+            srtSubTitleFileClone.Media = this.Media;
+            srtSubTitleFileClone.Server = this.Server;
+            srtSubTitleFileClone.Filename = this.Filename;
 
             return (SrtSubTitleFile)srtSubTitleFileClone;
         }
@@ -90,15 +89,11 @@ namespace CollectorzToKodi
         /// </summary>
         public void ReadFromSubTitleFile()
         {
-            TimeSpan timOffsetTime;
-            string strOffsetTime;
-
             // reading basic information
-            strOffsetTime = this.Description.RightOf("(Offset ").LeftOf(")");
+            string strOffsetTime = this.Description.RightOf("(Offset ").LeftOf(")");
             this.Description = this.Description.Replace("(Offset " + strOffsetTime + ")", string.Empty);
 
-            TimeSpan.TryParse(strOffsetTime, out timOffsetTime);
-
+            TimeSpan.TryParse(strOffsetTime, out TimeSpan timOffsetTime);
             this.OffsetTime = timOffsetTime;
 
             // reading subtitle content
@@ -156,11 +151,8 @@ namespace CollectorzToKodi
                             timeExtentions = srtLine.Substring(30, srtLine.Length);
                         }
 
-                        TimeSpan timStartTime;
-                        TimeSpan timEndTime;
-
-                        TimeSpan.TryParse(strStartTime, out timStartTime);
-                        TimeSpan.TryParse(strEndTime, out timEndTime);
+                        TimeSpan.TryParse(strStartTime, out TimeSpan timStartTime);
+                        TimeSpan.TryParse(strEndTime, out TimeSpan timEndTime);
 
                         srtSubTitleFileEntry.StartTime = timStartTime;
                         srtSubTitleFileEntry.EndTime = timEndTime;

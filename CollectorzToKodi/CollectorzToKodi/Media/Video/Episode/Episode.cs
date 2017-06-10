@@ -71,6 +71,46 @@ namespace CollectorzToKodi
         #endregion
         #region Properties
 
+        /// <inheritdoc/>
+        public override string Filename
+        {
+            get
+            {
+                return base.Filename;
+            }
+
+            set
+            {
+                base.Filename = this.Series.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
+
+                foreach (VideoFile videoFile in this.MediaFiles)
+                {
+                    videoFile.Filename = this.Filename;
+                }
+
+                foreach (ImageFile imageFile in this.Images)
+                {
+                    imageFile.Filename = this.Filename + "-thumb";
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override List<int> Server
+        {
+            get
+            {
+                return base.Server;
+            }
+
+            set
+            {
+                base.Server = value;
+
+                this.UrlForMediaPublicationLocalFilesystem = this.Series.UrlForMediaPublicationLocalFilesystem + "Season " + this.ConvertSeason(this.actualSeason) + (this.Configuration.ServerMappingType == "UNIX" ? "/" : "\\");
+            }
+        }
+
         /// <summary>
         /// Gets or sets number of season the episode is placed
         /// </summary>
@@ -131,7 +171,7 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <inheritdoc/>
-        public override void ReadMediaFiles(XmlNode xMLMedia)
+        public override void ReadMediaFilesFromXml(XmlNode xMLMedia)
         {
             VideoFile videoFile = new VideoFile(this.Configuration);
 
@@ -140,7 +180,6 @@ namespace CollectorzToKodi
             videoFile.UrlForMediaStorage = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
             videoFile.Media = this;
             videoFile.FileIndex = this.VideoIndex;
-            videoFile.ConvertFilename();
 
             this.MediaFiles.Add(videoFile);
         }
@@ -173,12 +212,12 @@ namespace CollectorzToKodi
 
                 swrNFO.WriteLine("    <set>" + this.MediaGroup + "</set>");
 
-                this.WriteGenre(swrNFO);
-                this.WriteStudio(swrNFO);
-                this.WriteCrew(swrNFO);
-                this.WriteCast(swrNFO);
-                this.WriteStreamData(swrNFO);
-                this.WriteImagesToNFO(swrNFO);
+                this.WriteGenreToLibrary(swrNFO);
+                this.WriteStudioToLibrary(swrNFO);
+                this.WriteCrewToLibrary(swrNFO);
+                this.WriteCastToLibrary(swrNFO);
+                this.WriteStreamDataToLibrary(swrNFO);
+                this.WriteImagesToLibrary(swrNFO);
 
                 swrNFO.WriteLine("</episodedetails>");
             }
@@ -195,8 +234,8 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
-                this.WriteVideoFilesToSH(swrSH);
-                this.WriteImagesToSH(swrSH);
+                this.WriteVideoFilesToLibrary(swrSH);
+                this.WriteImagesToLibrary(swrSH);
 
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
             }
@@ -345,7 +384,7 @@ namespace CollectorzToKodi
 
             if (countEpisode)
             {
-                // neue Season einrichten, falls benötigt
+                // generate new season if necessary
                 while (this.Series.NumberOfEpisodesPerSeason.Count - 1 < (int)int.Parse(this.actualSeason))
                 {
                     this.Series.NumberOfEpisodesPerSeason.Add(0);
@@ -364,17 +403,16 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ReadImages(XmlNode xMLNode)
+        public override void ReadImagesFromXml(XmlNode xMLNode)
         {
             ImageFile image;
 
             // Image
             image = new ImageFile(this.Configuration);
             image.Media = this;
-            image.Season = ((Episode)image.Media).actualSeason;
-            image.Filename = image.Media.Filename;
+            image.Season = this.ActualSeason;
+            image.Filename = this.Filename;
             image.UrlForMediaStorage = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
-            image.ConvertFilename();
             image.ImageType = Configuration.ImageType.EpisodeCover;
 
             if (image.UrlForMediaStorage != string.Empty)
@@ -384,7 +422,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteImagesToNFO(StreamWriter swrNFO)
+        public override void WriteImagesToLibrary(StreamWriter swrNFO)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
@@ -405,7 +443,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteImagesToSH(StreamWriter swrSH)
+        public override void WriteImagesToLibrary(StreamWriter swrSH)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
@@ -460,24 +498,6 @@ namespace CollectorzToKodi
         public override Actor ActorFactory(Configuration configuration)
         {
             return new SeriesActor(configuration);
-        }
-
-        /// <inheritdoc/>
-        public override void SetFilename()
-        {
-            this.Filename = this.Series.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
-
-            foreach (VideoFile videoFile in this.MediaFiles)
-            {
-                videoFile.Filename = this.Filename;
-                videoFile.ConvertFilename();
-            }
-
-            foreach (ImageFile imageFile in this.Images)
-            {
-                imageFile.Filename = this.Filename + "-thumb";
-                imageFile.ConvertFilename();
-            }
         }
 
         #endregion

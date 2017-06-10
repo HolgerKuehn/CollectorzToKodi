@@ -100,7 +100,7 @@ namespace CollectorzToKodi
         public virtual void ReadPerson(XmlNode xmlPerson)
         {
             this.Name = xmlPerson.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-            this.URL = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+            this.UrlForMediaStorage = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
             this.Thumb = xmlPerson.XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
         }
 
@@ -113,9 +113,9 @@ namespace CollectorzToKodi
         {
             swrNFO.WriteLine("        <name>" + this.Name + "</name>");
 
-            if (this.URL.StartsWith("http"))
+            if (this.UrlForMediaStorage.StartsWith("http"))
             {
-                swrNFO.WriteLine("        <url>" + this.URL + "</url>");
+                swrNFO.WriteLine("        <url>" + this.UrlForMediaStorage + "</url>");
             }
 
             if (this.Thumb.StartsWith("http"))

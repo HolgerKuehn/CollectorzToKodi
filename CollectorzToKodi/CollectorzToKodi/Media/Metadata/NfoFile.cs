@@ -55,12 +55,12 @@ namespace CollectorzToKodi
             NfoFile nfoFileClone = new NfoFile(this.Configuration);
             nfoFileClone.Description = this.Description;
             nfoFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
-            nfoFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
-            nfoFileClone.Filename = this.Filename;
             nfoFileClone.Extension = this.Extension;
-            nfoFileClone.Server = this.Server;
-            nfoFileClone.Media = this.Media;
             nfoFileClone.FileIndex = this.FileIndex;
+
+            nfoFileClone.Media = this.Media;
+            nfoFileClone.Server = this.Server;
+            nfoFileClone.Filename = this.Filename;
 
             return (NfoFile)nfoFileClone;
         }
@@ -68,12 +68,6 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
-        }
-
-        /// <inheritdoc/>
-        public override string ConvertFilename()
-        {
-            return this.ConvertFilename(false);
         }
 
         #endregion

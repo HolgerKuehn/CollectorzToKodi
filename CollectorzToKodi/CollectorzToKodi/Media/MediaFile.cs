@@ -34,7 +34,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// url or uri of file; used for publication
         /// </summary>
-        private string urlForMediaPublication;
+        private string urlForMediaPublicationLocalFilesystem;
 
         /// <summary>
         /// path and filename on local machine; used for publication
@@ -80,7 +80,7 @@ namespace CollectorzToKodi
             this.description = string.Empty;
             this.urlForMediaStorage = string.Empty;
             this.urlForMediaStorageLocalFilesystem = string.Empty;
-            this.urlForMediaPublication = string.Empty;
+            this.urlForMediaPublicationLocalFilesystem = string.Empty;
             this.urlForMediaPublicationLocalFilesystem = string.Empty;
             this.filename = string.Empty;
             this.extension = string.Empty;
@@ -205,38 +205,6 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets url or uri of file; used for media publication
-        /// </summary>
-        public string UrlForMediaPublication
-        {
-            get
-            {
-                return this.urlForMediaPublication;
-            }
-
-            set
-            {
-                this.urlForMediaPublication = value;
-
-                this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublication;
-
-                if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
-                {
-                    this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublicationLocalFilesystem.ReplaceAll("\\", "/");
-                }
-
-                for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
-                {
-                    string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
-                    string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][i.ToString()];
-
-                    // replace drive-letter with local paths
-                    this.urlForMediaPublicationLocalFilesystem = this.urlForMediaPublicationLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets or sets path and filename on local machine; used for media publication
         /// </summary>
         public string UrlForMediaPublicationLocalFilesystem
@@ -248,10 +216,19 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets filename without extension
         /// </summary>
-        public string Filename
+        public virtual string Filename
         {
-            get { return this.filename; }
-            set { this.filename = value; }
+            get
+            {
+                return this.filename;
+            }
+
+            set
+            {
+                this.filename = value;
+
+                this.UrlForMediaPublicationLocalFilesystem = this.Media.UrlForMediaPublicationLocalFilesystem;
+            }
         }
 
         /// <summary>
@@ -299,6 +276,11 @@ namespace CollectorzToKodi
         /// </summary>
         /// <returns>new instance of MediaFile</returns>
         public abstract MediaFile Clone();
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        public abstract void DeleteFromLibrary();
 
         /// <summary>
         /// exports Library to Disk

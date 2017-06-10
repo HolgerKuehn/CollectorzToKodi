@@ -57,6 +57,32 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <inheritdoc/>
+        public override string Filename
+        {
+            get
+            {
+                return base.Filename;
+            }
+
+            set
+            {
+                base.Filename = value;
+
+                foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
+                {
+                    subTitleFile.Filename = this.Filename;
+
+                    if (this.Extension != string.Empty)
+                    {
+                        subTitleFile.Filename = this.Filename.Replace(this.Extension, string.Empty);
+                    }
+
+                    subTitleFile.Filename = subTitleFile.Filename + subTitleFile.Extension;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the video files is a special or not
         /// </summary>
@@ -94,30 +120,23 @@ namespace CollectorzToKodi
         public override MediaFile Clone()
         {
             VideoFile videoFileClone = new VideoFile(this.Configuration);
-            videoFileClone.IsSpecial = this.IsSpecial;
+
             videoFileClone.Description = this.Description;
             videoFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
-            videoFileClone.URLLocalFilesystem = this.URLLocalFilesystem;
-            videoFileClone.Filename = this.Filename;
             videoFileClone.Extension = this.Extension;
-            videoFileClone.Server = this.Server;
-            videoFileClone.Media = this.Media;
             videoFileClone.FileIndex = this.FileIndex;
+            videoFileClone.IsSpecial = this.IsSpecial;
 
             foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
             {
                 videoFileClone.SubTitleFiles.Add((SubTitleFile)subTitleFile.Clone());
             }
 
-            return (VideoFile)videoFileClone;
-        }
+            videoFileClone.Media = this.Media;
+            videoFileClone.Server = this.Server;
+            videoFileClone.Filename = this.Filename;
 
-        /// <inheritdoc/>
-        public override string ConvertFilename()
-        {
-            string filename = this.ConvertFilename(true);
-            this.SetFilename();
-            return filename;
+            return (VideoFile)videoFileClone;
         }
 
         /// <summary>
@@ -152,21 +171,22 @@ namespace CollectorzToKodi
                     if ((xMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie") && xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel." + subTitle.Language + "."))
                     {
                         // create new subtitle objects
-                        SrtSubTitleFile srtSubTitleFile = new SrtSubTitleFile(this.Configuration);
-                        srtSubTitleFile.Media = this.Media;
-                        srtSubTitleFile.SubTitle = subTitle;
+                        SrtSubTitleFile srtSubTitleFile = new SrtSubTitleFile(this.Configuration)
+                        {
+                            Media = this.Media,
+                            SubTitle = subTitle,
 
-                        // name and filenames
-                        srtSubTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
-                        srtSubTitleFile.UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                            // name and filenames
+                            Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty),
+                            UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty)
+                        };
                         srtSubTitleFile.ConvertFilename();
 
                         // check for fileIndex
                         int completeLength = srtSubTitleFile.Description.Length;
                         int subtitleLength = ("Untertitel." + subTitle.Language + ".").Length;
-                        int fileIndex = 1;
 
-                        if (!int.TryParse(srtSubTitleFile.Description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out fileIndex))
+                        if (!int.TryParse(srtSubTitleFile.Description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out int fileIndex))
                         {
                             fileIndex = 1;
                         }
@@ -201,6 +221,11 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
+        public override void DeleteFromLibrary()
+        {
+        }
+
+        /// <inheritdoc/>
         public override void WriteToLibrary()
         {
         }
@@ -231,26 +256,10 @@ namespace CollectorzToKodi
                 }
 
                 // reset SubTitleFiles with one new File
-                this.SubTitleFiles = new List<SubTitleFile>();
-                this.SubTitleFiles.Add(extendedSubTitleFile);
-            }
-        }
-
-        /// <summary>
-        /// sets Filenames according to media-type for all corresponding files
-        /// </summary>
-        private void SetFilename()
-        {
-            foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
-            {
-                subTitleFile.Filename = this.Filename;
-
-                if (this.Extension != string.Empty)
+                this.SubTitleFiles = new List<SubTitleFile>
                 {
-                    subTitleFile.Filename = this.Filename.Replace(this.Extension, string.Empty);
-                }
-
-                subTitleFile.Filename = subTitleFile.Filename + subTitleFile.Extension;
+                    extendedSubTitleFile
+                };
             }
         }
 

@@ -128,7 +128,7 @@
 
                     // name and filenames
                     srtSubTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
-                    srtSubTitleFile.URL = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    srtSubTitleFile.UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     srtSubTitleFile.ConvertFilename();
 
                     // check for fileIndex

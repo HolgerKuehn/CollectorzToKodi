@@ -4,10 +4,8 @@
 
 namespace CollectorzToKodi
 {
-    using System;
+    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Text;
     using System.Xml;
 
     /// <summary>
@@ -27,10 +25,48 @@ namespace CollectorzToKodi
         }
 
         #endregion
+        #region Properties
+
+        /// <inheritdoc/>
+        public override string Filename
+        {
+            get
+            {
+                return base.Filename;
+            }
+
+            set
+            {
+                base.Filename = value;
+
+                foreach (VideoFile videoFile in this.MediaFiles)
+                {
+                    videoFile.Filename = this.Filename + " part " + ("0000" + videoFile.FileIndex.ToString()).Substring(videoFile.FileIndex.ToString().Length);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override List<int> Server
+        {
+            get
+            {
+                return base.Server;
+            }
+
+            set
+            {
+                base.Server = value;
+
+                this.UrlForMediaPublicationLocalFilesystem = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + this.Configuration.ServerMovieDirectory;
+            }
+        }
+
+        #endregion Properties
         #region Functions
 
         /// <inheritdoc/>
-        public override void ReadMediaFiles(XmlNode xMLMedia)
+        public override void ReadMediaFilesFromXml(XmlNode xMLMedia)
         {
             int k = 0;
 
@@ -81,81 +117,71 @@ namespace CollectorzToKodi
     }
 
         /// <inheritdoc/>
-        public override void WriteNFO()
+        public override void WriteToLibrary()
         {
-            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
+            if (this.Title != string.Empty)
             {
-                swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
-                swrNFO.WriteLine("<movie>");
-                swrNFO.WriteLine("    <title>" + this.Title + "</title>");
-                swrNFO.WriteLine("    <sorttitle>" + this.TitleSort + "</sorttitle>");
-                swrNFO.WriteLine("    <originaltitle>" + this.TitleOriginal + "</originaltitle>");
-                swrNFO.WriteLine("    <set>" + this.MediaGroup + "</set>");
-                swrNFO.WriteLine("    <rating>" + this.Rating + "</rating>");
-                swrNFO.WriteLine("    <year>" + this.PublishingYear + "</year>");
-                swrNFO.WriteLine("    <plot>" + this.Content + "</plot>");
-                swrNFO.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
-                swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
+                // write Nfo-File
+                nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
+                nfoStreamWriter.WriteLine("<movie>");
+                nfoStreamWriter.WriteLine("    <title>" + this.Title + "</title>");
+                nfoStreamWriter.WriteLine("    <sorttitle>" + this.TitleSort + "</sorttitle>");
+                nfoStreamWriter.WriteLine("    <originaltitle>" + this.TitleOriginal + "</originaltitle>");
+                nfoStreamWriter.WriteLine("    <set>" + this.MediaGroup + "</set>");
+                nfoStreamWriter.WriteLine("    <rating>" + this.Rating + "</rating>");
+                nfoStreamWriter.WriteLine("    <year>" + this.PublishingYear + "</year>");
+                nfoStreamWriter.WriteLine("    <plot>" + this.Content + "</plot>");
+                nfoStreamWriter.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
+                nfoStreamWriter.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
 
                 if (this.PlayDate != string.Empty)
                 {
-                    swrNFO.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
+                    nfoStreamWriter.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
                 }
 
-                swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
+                nfoStreamWriter.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
 
-                swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
-                swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
-                swrNFO.WriteLine("    <id>" + this.ID + "</id>");
-                swrNFO.WriteLine("    <country>" + this.Country + "</country>");
+                nfoStreamWriter.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
+                nfoStreamWriter.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
+                nfoStreamWriter.WriteLine("    <id>" + this.ID + "</id>");
+                nfoStreamWriter.WriteLine("    <country>" + this.Country + "</country>");
 
-                this.WriteGenre(swrNFO);
-                this.WriteStudio(swrNFO);
-                this.WriteCrew(swrNFO);
-                this.WriteCast(swrNFO);
-                this.WriteStreamData(swrNFO);
-                this.WriteImagesToNFO(swrNFO);
+                this.WriteGenreToLibrary();
+                this.WriteStudioToLibrary();
+                this.WriteCrewToLibrary();
+                this.WriteCastToLibrary();
+                this.WriteStreamData();
+                this.WriteImagesToLibrary();
 
-                swrNFO.WriteLine("</movie>");
+                nfoStreamWriter.WriteLine("</movie>");
 
                 if (this.IMDbId != string.Empty)
                 {
-                    swrNFO.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
+                    nfoStreamWriter.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
                 }
 
                 if (this.TMDbId != string.Empty)
                 {
-                    swrNFO.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void WriteSH(StreamWriter swrSH, bool createNewMedia)
-        {
-            if (this.Title != string.Empty)
-            {
-                swrSH.WriteLine("if [ -d \"" + this.Filename + "\" ];");
-                swrSH.WriteLine("then ");
-                swrSH.WriteLine("    rm -r \"" + this.Filename + "\"");
-                swrSH.WriteLine("fi;");
-
-                if (createNewMedia)
-                {
-                    swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
-
-                    swrSH.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
-                    swrSH.WriteLine("mkdir \"extrafanart\"");
-
-                    // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
-                    swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
-
-                    // Videofiles and Images
-                    this.WriteVideoFilesToSH(swrSH);
-                    this.WriteImagesToSH(swrSH);
+                    nfoStreamWriter.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
                 }
 
-                swrSH.WriteLine("cd /share/XBMC/Filme/");
+                // write BatchFile
+                bfStreamWriter.WriteLine("mkdir \"" + this.Filename + "\"");
+
+                bfStreamWriter.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
+                bfStreamWriter.WriteLine("mkdir \"extrafanart\"");
+
+                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+
+                // Videofiles and Images
+                this.WriteVideoFilesToLibrary();
+                this.WriteImagesToLibrary();
+
+                bfStreamWriter.WriteLine("cd /share/XBMC/Filme/");
             }
         }
 
@@ -295,18 +321,6 @@ namespace CollectorzToKodi
         public override void AddServer(int serverList)
         {
             base.AddServer(serverList);
-        }
-
-        /// <inheritdoc/>
-        public override void SetFilename()
-        {
-            base.SetFilename();
-
-            foreach (VideoFile videoFile in this.MediaFiles)
-            {
-                videoFile.Filename = this.Filename + " part " + ("0000" + videoFile.FileIndex.ToString()).Substring(videoFile.FileIndex.ToString().Length);
-                videoFile.ConvertFilename();
-            }
         }
 
         #endregion

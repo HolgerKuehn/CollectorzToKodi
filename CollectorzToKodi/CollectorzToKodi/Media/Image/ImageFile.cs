@@ -62,22 +62,28 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override MediaFile Clone()
         {
-            ImageFile imageFileClone = new ImageFile(this.Configuration)
-            {
-                ImageType = this.ImageType,
-                Season = this.Season,
-                Description = this.Description,
-                UrlForMediaStorage = this.UrlForMediaStorage,
-                UrlForMediaStorageLocalFilesystem = this.UrlForMediaStorageLocalFilesystem,
-                UrlForMediaPublication = this.UrlForMediaPublication,
-                UrlForMediaPublicationLocalFilesystem = this.UrlForMediaPublicationLocalFilesystem,
-                Filename = this.Filename,
-                Extension = this.Extension,
-                Server = this.Server,
-                Media = this.Media
-            };
+            ImageFile imageFileClone = new ImageFile(this.Configuration);
+            imageFileClone.ImageType = this.ImageType;
+            imageFileClone.Season = this.Season;
+            imageFileClone.Description = this.Description;
+            imageFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            imageFileClone.Extension = this.Extension;
+
+            imageFileClone.Media = this.Media;
+            imageFileClone.Server = this.Server;
+            imageFileClone.Filename = this.Filename;
 
             return (ImageFile)imageFileClone;
+        }
+
+        /// <inheritdoc/>
+        public override void DeleteFromLibrary()
+        {
+        }
+
+        /// <inheritdoc/>
+        public override void WriteToLibrary()
+        {
         }
 
         /// <summary>
@@ -96,12 +102,6 @@ namespace CollectorzToKodi
             }
 
             return title.Trim();
-        }
-
-        /// <inheritdoc/>
-        public override string ConvertFilename()
-        {
-            return this.ConvertFilename(false);
         }
 
         #endregion

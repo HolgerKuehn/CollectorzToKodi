@@ -187,9 +187,9 @@ namespace CollectorzToKodi
 
                 media.TMDbId = xMLMovie.XMLReadSubnode("tmdbid").XMLReadInnerText(string.Empty);
                 media.Country = xMLMovie.XMLReadSubnode("country").XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                media.ReadImages(xMLMovie);
-                media.ReadGenre(xMLMovie);
-                media.ReadStudio(xMLMovie);
+                media.ReadImagesFromXml(xMLMovie);
+                media.ReadGenreFromXml(xMLMovie);
+                media.ReadStudioFromXml(xMLMovie);
                 media.ReadCrew(xMLMovie);
 
                 // media.ReadCast(xMLMovie); moved behind reading Episodes, to read
@@ -201,7 +201,7 @@ namespace CollectorzToKodi
                 if (xMLMovieIsMovie)
                 {
                     ((Movie)media).VideoIndex = 1;
-                    ((Movie)media).ReadMediaFiles(xMLMovie);
+                    ((Movie)media).ReadMediaFilesFromXml(xMLMovie);
                     media.PublishingDate = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
                     media.PlayCount = (xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Yes" || xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Ja") ? "1" : "0";
                     media.PlayDate = xMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText(string.Empty);
@@ -219,7 +219,7 @@ namespace CollectorzToKodi
 
                 if (xMLMovieIsSeries)
                 {
-                    // releasedate and number episodes in series
+                    // release date and number episodes in series
                     media.PublishingDate = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
                     ((Series)media).NumberOfTotalEpisodes = (int)int.Parse(xMLMovie.XMLReadSubnode("chapters").XMLReadInnerText(string.Empty));
 
@@ -267,15 +267,15 @@ namespace CollectorzToKodi
                             episode.SubTitles = episode.Series.SubTitles;
                             episode.ReadCrew(xMLEpisode);
                             episode.ReadCast(xMLEpisode);
-                            episode.ReadMediaFiles(xMLEpisode);
-                            episode.ReadImages(xMLEpisode);
+                            episode.ReadMediaFilesFromXml(xMLEpisode);
+                            episode.ReadImagesFromXml(xMLEpisode);
 
                             ((Series)media).Episodes.Add(episode);
                         }
                     }
 
                     // add SubTitles on series-level
-                    ((Series)media).ReadMediaFiles(xMLMovie);
+                    ((Series)media).ReadMediaFilesFromXml(xMLMovie);
 
                     media.ReadCast(xMLMovie);
 
@@ -285,7 +285,7 @@ namespace CollectorzToKodi
                 #endregion
                 #region Media (Movie & Series)
 
-                media.SetFilename();
+                media.Filename = media.Filename; // invoke (re-)setting filenames
 
                 #endregion
             }
@@ -418,6 +418,85 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// exports Library provides by Xml-File
+        /// </summary>
+        public void ExportLibrary()
+        {
+            this.DeleteFromLibrary();
+            this.WriteToLibrary();
+
+            // closing all (open) StreamWriter
+            foreach (BatchFile batchfile in this.Configuration.ListOfBatchFiles)
+            {
+                batchfile.StreamWriter.Close();
+            }
+
+            foreach (Movie movie in this.movieCollection)
+            {
+                movie.NfoFile.StreamWriter.Close();
+            }
+
+            foreach (Series series in this.seriesCollection)
+            {
+                series.NfoFile.StreamWriter.Close();
+
+                foreach (Episode episode in series.Episodes)
+                {
+                    episode.NfoFile.StreamWriter.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        private void DeleteFromLibrary()
+        {
+            for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
+            {
+                int server = (int)i;
+
+                // delete old entries
+                foreach (Movie movie in this.ListMovieCollectionPerServer(server))
+                {
+                    movie.DeleteFromLibrary();
+                }
+
+                foreach (Series series in this.ListSeriesCollectionWithoutMediaGroupPerServer(server))
+                {
+                    series.DeleteFromLibrary();
+                }
+
+                foreach (Series series in this.ListSeriesCollectionPerServer(server))
+                {
+                    series.DeleteFromLibrary();
+                }
+            }
+        }
+
+        /// <summary>
+        /// exports Library to Disk
+        /// </summary>
+        private void WriteToLibrary()
+        {
+            for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
+            {
+                int server = (int)i;
+
+                foreach (Movie movie in this.ListMovieCollectionPerServer(server))
+                {
+                    movie.WriteToLibrary();
+                }
+
+                // Series
+                foreach (Series series in this.ListSeriesCollectionPerServer(server))
+                {
+                    series.WriteToLibrary();
+                }
+            }
+        }
+
+        /// <summary>
         /// list movies, duplicated by language, if multiple video file are used
         /// </summary>
         /// <param name="movieCollection">List of movies, that should be checked for multiple languages</param>
@@ -431,8 +510,10 @@ namespace CollectorzToKodi
                 foreach (string movieLanguage in movie.MediaLanguages)
                 {
                     Movie movieClone = (Movie)movie.Clone();
-                    List<string> mediaLanguagesToBeReplaced = new List<string>();
-                    mediaLanguagesToBeReplaced.Add(movie.MediaLanguages[0]);
+                    List<string> mediaLanguagesToBeReplaced = new List<string>
+                    {
+                        movie.MediaLanguages[0]
+                    };
                     movieClone.ClonePerLanguage(mediaLanguagesToBeReplaced, movieLanguage);
                     movieCollectionPerLanguage.Add(movieClone);
                 }
@@ -457,10 +538,9 @@ namespace CollectorzToKodi
                     Series seriesClone = (Series)series.Clone();
                     List<string> mediaLanguagesToBeReplaced;
 
-                    mediaLanguagesToBeReplaced = new List<string>
-                    {
-                        series.MediaLanguages[0] // series title
-                    };
+                    mediaLanguagesToBeReplaced = new List<string>();
+                    mediaLanguagesToBeReplaced.Add(series.MediaLanguages[0]); // series title
+
                     seriesClone.ClonePerLanguage(mediaLanguagesToBeReplaced, seriesLanguage);
 
                     foreach (Episode episodeClone in seriesClone.Episodes)
@@ -506,8 +586,10 @@ namespace CollectorzToKodi
                     activeMediaGroup = series.MediaGroup;
 
                     // create new series
-                    seriesListPerMediaGroup = new List<Series>();
-                    seriesListPerMediaGroup.Add(series);
+                    seriesListPerMediaGroup = new List<Series>
+                    {
+                        series
+                    };
 
                     // add list to new collection
                     seriesListsPerMediaGroup.Add(seriesListPerMediaGroup);
@@ -571,8 +653,10 @@ namespace CollectorzToKodi
                     seriesPerMediaGroup.AudioStreams = seriesBasicMember.AudioStreams;
                     seriesPerMediaGroup.SubTitles = seriesBasicMember.SubTitles;
                     seriesPerMediaGroup.MediaLanguages = seriesBasicMember.MediaLanguages;
-                    seriesPerMediaGroup.NumberOfEpisodesPerSeason = new List<int>();
-                    seriesPerMediaGroup.NumberOfEpisodesPerSeason.Add(0);
+                    seriesPerMediaGroup.NumberOfEpisodesPerSeason = new List<int>
+                    {
+                        0
+                    };
 
                     // adding basic images (without season) from seriesBasicMember
                     foreach (ImageFile imageFile in seriesBasicMember.Images)
@@ -746,7 +830,7 @@ namespace CollectorzToKodi
                         }
                     }
 
-                    seriesPerMediaGroup.SetFilename();
+                    seriesPerMediaGroup.Filename = seriesPerMediaGroup.Filename; // invoke (re-)setting filenames
 
                     seriesCollectionPerMediaGroup.Add(seriesPerMediaGroup);
                 }

@@ -53,26 +53,18 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override MediaFile Clone()
         {
-            ShFile shFileClone = new ShFile(this.Configuration)
-            {
-                Description = this.Description,
-                UrlForMediaStorage = this.UrlForMediaStorage,
-                URLLocalFilesystem = this.URLLocalFilesystem,
-                Filename = this.Filename,
-                Extension = this.Extension,
-                Server = this.Server,
-                Media = this.Media,
-                FileIndex = this.FileIndex,
-                StreamWriter = null
-            };
+            ShFile shFileClone = new ShFile(this.Configuration);
+            shFileClone.Description = this.Description;
+            shFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            shFileClone.Extension = this.Extension;
+            shFileClone.FileIndex = this.FileIndex;
+            shFileClone.StreamWriter = null;
+
+            shFileClone.Media = this.Media;
+            shFileClone.Server = this.Server;
+            shFileClone.Filename = this.Filename;
 
             return (ShFile)shFileClone;
-        }
-
-        /// <inheritdoc/>
-        public override string ConvertFilename()
-        {
-            return this.ConvertFilename(false);
         }
 
         /// <inheritdoc/>

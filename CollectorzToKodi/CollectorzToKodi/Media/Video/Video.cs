@@ -125,6 +125,34 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <summary>
+        /// Gets or sets title of media
+        /// </summary>
+        public override string Title
+        {
+            get
+            {
+                return base.Title;
+            }
+
+            set
+            {
+                base.Title = value;
+
+                this.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets file name used to publish the media in Kodi
+        /// </summary>
+        /// <remarks>represents base name, will be extended by "(Specials)" or season and episode index</remarks>
+        public override string Filename
+        {
+            get { return base.Filename; }
+            set { base.Filename = value; }
+        }
+
+        /// <summary>
         /// Gets or sets MPAA rating of video
         /// </summary>
         public string MPAA
@@ -286,6 +314,25 @@ namespace CollectorzToKodi
         #endregion
         #region Functions
 
+        /// <inheritdoc/>
+        public override void DeleteFromLibrary()
+        {
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
+            // write NFO-file
+            using (bfStreamWriter)
+            {
+                if (this.Title != string.Empty)
+                {
+                    bfStreamWriter.WriteLine("if [ -d \"" + this.Filename + "\" ];");
+                    bfStreamWriter.WriteLine("then ");
+                    bfStreamWriter.WriteLine("    rm -r \"" + this.Filename + "\"");
+                    bfStreamWriter.WriteLine("fi;");
+                    bfStreamWriter.WriteLine(string.Empty);
+                }
+            }
+        }
+
         /// <summary>
         /// Clones video to specified languages
         /// </summary>
@@ -333,7 +380,7 @@ namespace CollectorzToKodi
         /// Writes crew information to NFO-file of this video
         /// </summary>
         /// <param name="swrNFO">NFO file, the crew information should be added to</param>
-        public void WriteCrew(StreamWriter swrNFO)
+        public void WriteCrewToLibrary(StreamWriter swrNFO)
         {
             int i = 0;
             foreach (Director director in this.Directors)
@@ -383,7 +430,7 @@ namespace CollectorzToKodi
         /// Writes cast information to NFO-file of this video
         /// </summary>
         /// <param name="swrNFO">NFO file, the cast information should be added to</param>
-        public void WriteCast(StreamWriter swrNFO)
+        public void WriteCastToLibrary(StreamWriter swrNFO)
         {
             int i = 0;
             foreach (Actor actor in this.Actors)
@@ -598,7 +645,7 @@ namespace CollectorzToKodi
         /// Adds copy statements for VideoFiles to provided bash-shell-script
         /// </summary>
         /// <param name="swrSH">Bash-shell-script that the image information should be added to</param>
-        public virtual void WriteVideoFilesToSH(StreamWriter swrSH)
+        public virtual void WriteVideoFilesToLibrary(StreamWriter swrSH)
         {
             foreach (VideoFile videoFile in this.MediaFiles)
             {
@@ -608,14 +655,6 @@ namespace CollectorzToKodi
                     videoFile.WriteSubTitleToSH(swrSH);
                 }
             }
-        }
-
-        /// <summary>
-        /// sets Filenames according to media-type for all corresponding files
-        /// </summary>
-        public virtual void SetFilename()
-        {
-            this.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
         }
 
         /// <summary>

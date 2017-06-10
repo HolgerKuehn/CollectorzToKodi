@@ -74,12 +74,12 @@ namespace CollectorzToKodi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video")]
-        public string LocalPathOfServerForMediaStorage {
+        public string UrlForMediaStorage {
             get {
-                return ((string)(this["LocalPathOfServerForMediaStorage"]));
+                return ((string)(this["UrlForMediaStorage"]));
             }
             set {
-                this["LocalPathOfServerForMediaStorage"] = value;
+                this["UrlForMediaStorage"] = value;
             }
         }
         

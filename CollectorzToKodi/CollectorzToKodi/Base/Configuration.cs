@@ -23,7 +23,7 @@ namespace CollectorzToKodi
         /// list of MimeTypes from file extension
         /// <remarks>List from github://cymen/ApacheMimeTypesToDotNet</remarks>
         /// </summary>
-        private static readonly Dictionary<string, string> extensionToMimeTypes = new Dictionary<string, string>
+        private readonly Dictionary<string, string> extensionToMimeTypes = new Dictionary<string, string>
         {
             { "123", "application/vnd.lotus-1-2-3" },
             { "3dml", "text/vnd.in3d.3dml" },
@@ -911,7 +911,7 @@ namespace CollectorzToKodi
             { "zmm", "application/vnd.handheld-entertainment+xml" },
         };
 
-        private static readonly Dictionary<string, string> languageIsoCodeToDescription = new Dictionary<string, string>
+        private readonly Dictionary<string, string> languageIsoCodeToDescription = new Dictionary<string, string>
         {
             { "de", "deutsch" },
             { "en", "englisch" },
@@ -1030,14 +1030,14 @@ namespace CollectorzToKodi
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
         /// </summary>
-        private readonly List<string> serverLocalPathOfServerForMediaStorage;
+        private readonly List<string> serverUrlForMediaStorage;
 
         /// <summary>
         /// list of local paths used on the associated server names for publication<br/>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names for publication</returns>
         /// </summary>
-        private readonly List<string> serverLocalPathOfServerForMediaPublication;
+        private readonly List<string> serverUrlForMediaPublicationLocalFilesystem;
 
         /// <summary>
         /// type of mapping used during deployment<br/>
@@ -1112,11 +1112,11 @@ namespace CollectorzToKodi
             this.serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer;
             this.serverListOfServers = Properties.SettingsServer.Default.ListOfServer.Split(",");
             this.serverDriveMappingOfServers = Properties.SettingsServer.Default.DriveMappingOfServer.Split(",");
-            this.serverLocalPathOfServerForMediaStorage = Properties.SettingsServer.Default.LocalPathOfServerForMediaStorage.Split(",");
-            this.serverLocalPathOfServerForMediaPublication = Properties.SettingsServer.Default.LocalPathOfServerForMediaPublication.Split(",");
+            this.serverUrlForMediaStorage = Properties.SettingsServer.Default.UrlForMediaStorage.Split(",");
+            this.serverUrlForMediaPublicationLocalFilesystem = Properties.SettingsServer.Default.LocalPathOfServerForMediaPublication.Split(",");
             this.serverMappingType = Properties.SettingsServer.Default.MappingType;
-            this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory;
-            this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory;
+            this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
+            this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
 
             #endregion
             #region Dictionaries / Configuration
@@ -1134,8 +1134,8 @@ namespace CollectorzToKodi
             {
                 this.serverListsOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerListOfServers[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDriveMappingOfServers[i]);
-                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaStorage[i]);
-                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerLocalPathOfServerForMediaPublication[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.UrlForMediaStorage[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.UrlForMediaPublicationLocalFilesystem[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
 
@@ -1153,7 +1153,6 @@ namespace CollectorzToKodi
 
                 this.listOfBatchFiles[i].Server = i;
             }
-
 
             #endregion
         }
@@ -1571,9 +1570,9 @@ namespace CollectorzToKodi
         /// </summary>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
-        private List<string> ServerLocalPathOfServerForMediaStorage
+        private List<string> UrlForMediaStorage
         {
-            get { return this.serverLocalPathOfServerForMediaStorage; }
+            get { return this.serverUrlForMediaStorage; }
         }
 
         /// <summary>
@@ -1581,9 +1580,9 @@ namespace CollectorzToKodi
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names for publication</returns>
         /// </summary>
-        private List<string> ServerLocalPathOfServerForMediaPublication
+        private List<string> UrlForMediaPublicationLocalFilesystem
         {
-            get { return this.serverLocalPathOfServerForMediaPublication; }
+            get { return this.serverUrlForMediaPublicationLocalFilesystem; }
         }
 
         #endregion
@@ -1599,9 +1598,9 @@ namespace CollectorzToKodi
         {
             string languageDescription = "deutsch";
 
-            if (Configuration.languageIsoCodeToDescription.ContainsKey(isoCode))
+            if (this.languageIsoCodeToDescription.ContainsKey(isoCode))
             {
-                languageDescription = Configuration.languageIsoCodeToDescription[isoCode];
+                languageDescription = this.languageIsoCodeToDescription[isoCode];
             }
 
             return languageDescription;
@@ -1616,9 +1615,9 @@ namespace CollectorzToKodi
         {
             string mimeType = "unknown";
 
-            if (Configuration.extensionToMimeTypes.ContainsKey(extension))
+            if (this.extensionToMimeTypes.ContainsKey(extension))
             {
-                mimeType = Configuration.extensionToMimeTypes[extension];
+                mimeType = this.extensionToMimeTypes[extension];
             }
 
             return mimeType;

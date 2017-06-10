@@ -6,7 +6,6 @@ namespace CollectorzToKodi
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Text;
     using System.Xml;
 
     /// <summary>
@@ -55,15 +54,48 @@ namespace CollectorzToKodi
             this.numberOfTotalEpisodes = 0;
             this.numberOfEpisodes = 0;
             this.numberOfSpecials = 0;
-            this.numberOfEpisodesPerSeason = new List<int>
-            {
-                0, // Specials
-                0 // Season 1
-            };
+            this.numberOfEpisodesPerSeason = new List<int>();
+            this.numberOfEpisodesPerSeason.Add(0); // Specials
+            this.numberOfEpisodesPerSeason.Add(0); // Season 1
         }
 
         #endregion
         #region Properties
+
+        /// <inheritdoc/>
+        public override string Filename
+        {
+            get
+            {
+                return base.Filename;
+            }
+
+            set
+            {
+                base.Filename = value;
+
+                foreach (Episode episode in this.Episodes)
+                {
+                    episode.Filename = string.Empty; // invoke generation of filename for each episode
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override List<int> Server
+        {
+            get
+            {
+                return base.Server;
+            }
+
+            set
+            {
+                base.Server = value;
+
+                this.UrlForMediaPublicationLocalFilesystem = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + this.Configuration.ServerSeriesDirectory;
+            }
+        }
 
         /// <summary>
         /// Gets or sets list of episodes in this series
@@ -120,7 +152,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ReadMediaFiles(XmlNode xMLMedia)
+        public override void ReadMediaFilesFromXml(XmlNode xMLMedia)
         {
             // read SubTitles for each Episode
             foreach (Episode episode in this.Episodes)
@@ -133,103 +165,73 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void DeleteFromLibrary()
-        {
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
-
-            // write NFO-file
-            using (bfStreamWriter)
-            {
-                if (this.Title != string.Empty)
-                {
-                    bfStreamWriter.WriteLine("if [ -d \"" + this.Filename + "\" ];");
-                    bfStreamWriter.WriteLine("then ");
-                    bfStreamWriter.WriteLine("    rm -r \"" + this.Filename + "\"");
-                    bfStreamWriter.WriteLine("fi;");
-                    bfStreamWriter.WriteLine("");
-                }
-            }
-        }
-
-        /// <inheritdoc/>
         public override void WriteToLibrary()
         {
-            // create NFO-file and nfoStreamWriter
-            if (this.NfoFile == null)
-            {
-                this.NfoFile = new NfoFile(this.Configuration)
-                {
-                    Media = this
-                };
-            }
-
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+            StreamWriter shStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
 
             // write NFO-file for Series
-            using (nfoStreamWriter)
+            nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
+            nfoStreamWriter.WriteLine("<tvshow>");
+            nfoStreamWriter.WriteLine("    <title>" + this.Title + "</title>");
+            nfoStreamWriter.WriteLine("    <showtitle>" + this.Title + "</showtitle>");
+            nfoStreamWriter.WriteLine("    <rating>" + this.Rating + "</rating>");
+            nfoStreamWriter.WriteLine("    <year>" + this.PublishingYear + "</year>");
+            nfoStreamWriter.WriteLine("    <plot>" + this.Content + "</plot>");
+            nfoStreamWriter.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
+            nfoStreamWriter.WriteLine("    <episode>" + this.NumberOfTotalEpisodes + "</episode>");
+            nfoStreamWriter.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
+
+            if (this.PlayDate != string.Empty)
             {
-                nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
-                nfoStreamWriter.WriteLine("<tvshow>");
-                nfoStreamWriter.WriteLine("    <title>" + this.Title + "</title>");
-                nfoStreamWriter.WriteLine("    <showtitle>" + this.Title + "</showtitle>");
-                nfoStreamWriter.WriteLine("    <rating>" + this.Rating + "</rating>");
-                nfoStreamWriter.WriteLine("    <year>" + this.PublishingYear + "</year>");
-                nfoStreamWriter.WriteLine("    <plot>" + this.Content + "</plot>");
-                nfoStreamWriter.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
-                nfoStreamWriter.WriteLine("    <episode>" + this.NumberOfTotalEpisodes + "</episode>");
-                nfoStreamWriter.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
+                nfoStreamWriter.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
+            }
 
-                if (this.PlayDate != string.Empty)
-                {
-                    nfoStreamWriter.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
-                }
+            nfoStreamWriter.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
+            nfoStreamWriter.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
+            nfoStreamWriter.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
+            nfoStreamWriter.WriteLine("    <MediaGroup>" + this.MediaGroup + "</MediaGroup>");
+            nfoStreamWriter.WriteLine("    <id>" + this.ID + "</id>");
+            nfoStreamWriter.WriteLine("    <country>" + this.Country + "</country>");
 
-                nfoStreamWriter.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
-                nfoStreamWriter.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
-                nfoStreamWriter.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
-                nfoStreamWriter.WriteLine("    <MediaGroup>" + this.MediaGroup + "</MediaGroup>");
-                nfoStreamWriter.WriteLine("    <id>" + this.ID + "</id>");
-                nfoStreamWriter.WriteLine("    <country>" + this.Country + "</country>");
+            this.WriteGenreToLibrary(nfoStreamWriter);
+            this.WriteStudioToLibrary(nfoStreamWriter);
+            this.WriteCrewToLibrary(nfoStreamWriter);
+            this.WriteCastToLibrary(nfoStreamWriter);
+            this.WriteImagesToLibrary(nfoStreamWriter);
 
-                this.WriteGenre(nfoStreamWriter);
-                this.WriteStudio(nfoStreamWriter);
-                this.WriteCrew(nfoStreamWriter);
-                this.WriteCast(nfoStreamWriter);
-                this.WriteImagesToNFO(nfoStreamWriter);
+            nfoStreamWriter.WriteLine("</tvshow>");
 
-                nfoStreamWriter.WriteLine("</tvshow>");
+            if (this.IMDbId != string.Empty)
+            {
+                nfoStreamWriter.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
+            }
 
-                if (this.IMDbId != string.Empty)
-                {
-                    nfoStreamWriter.WriteLine("http://www.imdb.com/title/tt" + this.IMDbId + "/");
-                }
-
-                if (this.TMDbId != string.Empty)
-                {
-                    nfoStreamWriter.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
-                }
+            if (this.TMDbId != string.Empty)
+            {
+                nfoStreamWriter.WriteLine("http://www.themoviedb.org/" + this.TMDbType + "/" + this.TMDbId + "/");
             }
 
             // write Batch-File for Series
             if (this.Title != string.Empty)
             {
                 // ######
-                swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
+                shStreamWriter.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
+                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
                 for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
                 {
-                    swrSH.WriteLine("mkdir \"Season " + this.ConvertSeason(i.ToString()) + "\"");
+                    shStreamWriter.WriteLine("mkdir \"Season " + this.ConvertSeason(i.ToString()) + "\"");
                 }
 
-                swrSH.WriteLine("mkdir \"extrafanart\"");
-                swrSH.WriteLine("mkdir \"extrathumbs\"");
+                shStreamWriter.WriteLine("mkdir \"extrafanart\"");
+                shStreamWriter.WriteLine("mkdir \"extrathumbs\"");
 
-                swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
+                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
+                shStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
                 // Images
-                this.WriteImagesToSH(swrSH);
+                this.WriteImagesToLibrary(shStreamWriter);
             }
 
             // create NFO-files and Batch-file for each Episode
@@ -242,32 +244,31 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override Media Clone()
         {
-            Series seriesClone = new Series(this.Configuration)
-            {
-                ID = this.ID,
-                Title = this.Title,
-                TitleSort = this.TitleSort,
-                TitleOriginal = this.TitleOriginal,
-                MediaGroup = this.MediaGroup,
-                Rating = this.Rating,
-                PublishingYear = this.PublishingYear,
-                PublishingDate = this.PublishingDate,
-                Content = this.Content,
-                RunTime = this.RunTime,
-                Images = this.Images, // if required, still to be cloned
-                MPAA = this.MPAA,
-                PlayCount = this.PlayCount,
-                PlayDate = this.PlayDate,
-                IMDbId = this.IMDbId,
-                TMDbType = this.TMDbType,
-                TMDbId = this.TMDbId,
-                Country = this.Country,
-                Genres = this.Genres,
-                Studios = this.Studios,
-                Directors = this.Directors,
-                Writers = this.Writers,
-                Actors = this.Actors
-            };
+            Series seriesClone = new Series(this.Configuration);
+            seriesClone.ID = this.ID;
+            seriesClone.Title = this.Title;
+            seriesClone.TitleSort = this.TitleSort;
+            seriesClone.TitleOriginal = this.TitleOriginal;
+            seriesClone.MediaGroup = this.MediaGroup;
+            seriesClone.Rating = this.Rating;
+            seriesClone.PublishingYear = this.PublishingYear;
+            seriesClone.PublishingDate = this.PublishingDate;
+            seriesClone.Content = this.Content;
+            seriesClone.RunTime = this.RunTime;
+            seriesClone.Images = this.Images; // if required; still to be cloned
+            seriesClone.MPAA = this.MPAA;
+            seriesClone.PlayCount = this.PlayCount;
+            seriesClone.PlayDate = this.PlayDate;
+            seriesClone.IMDbId = this.IMDbId;
+            seriesClone.TMDbType = this.TMDbType;
+            seriesClone.TMDbId = this.TMDbId;
+            seriesClone.Country = this.Country;
+            seriesClone.Genres = this.Genres;
+            seriesClone.Studios = this.Studios;
+            seriesClone.Directors = this.Directors;
+            seriesClone.Writers = this.Writers;
+            seriesClone.Actors = this.Actors;
+
             foreach (VideoFile videoFile in this.MediaFiles)
             {
                 seriesClone.MediaFiles.Add((VideoFile)videoFile.Clone());
@@ -315,44 +316,42 @@ namespace CollectorzToKodi
 
             if (cloneSeries)
             {
-                seriesClone = new Series(this.Configuration)
-                {
-                    ID = this.ID,
-                    Title = this.Title,
-                    TitleSort = this.TitleSort,
-                    TitleOriginal = this.TitleOriginal,
-                    MediaGroup = this.MediaGroup,
-                    Rating = this.Rating,
-                    PublishingYear = this.PublishingYear,
-                    PublishingDate = this.PublishingDate,
-                    Content = this.Content,
-                    RunTime = this.RunTime,
-                    Images = this.Images, // if required, still to be cloned
-                    MPAA = this.MPAA,
-                    PlayCount = this.PlayCount,
-                    PlayDate = this.PlayDate,
-                    IMDbId = this.IMDbId,
-                    TMDbType = this.TMDbType,
-                    TMDbId = this.TMDbId,
-                    Country = this.Country,
-                    Genres = this.Genres,
-                    Studios = this.Studios,
-                    Directors = this.Directors,
-                    Writers = this.Writers,
-                    Actors = this.Actors,
-                    Filename = this.Filename,
-                    VideoCodec = this.VideoCodec,
-                    VideoDefinition = this.VideoDefinition,
-                    VideoAspectRatio = this.VideoAspectRatio,
-                    AudioStreams = this.AudioStreams,
-                    SubTitles = this.SubTitles,
-                    MediaLanguages = this.MediaLanguages,
+                seriesClone = new Series(this.Configuration);
+                seriesClone.ID = this.ID;
+                seriesClone.Title = this.Title;
+                seriesClone.TitleSort = this.TitleSort;
+                seriesClone.TitleOriginal = this.TitleOriginal;
+                seriesClone.MediaGroup = this.MediaGroup;
+                seriesClone.Rating = this.Rating;
+                seriesClone.PublishingYear = this.PublishingYear;
+                seriesClone.PublishingDate = this.PublishingDate;
+                seriesClone.Content = this.Content;
+                seriesClone.RunTime = this.RunTime;
+                seriesClone.Images = this.Images; // if required; still to be cloned
+                seriesClone.MPAA = this.MPAA;
+                seriesClone.PlayCount = this.PlayCount;
+                seriesClone.PlayDate = this.PlayDate;
+                seriesClone.IMDbId = this.IMDbId;
+                seriesClone.TMDbType = this.TMDbType;
+                seriesClone.TMDbId = this.TMDbId;
+                seriesClone.Country = this.Country;
+                seriesClone.Genres = this.Genres;
+                seriesClone.Studios = this.Studios;
+                seriesClone.Directors = this.Directors;
+                seriesClone.Writers = this.Writers;
+                seriesClone.Actors = this.Actors;
+                seriesClone.Filename = this.Filename;
+                seriesClone.VideoCodec = this.VideoCodec;
+                seriesClone.VideoDefinition = this.VideoDefinition;
+                seriesClone.VideoAspectRatio = this.VideoAspectRatio;
+                seriesClone.AudioStreams = this.AudioStreams;
+                seriesClone.SubTitles = this.SubTitles;
+                seriesClone.MediaLanguages = this.MediaLanguages;
 
-                    NumberOfTotalEpisodes = this.NumberOfTotalEpisodes,
-                    NumberOfEpisodes = this.NumberOfEpisodes,
-                    NumberOfSpecials = this.NumberOfSpecials,
-                    NumberOfEpisodesPerSeason = this.NumberOfEpisodesPerSeason
-                };
+                seriesClone.NumberOfTotalEpisodes = this.NumberOfTotalEpisodes;
+                seriesClone.NumberOfEpisodes = this.NumberOfEpisodes;
+                seriesClone.NumberOfSpecials = this.NumberOfSpecials;
+                seriesClone.NumberOfEpisodesPerSeason = this.NumberOfEpisodesPerSeason;
 
                 foreach (VideoFile videoFile in this.MediaFiles)
                 {
@@ -391,17 +390,6 @@ namespace CollectorzToKodi
             this.CheckForDefaultMediaLanguages();
 
             return returnTitle;
-        }
-
-        /// <inheritdoc/>
-        public override void SetFilename()
-        {
-            base.SetFilename();
-
-            foreach (Episode epsEpisode in this.Episodes)
-            {
-                epsEpisode.SetFilename();
-            }
         }
 
         #endregion
