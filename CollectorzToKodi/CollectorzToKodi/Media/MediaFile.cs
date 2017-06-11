@@ -32,11 +32,6 @@ namespace CollectorzToKodi
         private string urlForMediaStorageLocalFilesystem;
 
         /// <summary>
-        /// url or uri of file; used for publication
-        /// </summary>
-        private string urlForMediaPublicationLocalFilesystem;
-
-        /// <summary>
         /// path and filename on local machine; used for publication
         /// </summary>
         private string urlForMediaPublicationLocalFilesystem;

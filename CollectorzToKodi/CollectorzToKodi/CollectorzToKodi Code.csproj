@@ -99,6 +99,7 @@
     <Compile Include="Media\Video\Writer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Configuration\App.config" />
     <None Include="Configuration\CollectorzToKodi.ruleset" />
     <None Include="Configuration\CollectorzToKodi Code.csproj.vsspell" />

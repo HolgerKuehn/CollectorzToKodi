@@ -921,7 +921,7 @@ namespace CollectorzToKodi
         #endregion
         #region Attributes
 
-            #region Kodi
+        #region Kodi
 
             /// <summary>
             /// contains name of configured Kodi skin<br/>
@@ -985,21 +985,28 @@ namespace CollectorzToKodi
         /// </summary>
         /// <remarks>filename needs to end with ".xml"</remarks>
         /// <returns>local path to CollectorzToKodi-XML-Export including Filename and extension</returns>
-        private readonly string movieCollectorLocalPathToXMLExport;
+        private readonly string movieCollectorUrlForXMLExport;
 
         /// <summary>
         /// local path to CollectorzToKodi-XML-Export excluding Filename and extension as specified in "SettingsMovieCollector.settings"
         /// </summary>
-        /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
         /// <returns>local path to CollectorzToKodi-XML-Export excluding Filename and extension</returns>
-        private readonly string movieCollectorLocalPathToXMLExportPath;
+        private readonly string movieCollectorUrlForXMLExportPath;
 
         /// <summary>
         /// Filename and extension excluding path to CollectorzToKodi-XML-Export as specified in "SettingsMovieCollector.settings"
         /// </summary>
-        /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
         /// <returns>Filename and extension excluding path to CollectorzToKodi-XML-Export</returns>
-        private readonly string movieCollectorLocalPathToXMLExportFile;
+        private readonly string movieCollectorUrlForXMLExportFile;
+
+        /// <summary>
+        /// Filename and extension excluding path to CollectorzToKodi-XML-Export as specified in "SettingsMovieCollector.settings"
+        /// </summary>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
+        /// <returns>Path to CollectorzToKodi-XML-Export</returns>
+        private readonly string movieCollectorUrlForXMLExportPathLocalFilesystem;
 
         #endregion
         #region Server
@@ -1030,7 +1037,7 @@ namespace CollectorzToKodi
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
         /// </summary>
-        private readonly List<string> serverUrlForMediaStorage;
+        private readonly List<string> serverUrlForMediaStorageLocalFilesystem;
 
         /// <summary>
         /// list of local paths used on the associated server names for publication<br/>
@@ -1102,9 +1109,10 @@ namespace CollectorzToKodi
             this.movieCollectorSeason = Properties.SettingsMovieCollector.Default.Season;
             this.movieCollectorLanguage = Properties.SettingsMovieCollector.Default.Language;
 
-            this.movieCollectorLocalPathToXMLExport = Properties.SettingsMovieCollector.Default.LocalPathToXMLExport;
-            this.movieCollectorLocalPathToXMLExportFile = this.movieCollectorLocalPathToXMLExport.RightOfLast("\\");
-            this.movieCollectorLocalPathToXMLExportPath = this.movieCollectorLocalPathToXMLExport.LeftOfLast("\\") + "\\";
+            this.movieCollectorUrlForXMLExport = Properties.SettingsMovieCollector.Default.UrlForXMLExport;
+            this.movieCollectorUrlForXMLExportFile = this.movieCollectorUrlForXMLExport.RightOfLast("\\");
+            this.movieCollectorUrlForXMLExportPath = this.movieCollectorUrlForXMLExport.LeftOfLast("\\") + "\\";
+            this.movieCollectorUrlForXMLExportPathLocalFilesystem = this.movieCollectorUrlForXMLExportPath;
 
             #endregion
             #region Server
@@ -1112,8 +1120,8 @@ namespace CollectorzToKodi
             this.serverNumberOfServers = Properties.SettingsServer.Default.NumberOfServer;
             this.serverListOfServers = Properties.SettingsServer.Default.ListOfServer.Split(",");
             this.serverDriveMappingOfServers = Properties.SettingsServer.Default.DriveMappingOfServer.Split(",");
-            this.serverUrlForMediaStorage = Properties.SettingsServer.Default.UrlForMediaStorage.Split(",");
-            this.serverUrlForMediaPublicationLocalFilesystem = Properties.SettingsServer.Default.LocalPathOfServerForMediaPublication.Split(",");
+            this.serverUrlForMediaStorageLocalFilesystem = Properties.SettingsServer.Default.UrlForMediaStorageLocalFilesystem.Split(",");
+            this.serverUrlForMediaPublicationLocalFilesystem = Properties.SettingsServer.Default.UrlForMediaPublicationLocalFilesystem.Split(",");
             this.serverMappingType = Properties.SettingsServer.Default.MappingType;
             this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
             this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
@@ -1152,6 +1160,16 @@ namespace CollectorzToKodi
                 */
 
                 this.listOfBatchFiles[i].Server = i;
+
+                // determine movieCollectorUrlForXMLExportPathLocalFilesystem
+                string driveLetter = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
+                string localPath = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
+
+                // determine used servers from assigned driveLetters
+                if (this.movieCollectorUrlForXMLExportPathLocalFilesystem.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
+                {
+                    this.movieCollectorUrlForXMLExportPathLocalFilesystem = this.movieCollectorUrlForXMLExportPathLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
+                }
             }
 
             #endregion
@@ -1450,29 +1468,39 @@ namespace CollectorzToKodi
         /// </summary>
         /// <remarks>filename needs to end with ".xml"</remarks>
         /// <returns>local path to CollectorzToKodi-XML-Export including Filename and extension</returns>
-        public string MovieCollectorLocalPathToXMLExport
+        public string MovieCollectorUrlForXMLExport
         {
-            get { return this.movieCollectorLocalPathToXMLExport; }
+            get { return this.movieCollectorUrlForXMLExport; }
         }
 
         /// <summary>
         /// Gets local path to CollectorzToKodi-XML-Export excluding Filename and extension
         /// </summary>
-        /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
         /// <returns>local path to CollectorzToKodi-XML-Export excluding Filename and extension</returns>
-        public string MovieCollectorLocalPathToXMLExportPath
+        public string MovieCollectorUrlForXMLExportPath
         {
-            get { return this.movieCollectorLocalPathToXMLExportPath; }
+            get { return this.movieCollectorUrlForXMLExportPath; }
         }
 
         /// <summary>
         /// Gets Filename and extension excluding path to CollectorzToKodi-XML-Export<br/>
         /// </summary>
-        /// <remarks>is generated from movieCollectorLocalPathToXMLExport</remarks>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
         /// <returns>Filename and extension excluding path to CollectorzToKodi-XML-Export</returns>
-        public string MovieCollectorLocalPathToXMLExportFile
+        public string MovieCollectorUrlForXMLExportFile
         {
-            get { return this.movieCollectorLocalPathToXMLExportFile; }
+            get { return this.movieCollectorUrlForXMLExportFile; }
+        }
+
+        /// <summary>
+        /// Gets path to CollectorzToKodi-XML-Export<br/>
+        /// </summary>
+        /// <remarks>is generated from movieCollectorUrlForXMLExport</remarks>
+        /// <returns>Path to CollectorzToKodi-XML-Export on local filesystem</returns>
+        public string MovieCollectorUrlForXMLExportPathLocalFilesystem
+        {
+            get { return this.movieCollectorUrlForXMLExportPathLocalFilesystem; }
         }
 
         #endregion
@@ -1572,7 +1600,7 @@ namespace CollectorzToKodi
         /// <returns>list of local paths used on the associated server names to store media</returns>
         private List<string> UrlForMediaStorage
         {
-            get { return this.serverUrlForMediaStorage; }
+            get { return this.serverUrlForMediaStorageLocalFilesystem; }
         }
 
         /// <summary>
