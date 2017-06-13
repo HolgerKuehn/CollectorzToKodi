@@ -84,6 +84,39 @@ namespace CollectorzToKodi
             return (SrtSubTitleFile)srtSubTitleFileClone;
         }
 
+        /// <inheritdoc/>
+        public override void WriteToLibrary()
+        {
+            // perform action from base-class
+            base.WriteToLibrary();
+
+            // generating srt-files, as this is one
+            StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorUrlForXMLExportPath + this.Filename, false, Encoding.UTF8, 512);
+
+            int entryNumber = 0;
+
+            foreach (SrtSubTitleFileEntry srtSubTitleFileEntry in this.SubTitleEntries)
+            {
+                // resets Entry-Number
+                entryNumber++;
+                srtSubTitleFileEntry.EntryNumber = entryNumber;
+
+                // write entry to file
+                srtSubTitleFileEntry.WriteSrtSubTitleStreamDataToSRT(swrSrtSubTitle);
+            }
+
+            swrSrtSubTitle.Close();
+        }
+
+        /// <inheritdoc/>
+        public override SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
+        {
+            SrtSubTitleFile srtTitleFile = (SrtSubTitleFile)subTitleFile;
+            srtTitleFile.SubTitleEntries.AddRange(this.SubTitleEntries);
+
+            return srtTitleFile;
+        }
+
         /// <summary>
         /// transfers actualized data from subTitleFile
         /// </summary>
@@ -184,44 +217,6 @@ namespace CollectorzToKodi
                     }
                 }
             }
-        }
-
-        /// <inheritdoc/>
-        public override void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
-        {
-            // perform action from base-class
-            base.WriteSubTitleStreamDataToNFO(swrNFO);
-        }
-
-        /// <inheritdoc/>
-        public override void WriteSubTitleToSH(StreamWriter swrSH)
-        {
-            base.WriteSubTitleToSH(swrSH);
-
-            // generating srt-files, as this is one
-            using (StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename, false, Encoding.UTF8, 512))
-            {
-                int entryNumber = 0;
-
-                foreach (SrtSubTitleFileEntry srtSubTitleFileEntry in this.SubTitleEntries)
-                {
-                    // resets Entry-Number
-                    entryNumber++;
-                    srtSubTitleFileEntry.EntryNumber = entryNumber;
-
-                    // write entry to file
-                    srtSubTitleFileEntry.WriteSrtSubTitleStreamDataToSRT(swrSrtSubTitle);
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
-        {
-            SrtSubTitleFile srtTitleFile = (SrtSubTitleFile)subTitleFile;
-            srtTitleFile.SubTitleEntries.AddRange(this.SubTitleEntries);
-
-            return srtTitleFile;
         }
 
         #endregion

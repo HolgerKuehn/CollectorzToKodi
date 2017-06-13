@@ -40,7 +40,7 @@ namespace CollectorzToKodi
             {
                 base.Server = value;
                 this.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
-                this.UrlForMediaStorage = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+                this.UrlForMediaStorage = this.Configuration.MovieCollectorUrlForXMLExportPath + this.Filename;
 
                 this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
                 this.WriteToLibrary();
@@ -65,6 +65,11 @@ namespace CollectorzToKodi
             shFileClone.Filename = this.Filename;
 
             return (ShFile)shFileClone;
+        }
+
+        /// <inheritdoc/>
+        public override void DeleteFromLibrary()
+        {
         }
 
         /// <inheritdoc/>

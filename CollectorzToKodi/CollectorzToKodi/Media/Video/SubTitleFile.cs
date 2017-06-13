@@ -4,7 +4,6 @@
 
 namespace CollectorzToKodi
 {
-    using System.Collections.Generic;
     using System.IO;
 
     /// <summary>
@@ -64,27 +63,21 @@ namespace CollectorzToKodi
             return (SubTitleFile)subTitleFileClone;
         }
 
-        /// <summary>
-        /// Writes subtitle data to provided NFO file
-        /// </summary>
-        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
-        /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
-        public virtual void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
+        /// <inheritdoc/>
+        public override void DeleteFromLibrary()
         {
-            // for generic SubTitle, no specific action is required here
         }
 
-        /// <summary>
-        /// adds Subtitle to Shell-Script
-        /// </summary>
-        /// <param name="swrSH">Bash-Shell-Script</param>
-        public virtual void WriteSubTitleToSH(StreamWriter swrSH)
+        /// <inheritdoc/>
+        public override void WriteToLibrary()
         {
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server].StreamWriter;
+
             // copy SubTitleFile to destination, as it's converted during Export (Offset-times, etc.)
             // valid for all types of SubTitles
             if (this.Filename != string.Empty)
             {
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
             }
         }
 
@@ -98,12 +91,6 @@ namespace CollectorzToKodi
         {
             // leave object unchanged for generic SubTitle
             return subTitleFile;
-        }
-
-        /// <inheritdoc/>
-        public override string ConvertFilename()
-        {
-            return this.ConvertFilename(false);
         }
 
         #endregion

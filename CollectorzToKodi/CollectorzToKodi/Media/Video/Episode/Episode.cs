@@ -217,7 +217,7 @@ namespace CollectorzToKodi
                 this.WriteCrewToLibrary(swrNFO);
                 this.WriteCastToLibrary(swrNFO);
                 this.WriteStreamDataToLibrary(swrNFO);
-                this.WriteImagesToLibrary(swrNFO);
+                this.WriteImagesToLibrary();
 
                 swrNFO.WriteLine("</episodedetails>");
             }
@@ -422,8 +422,12 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WriteImagesToLibrary(StreamWriter swrNFO)
+        public override void WriteImagesToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
+            // write to NFO-File
             for (int i = 0; i < this.Images.Count; i++)
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
@@ -432,26 +436,23 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.UrlForMediaStorage.Contains("http://"))
                     {
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {
-                        swrNFO.WriteLine("    <thumb>" + imageFile.UrlForMediaStorage + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb>" + imageFile.UrlForMediaStorage + "</thumb>");
                     }
                 }
             }
-        }
 
-        /// <inheritdoc/>
-        public override void WriteImagesToLibrary(StreamWriter swrSH)
-        {
+            // write to BatchFile
             for (int i = 0; i < this.Images.Count; i++)
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
                 if (imageFile.Filename != string.Empty && !imageFile.UrlForMediaStorage.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
-                    swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
+                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.UrlForMediaStorageLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
                 }
             }
         }

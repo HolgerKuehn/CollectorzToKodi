@@ -789,7 +789,7 @@ namespace CollectorzToKodi
         /// Writes images to provided NFO file
         /// </summary>
         /// <param name="swrNFO">NFO file that the image information should be added to</param>
-        public virtual void WriteImagesToLibrary(StreamWriter swrNFO)
+        public virtual void WriteImagesToLibrary()
         {
             // adding images to NfoFile
             // Cover-Thumb
@@ -888,7 +888,7 @@ namespace CollectorzToKodi
         /// </summary>
         /// <param name="swrNFO">NFO file that the image information should be added to</param>
         /// <param name="imageType">Image type, that should be added</param>
-        private void WriteImagesToLibrary(StreamWriter swrNFO, Configuration.ImageType imageType)
+        private void WriteImagesToLibrary(Configuration.ImageType imageType)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {

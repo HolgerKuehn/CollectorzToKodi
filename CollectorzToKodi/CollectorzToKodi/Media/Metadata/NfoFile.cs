@@ -66,6 +66,11 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
+        public override void DeleteFromLibrary()
+        {
+        }
+
+        /// <inheritdoc/>
         public override void WriteToLibrary()
         {
         }
