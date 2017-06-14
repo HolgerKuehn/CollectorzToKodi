@@ -645,14 +645,16 @@ namespace CollectorzToKodi
         /// Adds copy statements for VideoFiles to provided bash-shell-script
         /// </summary>
         /// <param name="swrSH">Bash-shell-script that the image information should be added to</param>
-        public virtual void WriteVideoFilesToLibrary(StreamWriter swrSH)
+        public virtual void WriteVideoFilesToLibrary()
         {
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
             foreach (VideoFile videoFile in this.MediaFiles)
             {
                 if (videoFile.Filename != string.Empty)
                 {
-                    swrSH.WriteLine("/bin/ln -s \"" + videoFile.URLLocalFilesystem + "\" \"" + videoFile.Filename + "\"");
-                    videoFile.WriteSubTitleToSH(swrSH);
+                    bfStreamWriter.WriteLine("/bin/ln -s \"" + videoFile.UrlForMediaStorageLocalFilesystem + "\" \"" + videoFile.Filename + "\"");
+                    videoFile.WriteVideoFilesToLibrary();
                 }
             }
         }

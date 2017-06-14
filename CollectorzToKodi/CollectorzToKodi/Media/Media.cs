@@ -585,10 +585,10 @@ namespace CollectorzToKodi
 
             // Cover-Front-Image
             imageFile = new ImageFile(this.Configuration);
-            imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
-            imageFile.ImageType = Configuration.ImageType.CoverFront;
             imageFile.Media = this;
             imageFile.Filename = "cover";
+            imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+            imageFile.ImageType = Configuration.ImageType.CoverFront;
 
             if (imageFile.UrlForMediaStorage != string.Empty)
             {
@@ -602,7 +602,6 @@ namespace CollectorzToKodi
             imageFile.Media = this;
             imageFile.Filename = "coverback";
             imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
-            imageFile.ConvertFilename();
             imageFile.ImageType = Configuration.ImageType.CoverBack;
 
             if (imageFile.UrlForMediaStorage != string.Empty)
@@ -624,7 +623,6 @@ namespace CollectorzToKodi
                 imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
             }
 
-            imageFile.ConvertFilename();
             imageFile.ImageType = Configuration.ImageType.Poster;
 
             if (imageFile.UrlForMediaStorage != string.Empty)
@@ -657,7 +655,7 @@ namespace CollectorzToKodi
             {
                 if (xMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Image")
                 {
-                    ImageFile imageFile = new ImageFile(this.Configuration)
+                    imageFile = new ImageFile(this.Configuration)
                     {
                         Media = this
                     };
@@ -707,7 +705,6 @@ namespace CollectorzToKodi
                     }
 
                     imageFile.UrlForMediaStorage = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    imageFile.ConvertFilename();
 
                     if (imageFile.UrlForMediaStorage != string.Empty)
                     {
@@ -788,25 +785,27 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes images to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the image information should be added to</param>
         public virtual void WriteImagesToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
             // adding images to NfoFile
             // Cover-Thumb
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.CoverFront);
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.SeasonCover);
+            this.WriteImagesToLibrary(Configuration.ImageType.CoverFront);
+            this.WriteImagesToLibrary(Configuration.ImageType.SeasonCover);
 
             // fan art
-            swrNFO.WriteLine("    <fanart>");
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.Backdrop);
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.SeasonBackdrop);
-            swrNFO.WriteLine("    </fanart>");
+            nfoStreamWriter.WriteLine("    <fanart>");
+            this.WriteImagesToLibrary(Configuration.ImageType.Backdrop);
+            this.WriteImagesToLibrary(Configuration.ImageType.SeasonBackdrop);
+            nfoStreamWriter.WriteLine("    </fanart>");
 
             // poster
-            swrNFO.WriteLine("    <poster>");
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.Poster);
-            this.WriteImagesToLibrary(swrNFO, Configuration.ImageType.SeasonPoster);
-            swrNFO.WriteLine("    </poster>");
+            nfoStreamWriter.WriteLine("    <poster>");
+            this.WriteImagesToLibrary(Configuration.ImageType.Poster);
+            this.WriteImagesToLibrary(Configuration.ImageType.SeasonPoster);
+            nfoStreamWriter.WriteLine("    </poster>");
 
             // adding images to BatchFile
             for (int i = 0; i < this.Images.Count; i++)
@@ -817,24 +816,24 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {
-                        swrSH.WriteLine("cd \"Season " + this.ConvertSeason(imageFile.Season) + "\"");
+                        bfStreamWriter.WriteLine("cd \"Season " + this.ConvertSeason(imageFile.Season) + "\"");
                     }
 
                     if (imageFile.ImageType == Configuration.ImageType.ExtraBackdrop)
                     {
-                        swrSH.WriteLine("cd \"extrafanart\"");
+                        bfStreamWriter.WriteLine("cd \"extrafanart\"");
                     }
 
                     if (imageFile.ImageType == Configuration.ImageType.ExtraCover)
                     {
-                        swrSH.WriteLine("cd \"extrathumbs\"");
+                        bfStreamWriter.WriteLine("cd \"extrathumbs\"");
                     }
 
-                    swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
+                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.UrlForMediaStorageLocalFilesystem + "\" \"" + imageFile.Filename + "\"");
 
                     if ((!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1") || imageFile.ImageType == Configuration.ImageType.ExtraBackdrop || imageFile.ImageType == Configuration.ImageType.ExtraCover)
                     {
-                        swrSH.WriteLine("cd ..");
+                        bfStreamWriter.WriteLine("cd ..");
                     }
 
                     // adding season-poster and fanart in base folder
@@ -866,7 +865,7 @@ namespace CollectorzToKodi
 
                         filename = filename + imageFile.Extension;
 
-                        swrSH.WriteLine("/bin/cp \"" + imageFile.URLLocalFilesystem + "\" \"" + filename + "\"");
+                        bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.UrlForMediaStorageLocalFilesystem + "\" \"" + filename + "\"");
                     }
                 }
             }
@@ -886,12 +885,13 @@ namespace CollectorzToKodi
         /// <summary>
         ///  Writes images to provided NFO file, when they meet to specified image type
         /// </summary>
-        /// <param name="swrNFO">NFO file that the image information should be added to</param>
         /// <param name="imageType">Image type, that should be added</param>
         private void WriteImagesToLibrary(Configuration.ImageType imageType)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
+                StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+
                 ImageFile imageFile = this.Images.ElementAt(i);
 
                 if (imageFile.Filename != string.Empty && imageFile.ImageType == imageType)
@@ -902,10 +902,10 @@ namespace CollectorzToKodi
                         if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.Backdrop ||
                             /* Poster */ imageFile.ImageType == Configuration.ImageType.Poster)
                         {
-                            swrNFO.Write("    ");
+                            nfoStreamWriter.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
                     }
 
                     if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonCover || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
@@ -914,10 +914,10 @@ namespace CollectorzToKodi
                         if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
                             /* Poster*/ imageFile.ImageType == Configuration.ImageType.SeasonPoster)
                         {
-                            swrNFO.Write("    ");
+                            nfoStreamWriter.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }

@@ -234,8 +234,8 @@ namespace CollectorzToKodi
                 swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
-                this.WriteVideoFilesToLibrary(swrSH);
-                this.WriteImagesToLibrary(swrSH);
+                this.WriteVideoFilesToLibrary();
+                this.WriteImagesToLibrary();
 
                 swrSH.WriteLine("cd /share/XBMC/Serien/");
             }
