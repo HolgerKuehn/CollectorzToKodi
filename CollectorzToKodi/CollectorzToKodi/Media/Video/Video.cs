@@ -353,7 +353,7 @@ namespace CollectorzToKodi
         /// Reads crew information from MovieCollector XML-file
         /// </summary>
         /// <param name="xMLNode">Part of XML-file representing Crew information</param>
-        public void ReadCrew(XmlNode xMLNode)
+        public void ReadCrewFromXml(XmlNode xMLNode)
         {
             foreach (XmlNode xMLCrewmember in xMLNode.XMLReadSubnode("crew").XMLReadSubnodes("crewmember"))
             {
@@ -379,20 +379,21 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes crew information to NFO-file of this video
         /// </summary>
-        /// <param name="swrNFO">NFO file, the crew information should be added to</param>
-        public void WriteCrewToLibrary(StreamWriter swrNFO)
+        public void WriteCrewToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+
             int i = 0;
             foreach (Director director in this.Directors)
             {
-                director.WritePerson(swrNFO, i == 0);
+                director.WritePersonToLibrary(nfoStreamWriter, i == 0);
                 i++;
             }
 
             i = 0;
             foreach (Writer writer in this.Writers)
             {
-                writer.WritePerson(swrNFO, i == 0);
+                writer.WritePersonToLibrary(nfoStreamWriter, i == 0);
                 i++;
             }
         }
@@ -429,13 +430,13 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes cast information to NFO-file of this video
         /// </summary>
-        /// <param name="swrNFO">NFO file, the cast information should be added to</param>
-        public void WriteCastToLibrary(StreamWriter swrNFO)
+        /// <param name="nfoStreamWriter">NFO file, the cast information should be added to</param>
+        public void WriteCastToLibrary()
         {
             int i = 0;
             foreach (Actor actor in this.Actors)
             {
-                actor.WritePerson(swrNFO, i == 0);
+                actor.WritePersonToLibrary(i == 0);
                 i++;
             }
         }
@@ -591,12 +592,12 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes stream data to provided NFO file for this video
         /// </summary>
-        /// <param name="swrNFO">NFO-file the stream data should be added to</param>
-        public void WriteStreamData(StreamWriter swrNFO)
+        /// <param name="nfoStreamWriter">NFO-file the stream data should be added to</param>
+        public void WriteStreamDataToLibrary()
         {
-            this.WriteVideoStreamData(swrNFO);
-            this.WriteAudioStreamData(swrNFO);
-            this.WriteSubTitleStreamDataToNFO(swrNFO);
+            this.WriteVideoStreamDataToLibrary();
+            this.WriteAudioStreamDataToLibrary();
+            this.WriteSubTitleStreamDataToLibrary();
         }
 
         /// <summary>
@@ -836,90 +837,92 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes video-stream data to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
-        private void WriteVideoStreamData(StreamWriter swrNFO)
+        /// <param name="nfoStreamWriter">NFO file that the stream information should be added to</param>
+        private void WriteVideoStreamDataToLibrary()
         {
-            swrNFO.WriteLine("    <fileinfo>");
-            swrNFO.WriteLine("        <streamdetails>");
-            swrNFO.WriteLine("            <video>");
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+
+            nfoStreamWriter.WriteLine("    <fileinfo>");
+            nfoStreamWriter.WriteLine("        <streamdetails>");
+            nfoStreamWriter.WriteLine("            <video>");
 
             // VideoCodec
             if (this.VideoCodec.Equals(Configuration.VideoCodec.TV))
             {
-                swrNFO.WriteLine("                <codec>tv</codec>");
+                nfoStreamWriter.WriteLine("                <codec>tv</codec>");
             }
             else if (this.VideoCodec.Equals(Configuration.VideoCodec.BluRay))
             {
-                swrNFO.WriteLine("                <codec>bluray</codec>");
+                nfoStreamWriter.WriteLine("                <codec>bluray</codec>");
             }
             else if (this.VideoCodec.Equals(Configuration.VideoCodec.H264))
             {
-                swrNFO.WriteLine("                <codec>h264</codec>");
+                nfoStreamWriter.WriteLine("                <codec>h264</codec>");
             }
             else if (this.VideoCodec.Equals(Configuration.VideoCodec.H265))
             {
-                swrNFO.WriteLine("                <codec>hevc</codec>");
+                nfoStreamWriter.WriteLine("                <codec>hevc</codec>");
             }
 
             // AspectRatio
             if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio43))
             {
-                swrNFO.WriteLine("                <aspect>1.33</aspect>");
+                nfoStreamWriter.WriteLine("                <aspect>1.33</aspect>");
             }
             else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio169))
             {
-                swrNFO.WriteLine("                <aspect>1.78</aspect>");
+                nfoStreamWriter.WriteLine("                <aspect>1.78</aspect>");
             }
             else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio219))
             {
-                swrNFO.WriteLine("                <aspect>2.33</aspect>");
+                nfoStreamWriter.WriteLine("                <aspect>2.33</aspect>");
             }
 
             // VideoDefinition
             if (this.VideoDefinition.Equals(Configuration.VideoDefinition.SD))
             {
-                swrNFO.WriteLine("                <width>768</width>");
-                swrNFO.WriteLine("                <height>576</height>");
+                nfoStreamWriter.WriteLine("                <width>768</width>");
+                nfoStreamWriter.WriteLine("                <height>576</height>");
             }
             else if (this.VideoDefinition.Equals(Configuration.VideoDefinition.HD))
             {
-                swrNFO.WriteLine("                <width>1920</width>");
-                swrNFO.WriteLine("                <height>1080</height>");
+                nfoStreamWriter.WriteLine("                <width>1920</width>");
+                nfoStreamWriter.WriteLine("                <height>1080</height>");
             }
 
-            swrNFO.WriteLine("            </video>");
+            nfoStreamWriter.WriteLine("            </video>");
         }
 
         /// <summary>
         /// Writes audio-stream data to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
-        private void WriteAudioStreamData(StreamWriter swrNFO)
+        /// <param name="nfoStreamWriter">NFO file that the stream information should be added to</param>
+        private void WriteAudioStreamDataToLibrary(StreamWriter nfoStreamWriter)
         {
             foreach (AudioStream audioStream in this.AudioStreams)
             {
-                swrNFO.WriteLine("            <audio>");
-                swrNFO.WriteLine("                <codec>" + audioStream.Codec + "</codec>");
-                swrNFO.WriteLine("                <language>" + audioStream.Language + "</language>");
-                swrNFO.WriteLine("                <channels>" + audioStream.NumberOfChannels + "</channels>");
-                swrNFO.WriteLine("            </audio>");
+                nfoStreamWriter.WriteLine("            <audio>");
+                nfoStreamWriter.WriteLine("                <codec>" + audioStream.Codec + "</codec>");
+                nfoStreamWriter.WriteLine("                <language>" + audioStream.Language + "</language>");
+                nfoStreamWriter.WriteLine("                <channels>" + audioStream.NumberOfChannels + "</channels>");
+                nfoStreamWriter.WriteLine("            </audio>");
             }
         }
 
         /// <summary>
         /// Writes subtitle data to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
+        /// <param name="nfoStreamWriter">NFO file that the stream information should be added to</param>
         /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
-        private void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
+        private void WriteSubTitleStreamDataToLibrary(StreamWriter nfoStreamWriter)
         {
             foreach (SubTitle subTitleStream in this.SubTitles)
             {
-                subTitleStream.WriteSubTitleStreamDataToNFO(swrNFO);
+                subTitleStream.WriteSubTitleStreamDataToLibrary(nfoStreamWriter);
             }
 
-            swrNFO.WriteLine("        </streamdetails>");
-            swrNFO.WriteLine("    </fileinfo>");
+            nfoStreamWriter.WriteLine("        </streamdetails>");
+            nfoStreamWriter.WriteLine("    </fileinfo>");
         }
 
         #endregion

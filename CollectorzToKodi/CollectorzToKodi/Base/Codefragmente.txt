@@ -52,7 +52,7 @@
 		
             foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
             {
-                subTitleFile.WriteSubTitleStreamDataToNFO(swrNFO);
+                subTitleFile.WriteSubTitleStreamDataToLibrary(nfoStreamWriter);
             }
 
 
@@ -69,7 +69,7 @@
             }
         }
 
-		Epsiode.WriteSH:
+		Epsiode.WriteToLibrary:
 
                 // SubTitles
                 foreach (SubTitle subTitle in this.SubTitles)
@@ -185,11 +185,11 @@
         /// <summary>
         /// Writes subtitle data to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the stream information should be added to</param>
+        /// <param name="nfoStreamWriter">NFO file that the stream information should be added to</param>
         /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
-        public override void WriteSubTitleStreamDataToNFO(StreamWriter swrNFO)
+        public override void WriteSubTitleStreamDataToLibrary(StreamWriter nfoStreamWriter)
         {
-            base.WriteSubTitleStreamDataToNFO(swrNFO);
+            base.WriteSubTitleStreamDataToLibrary(nfoStreamWriter);
         }
 
         /// <summary>

@@ -153,7 +153,7 @@ namespace CollectorzToKodi
                 this.WriteStudioToLibrary();
                 this.WriteCrewToLibrary();
                 this.WriteCastToLibrary();
-                this.WriteStreamData();
+                this.WriteStreamDataToLibrary();
                 this.WriteImagesToLibrary();
 
                 nfoStreamWriter.WriteLine("</movie>");

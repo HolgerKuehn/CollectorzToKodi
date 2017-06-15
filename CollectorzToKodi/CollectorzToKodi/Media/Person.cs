@@ -100,27 +100,26 @@ namespace CollectorzToKodi
         public virtual void ReadPerson(XmlNode xmlPerson)
         {
             this.Name = xmlPerson.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-            this.UrlForMediaStorage = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+            this.URL = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
             this.Thumb = xmlPerson.XMLReadSubnode("imageurl").XMLReadInnerText(string.Empty);
         }
 
         /// <summary>
         /// Writes person to provided NFO file
         /// </summary>
-        /// <param name="swrNFO">NFO file that the image information should be added to</param>
         /// <param name="isFirst">states, weather the written Person is the fist in the generated list or not; resets list in Kodi, if so</param>
-        public virtual void WritePerson(StreamWriter swrNFO, bool isFirst = false)
+        public virtual void WritePersonToLibrary(bool isFirst = false)
         {
-            swrNFO.WriteLine("        <name>" + this.Name + "</name>");
+            nfoStreamWriter.WriteLine("        <name>" + this.Name + "</name>");
 
             if (this.UrlForMediaStorage.StartsWith("http"))
             {
-                swrNFO.WriteLine("        <url>" + this.UrlForMediaStorage + "</url>");
+                nfoStreamWriter.WriteLine("        <url>" + this.UrlForMediaStorage + "</url>");
             }
 
             if (this.Thumb.StartsWith("http"))
             {
-                swrNFO.WriteLine("        <thumb>" + this.Thumb + "</thumb>");
+                nfoStreamWriter.WriteLine("        <thumb>" + this.Thumb + "</thumb>");
             }
         }
 

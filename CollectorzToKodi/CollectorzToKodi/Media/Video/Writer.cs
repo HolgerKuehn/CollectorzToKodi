@@ -33,9 +33,9 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <inheritdoc/>
-        public override void WritePerson(StreamWriter swrNFO, bool isFirst = false)
+        public override void WritePersonToLibrary(StreamWriter nfoStreamWriter, bool isFirst = false)
         {
-            swrNFO.WriteLine("    <credits" + (isFirst ? " clear=\"true\"" : string.Empty) + ">" + this.Name + "</credits>");
+            nfoStreamWriter.WriteLine("    <credits" + (isFirst ? " clear=\"true\"" : string.Empty) + ">" + this.Name + "</credits>");
         }
 
         #endregion

@@ -194,11 +194,11 @@ namespace CollectorzToKodi
             nfoStreamWriter.WriteLine("    <id>" + this.ID + "</id>");
             nfoStreamWriter.WriteLine("    <country>" + this.Country + "</country>");
 
-            this.WriteGenreToLibrary(nfoStreamWriter);
-            this.WriteStudioToLibrary(nfoStreamWriter);
-            this.WriteCrewToLibrary(nfoStreamWriter);
-            this.WriteCastToLibrary(nfoStreamWriter);
-            this.WriteImagesToLibrary(nfoStreamWriter);
+            this.WriteGenreToLibrary();
+            this.WriteStudioToLibrary();
+            this.WriteCrewToLibrary();
+            this.WriteCastToLibrary();
+            this.WriteImagesToLibrary();
 
             nfoStreamWriter.WriteLine("</tvshow>");
 
@@ -231,7 +231,7 @@ namespace CollectorzToKodi
                 shStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
                 // Images
-                this.WriteImagesToLibrary(shStreamWriter);
+                this.WriteImagesToLibrary();
             }
 
             // create NFO-files and Batch-file for each Episode

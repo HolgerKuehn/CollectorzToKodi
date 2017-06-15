@@ -190,7 +190,7 @@ namespace CollectorzToKodi
                 media.ReadImagesFromXml(xMLMovie);
                 media.ReadGenreFromXml(xMLMovie);
                 media.ReadStudioFromXml(xMLMovie);
-                media.ReadCrew(xMLMovie);
+                media.ReadCrewFromXml(xMLMovie);
 
                 // media.ReadCast(xMLMovie); moved behind reading Episodes, to read
                 media.ReadStreamData(xMLMovie);
@@ -265,7 +265,7 @@ namespace CollectorzToKodi
                             episode.Studios = episode.Series.Studios;
                             episode.AudioStreams = episode.Series.AudioStreams;
                             episode.SubTitles = episode.Series.SubTitles;
-                            episode.ReadCrew(xMLEpisode);
+                            episode.ReadCrewFromXml(xMLEpisode);
                             episode.ReadCast(xMLEpisode);
                             episode.ReadMediaFilesFromXml(xMLEpisode);
                             episode.ReadImagesFromXml(xMLEpisode);

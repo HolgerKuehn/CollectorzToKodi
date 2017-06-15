@@ -61,14 +61,16 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void WritePerson(StreamWriter swrNFO, bool isFirst = false)
+        public override void WritePersonToLibrary(bool isFirst = false)
         {
-            swrNFO.WriteLine("    <actor" + (isFirst ? " clear=\"true\"" : string.Empty) + ">");
-            swrNFO.WriteLine("        <role>" + this.Role + "</role>");
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
 
-            base.WritePerson(swrNFO, isFirst);
+            nfoStreamWriter.WriteLine("    <actor" + (isFirst ? " clear=\"true\"" : string.Empty) + ">");
+            nfoStreamWriter.WriteLine("        <role>" + this.Role + "</role>");
 
-            swrNFO.WriteLine("    </actor>");
+            base.WritePersonToLibrary(isFirst);
+
+            nfoStreamWriter.WriteLine("    </actor>");
         }
 
         #endregion

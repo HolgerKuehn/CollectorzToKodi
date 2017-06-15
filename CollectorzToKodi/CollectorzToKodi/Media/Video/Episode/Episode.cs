@@ -187,57 +187,53 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
-            using (StreamWriter swrNFO = new StreamWriter(this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename + ".nfo", false, Encoding.UTF8, 512))
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+
+            nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
+            nfoStreamWriter.WriteLine("<episodedetails>");
+            nfoStreamWriter.WriteLine("    <title>" + this.Title + "</title>");
+            nfoStreamWriter.WriteLine("    <season>" + this.actualSeason + "</season>");
+            nfoStreamWriter.WriteLine("    <displayseason>" + this.DisplaySeason + "</displayseason>");
+            nfoStreamWriter.WriteLine("    <episode>" + this.actualEpisode + "</episode>");
+            nfoStreamWriter.WriteLine("    <displayepisode>" + this.DisplayEpisode + "</displayepisode>");
+            nfoStreamWriter.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
+            nfoStreamWriter.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
+            nfoStreamWriter.WriteLine("    <rating>" + this.Rating + "</rating>");
+            nfoStreamWriter.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
+            nfoStreamWriter.WriteLine("    <plot>" + this.Content + "</plot>");
+            nfoStreamWriter.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
+
+            if (this.PlayDate != string.Empty)
             {
-                swrNFO.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
-                swrNFO.WriteLine("<episodedetails>");
-                swrNFO.WriteLine("    <title>" + this.Title + "</title>");
-                swrNFO.WriteLine("    <season>" + this.actualSeason + "</season>");
-                swrNFO.WriteLine("    <displayseason>" + this.DisplaySeason + "</displayseason>");
-                swrNFO.WriteLine("    <episode>" + this.actualEpisode + "</episode>");
-                swrNFO.WriteLine("    <displayepisode>" + this.DisplayEpisode + "</displayepisode>");
-                swrNFO.WriteLine("    <aired>" + this.PublishingDate + "</aired>");
-                swrNFO.WriteLine("    <premiered>" + this.PublishingDate + "</premiered>");
-                swrNFO.WriteLine("    <rating>" + this.Rating + "</rating>");
-                swrNFO.WriteLine("    <mpaa>" + this.MPAA + "</mpaa>");
-                swrNFO.WriteLine("    <plot>" + this.Content + "</plot>");
-                swrNFO.WriteLine("    <runtime>" + this.RunTime + "</runtime>");
-
-                if (this.PlayDate != string.Empty)
-                {
-                    swrNFO.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
-                }
-
-                swrNFO.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
-
-                swrNFO.WriteLine("    <set>" + this.MediaGroup + "</set>");
-
-                this.WriteGenreToLibrary(swrNFO);
-                this.WriteStudioToLibrary(swrNFO);
-                this.WriteCrewToLibrary(swrNFO);
-                this.WriteCastToLibrary(swrNFO);
-                this.WriteStreamDataToLibrary(swrNFO);
-                this.WriteImagesToLibrary();
-
-                swrNFO.WriteLine("</episodedetails>");
+                nfoStreamWriter.WriteLine("    <playdate>" + this.PlayDate + "</playdate>");
             }
-        }
 
-        /// <inheritdoc/>
-        public override void WriteSH(StreamWriter swrSH, bool createNewMedia)
-        {
+            nfoStreamWriter.WriteLine("    <playcount>" + this.PlayCount + "</playcount>");
+
+            nfoStreamWriter.WriteLine("    <set>" + this.MediaGroup + "</set>");
+
+            this.WriteGenreToLibrary();
+            this.WriteStudioToLibrary();
+            this.WriteCrewToLibrary();
+            this.WriteCastToLibrary();
+            this.WriteStreamDataToLibraryToLibrary();
+            this.WriteImagesToLibrary();
+
+            nfoStreamWriter.WriteLine("</episodedetails>");
+
             // createNewMedia is only checked for series; episodes are not changed, as not generated
             if (this.Title != string.Empty)
             {
-                swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
+                bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
 
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
                 this.WriteVideoFilesToLibrary();
                 this.WriteImagesToLibrary();
 
-                swrSH.WriteLine("cd /share/XBMC/Serien/");
+                bfStreamWriter.WriteLine("cd /share/XBMC/Serien/");
             }
         }
 
