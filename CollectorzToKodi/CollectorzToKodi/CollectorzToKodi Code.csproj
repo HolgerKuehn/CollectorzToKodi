@@ -42,6 +42,9 @@
     <StartupObject>CollectorzToKodi.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="StyleCop, Version=5.0.0.0, Culture=neutral, PublicKeyToken=f904653c63bc2738, processorArchitecture=MSIL">
+      <HintPath>..\packages\StyleCop.5.0.0-beta02\lib\net40\StyleCop.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -105,6 +108,7 @@
     <None Include="Configuration\CollectorzToKodi Code.csproj.vsspell" />
     <None Include="LICENSE.md" />
     <None Include="Configuration\packages.config" />
+    <None Include="packages.config" />
     <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SettingsServer.Designer.cs</LastGenOutput>
