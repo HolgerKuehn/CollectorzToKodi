@@ -480,6 +480,7 @@ namespace CollectorzToKodi
             List<Series> seriesCollection = this.ClonePerLanguage(this.SeriesCollection); /* original collection, cloned per language */
             List<Series> seriesCollectionPerMediaGroup = new List<Series>(); /* new collection of grouped series */
             List<Series> seriesCollectionWithoutMediaGroup = new List<Series>(); /* original series, used to remove old folders  */
+            int numberOfExtraBackdrop = 0;
 
             #region creating seriesListsPerMediaGroup
             string activeMediaGroup = string.Empty;
@@ -669,10 +670,16 @@ namespace CollectorzToKodi
                                 imageFilePerMediaGroup.Season = string.Empty;
                             }
 
-                            if (imageFilePerMediaGroup.Season == string.Empty)
+                            if (imageFilePerMediaGroup.Season == string.Empty && imageFilePerMediaGroup.ImageType != Configuration.ImageType.ExtraBackdrop)
                             {
                                 // exclude multiple images for seasons
                                 continue;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraBackdrop)
+                            {
+                                numberOfExtraBackdrop++;
+                                imageFilePerMediaGroup.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                                imageFilePerMediaGroup.ConvertFilename();
                             }
                             else if (imageFilePerMediaGroup.Season != "-1" && imageFilePerMediaGroup.Season != "0")
                             {

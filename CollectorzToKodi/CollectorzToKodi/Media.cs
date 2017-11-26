@@ -500,8 +500,10 @@ namespace CollectorzToKodi
         /// <param name="xMLNode">Part of Collectors export, representing images of media</param>
         public virtual void ReadImages(XmlNode xMLNode)
         {
-            ImageFile image;
+            ImageFile image = null;
             ImageFile imageFileClone = null;
+            int numberOfExtraBackdrop = 0;
+            int numberOfExtraCover = 0;
 
             // Covers / Backdrops per Season
             List<List<int>> imagesPerSeason = new List<List<int>>();
@@ -583,14 +585,23 @@ namespace CollectorzToKodi
 
             if (image.URL != string.Empty)
             {
+                // add Backdrop
                 image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.Backdrop][0]++;
                 imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0] /* Backdrop */ = image;
+
+                // add Backdrop as Fanart for skins supporting it
+                numberOfExtraBackdrop++;
+                imageFileClone = (ImageFile)image.Clone();
+                imageFileClone.ImageType = Configuration.ImageType.ExtraBackdrop;
+                imageFileClone.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                imageFileClone.ConvertFilename();
+                imageFileClone.Media.Images.Add(imageFileClone);
+                imagesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0] /* Backdrop */ = imageFileClone;
             }
 
             // add images from Links section
-            int numberOfExtraBackdrop = 0;
-            int numberOfExtraCover = 0;
             foreach (XmlNode xMLImageFile in xMLNode.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
                 if (xMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Image")
