@@ -1,5 +1,5 @@
 ﻿// <copyright file="Video.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -363,14 +363,16 @@ namespace CollectorzToKodi
                 if (isDirector)
                 {
                     Director director = new Director(this.Configuration);
-                    director.ReadPerson(xMLCrewmember.XMLReadSubnode("person"));
+                    director.Media = this;
+                    director.ReadPersonFromXml(xMLCrewmember.XMLReadSubnode("person"));
                     this.Directors.Add(director);
                 }
 
                 if (isWriter)
                 {
                     Writer writer = new Writer(this.Configuration);
-                    writer.ReadPerson(xMLCrewmember.XMLReadSubnode("person"));
+                    writer.Media = this;
+                    writer.ReadPersonFromXml(xMLCrewmember.XMLReadSubnode("person"));
                     this.Writers.Add(writer);
                 }
             }
@@ -412,15 +414,16 @@ namespace CollectorzToKodi
         /// Reads cast information from MovieCollector XML-file
         /// </summary>
         /// <param name="xMLNode">Part of XML-file representing cast information</param>
-        public virtual void ReadCast(XmlNode xMLNode)
+        public virtual void ReadCastFromXml(XmlNode xMLNode)
         {
             foreach (XmlNode xMLCast in xMLNode.XMLReadSubnode("cast").XMLReadSubnodes("star"))
             {
                 if (xMLCast.XMLReadSubnode("roleid").XMLReadInnerText(string.Empty) == "dfActor")
                 {
                     Actor actor = this.ActorFactory(this.Configuration);
+                    actor.Media = this;
 
-                    actor.ReadPerson(xMLCast);
+                    actor.ReadPersonFromXml(xMLCast);
 
                     this.AddActor(actor);
                 }

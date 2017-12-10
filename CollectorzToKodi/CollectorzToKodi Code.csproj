@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Media\MediaPath.cs" />
+    <Compile Include="Media\MediaPathFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />

@@ -1,5 +1,5 @@
 ﻿// <copyright file="SeriesActor.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -85,10 +85,10 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ReadPerson(XmlNode xmlActor)
+        public override void ReadPersonFromXml(XmlNode xmlActor)
         {
             // extract actor from xmlActor
-            base.ReadPerson(xmlActor);
+            base.ReadPersonFromXml(xmlActor);
 
             // extract Seasons from role
             this.Role = this.OverrideSeason(this.Role);

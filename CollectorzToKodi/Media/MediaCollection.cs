@@ -1,9 +1,9 @@
 ﻿// <copyright file="MediaCollection.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 // <copyright file="CMediaCollection.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 namespace CollectorzToKodi
 {
@@ -120,7 +120,7 @@ namespace CollectorzToKodi
         ///     "XBMC Series" - true if entry is to be interpreted as a series<br/>
         /// </remarks>
         /// <param name="eingabeXML">File that was used while export from MovieCollector - complete local path</param>
-        public void ReadXML(string eingabeXML)
+        public void ReadFromXml(string eingabeXML)
         {
             bool xMLMovieIsMovie = true;
             bool xMLMovieIsSeries = false;
@@ -266,7 +266,7 @@ namespace CollectorzToKodi
                             episode.AudioStreams = episode.Series.AudioStreams;
                             episode.SubTitles = episode.Series.SubTitles;
                             episode.ReadCrewFromXml(xMLEpisode);
-                            episode.ReadCast(xMLEpisode);
+                            episode.ReadCastFromXml(xMLEpisode);
                             episode.ReadMediaFilesFromXml(xMLEpisode);
                             episode.ReadImagesFromXml(xMLEpisode);
 
@@ -277,7 +277,7 @@ namespace CollectorzToKodi
                     // add SubTitles on series-level
                     ((Series)media).ReadMediaFilesFromXml(xMLMovie);
 
-                    media.ReadCast(xMLMovie);
+                    media.ReadCastFromXml(xMLMovie);
 
                     this.SeriesCollection.Add((Series)media);
                 }
@@ -567,6 +567,7 @@ namespace CollectorzToKodi
             List<Series> seriesCollection = this.ClonePerLanguage(this.SeriesCollection); /* original collection, cloned per language */
             List<Series> seriesCollectionPerMediaGroup = new List<Series>(); /* new collection of grouped series */
             List<Series> seriesCollectionWithoutMediaGroup = new List<Series>(); /* original series, used to remove old folders  */
+            int numberOfExtraBackdrop;
 
             #region creating seriesListsPerMediaGroup
             string activeMediaGroup = string.Empty;
@@ -607,6 +608,8 @@ namespace CollectorzToKodi
 
             foreach (List<Series> seriesList in seriesListsPerMediaGroup)
             {
+                numberOfExtraBackdrop = 0;
+
                 if (seriesList.Count == 1)
                 {
                     // adding directly, if only one series in MediaGroup
@@ -760,10 +763,16 @@ namespace CollectorzToKodi
                                 imageFilePerMediaGroup.Season = string.Empty;
                             }
 
-                            if (imageFilePerMediaGroup.Season == string.Empty)
+                            if (imageFilePerMediaGroup.Season == string.Empty && imageFilePerMediaGroup.ImageType != Configuration.ImageType.ExtraBackdrop)
                             {
                                 // exclude multiple images for seasons
                                 continue;
+                            }
+                            else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraBackdrop)
+                            {
+                                numberOfExtraBackdrop++;
+                                imageFilePerMediaGroup.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                                imageFilePerMediaGroup.ConvertFilename();
                             }
                             else if (imageFilePerMediaGroup.Season != "-1" && imageFilePerMediaGroup.Season != "0")
                             {

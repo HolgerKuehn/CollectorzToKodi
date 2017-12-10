@@ -1,5 +1,5 @@
 ﻿// <copyright file="Writer.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -33,8 +33,10 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <inheritdoc/>
-        public override void WritePersonToLibrary(StreamWriter nfoStreamWriter, bool isFirst = false)
+        public override void WritePersonToLibrary(bool isFirst = false)
         {
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+
             nfoStreamWriter.WriteLine("    <credits" + (isFirst ? " clear=\"true\"" : string.Empty) + ">" + this.Name + "</credits>");
         }
 

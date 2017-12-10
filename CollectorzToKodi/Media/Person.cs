@@ -1,5 +1,5 @@
 ﻿// <copyright file="Person.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -18,6 +18,11 @@ namespace CollectorzToKodi
         /// Current configuration of CollectorzToKodi
         /// </summary>
         private Configuration configuration;
+
+        /// <summary>
+        /// media containing person
+        /// </summary>
+        private Media media;
 
         /// <summary>
         /// full name displayed in Kodi<br/>
@@ -45,6 +50,7 @@ namespace CollectorzToKodi
         public Person(Configuration configuration)
         {
             this.configuration = configuration;
+            this.media = null;
             this.name = string.Empty;
             this.url = string.Empty;
             this.thumb = string.Empty;
@@ -60,6 +66,15 @@ namespace CollectorzToKodi
         {
             get { return this.configuration; }
             set { this.configuration = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets media containing file
+        /// </summary>
+        public virtual Media Media
+        {
+            get { return this.media; }
+            set { this.media = value; }
         }
 
         /// <summary>
@@ -97,7 +112,7 @@ namespace CollectorzToKodi
         /// extracts properties of person from XML-node representing a person
         /// </summary>
         /// <param name="xmlPerson">xml-node representing a person</param>
-        public virtual void ReadPerson(XmlNode xmlPerson)
+        public virtual void ReadPersonFromXml(XmlNode xmlPerson)
         {
             this.Name = xmlPerson.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
             this.URL = xmlPerson.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
@@ -110,6 +125,9 @@ namespace CollectorzToKodi
         /// <param name="isFirst">states, weather the written Person is the fist in the generated list or not; resets list in Kodi, if so</param>
         public virtual void WritePersonToLibrary(bool isFirst = false)
         {
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Media.Server[0]].StreamWriter;
+
             nfoStreamWriter.WriteLine("        <name>" + this.Name + "</name>");
 
             if (this.UrlForMediaStorage.StartsWith("http"))

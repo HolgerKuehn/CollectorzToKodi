@@ -1,5 +1,5 @@
 ﻿// <copyright file="Media.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -114,16 +114,9 @@ namespace CollectorzToKodi
         private List<int> server;
 
         /// <summary>
-        /// local paths used on the associated server names to store media<br/>
-        /// <returns>local path used on the associated server names to store media</returns>
+        /// path to Media
         /// </summary>
-        private string urlForMediaStorage;
-
-        /// <summary>
-        /// local path used on the associated server names for publication<br/>
-        /// <returns>local paths used on the associated server names for publication</returns>
-        /// </summary>
-        private string urlForMediaPublicationLocalFilesystem;
+        private MediaPath mediaPath;
 
         /// <summary>
         /// NFO-File representing the actual media file
@@ -348,23 +341,24 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets local paths used on the associated server names to store media<br/>
-        /// <returns>local path used on the associated server names to store media</returns>
+        /// Gets or sets path to Media
         /// </summary>
-        public string UrlForMediaStorage
+        public MediaPath MediaPath
         {
-            get { return this.urlForMediaStorage; }
-            set { this.urlForMediaStorage = value; }
-        }
+            get
+            {
+                if (this.mediaPath == null)
+                {
+                    this.mediaPath = new MediaPath(this.Configuration);
+                }
 
-        /// <summary>
-        /// Gets or sets local path used on the associated server names for publication<br/>
-        /// <returns>local paths used on the associated server names for publication</returns>
-        /// </summary>
-        public string UrlForMediaPublicationLocalFilesystem
-        {
-            get { return this.urlForMediaPublicationLocalFilesystem; }
-            set { this.urlForMediaPublicationLocalFilesystem = value; }
+                return this.mediaPath;
+            }
+
+            set
+            {
+                this.mediaPath = value;
+            }
         }
 
         /// <summary>
@@ -562,8 +556,10 @@ namespace CollectorzToKodi
         /// <param name="xMLNode">Part of Collectors export, representing images of media</param>
         public virtual void ReadImagesFromXml(XmlNode xMLNode)
         {
-            ImageFile imageFile;
+            ImageFile image = null;
             ImageFile imageFileClone = null;
+            int numberOfExtraBackdrop = 0;
+            int numberOfExtraCover = 0;
 
             // Covers / Backdrops per Season
             List<List<int>> imagesPerSeason = new List<List<int>>();
@@ -584,81 +580,90 @@ namespace CollectorzToKodi
             }
 
             // Cover-Front-Image
-            imageFile = new ImageFile(this.Configuration);
-            imageFile.Media = this;
-            imageFile.Filename = "cover";
-            imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
-            imageFile.ImageType = Configuration.ImageType.CoverFront;
+            image = new ImageFile(this.Configuration);
+            image.Media = this;
+            image.Filename = "cover";
+            image.MediaPath.WindowsPath = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+            image.ConvertFilename();
+            image.ImageType = Configuration.ImageType.CoverFront;
 
-            if (imageFile.UrlForMediaStorage != string.Empty)
+            if (image.URL != string.Empty)
             {
-                imageFile.Media.Images.Add(imageFile);
+                image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.CoverFront][0]++;
-                imageFilesPerSeason[(int)Configuration.ImageType.CoverFront][0] /* Cover */ = imageFile;
+                imageFilesPerSeason[(int)Configuration.ImageType.CoverFront][0] /* Cover */ = image;
             }
 
             // Cover-Back-Image
-            imageFile = new ImageFile(this.Configuration);
-            imageFile.Media = this;
-            imageFile.Filename = "coverback";
-            imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
-            imageFile.ImageType = Configuration.ImageType.CoverBack;
+            image = new ImageFile(this.Configuration);
+            image.Media = this;
+            image.Filename = "coverback";
+            image.URL = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
+            image.ConvertFilename();
+            image.ImageType = Configuration.ImageType.CoverBack;
 
-            if (imageFile.UrlForMediaStorage != string.Empty)
+            if (image.URL != string.Empty)
             {
-                imageFile.Media.Images.Add(imageFile);
+                image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.CoverBack][0]++;
-                imageFilesPerSeason[(int)Configuration.ImageType.CoverBack][0] /* Cover-Back */ = imageFile;
+                imageFilesPerSeason[(int)Configuration.ImageType.CoverBack][0] /* Cover-Back */ = image;
             }
 
             // Poster-Image
-            imageFile = new ImageFile(this.Configuration);
-            imageFile.Media = this;
-            imageFile.Filename = "poster";
-            imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
+            image = new ImageFile(this.Configuration);
+            image.Media = this;
+            image.Filename = "poster";
+            image.URL = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
 
             /* Estuary just displays poster instead of cover; so setting this as poster when empty */
-            if (imageFile.UrlForMediaStorage == string.Empty)
+            if (image.URL == string.Empty)
             {
-                imageFile.UrlForMediaStorage = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+                image.URL = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
             }
 
-            imageFile.ImageType = Configuration.ImageType.Poster;
+            image.ConvertFilename();
+            image.ImageType = Configuration.ImageType.Poster;
 
-            if (imageFile.UrlForMediaStorage != string.Empty)
+            if (image.URL != string.Empty)
             {
-                imageFile.Media.Images.Add(imageFile);
+                image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.Poster][0]++;
-                imageFilesPerSeason[(int)Configuration.ImageType.Poster][0] /* Poster */ = imageFile;
+                imageFilesPerSeason[(int)Configuration.ImageType.Poster][0] /* Poster */ = image;
             }
 
             // Backdrop-Image
-            imageFile = new ImageFile(this.Configuration)
-            {
-                Media = this,
-                Filename = "fanart",
-                UrlForMediaStorage = xMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty),
-                ImageType = Configuration.ImageType.Backdrop
-            };
+            image = new ImageFile(this.Configuration);
+            image.Media = this;
+            image.Filename = "fanart";
+            image.URL = xMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty);
+            image.ConvertFilename();
+            image.ImageType = Configuration.ImageType.Backdrop;
 
-            if (imageFile.UrlForMediaStorage != string.Empty)
+            if (image.URL != string.Empty)
             {
-                imageFile.Media.Images.Add(imageFile);
+                // add Backdrop
+                image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.Backdrop][0]++;
-                imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0] /* Backdrop */ = imageFile;
+                imageFilesPerSeason[(int)Configuration.ImageType.Backdrop][0] /* Backdrop */ = image;
+
+                // add Backdrop as Fanart for skins supporting it
+                numberOfExtraBackdrop++;
+                imageFileClone = (ImageFile)image.Clone();
+                imageFileClone.ImageType = Configuration.ImageType.ExtraBackdrop;
+                imageFileClone.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                imageFileClone.ConvertFilename();
+                imageFileClone.Media.Images.Add(imageFileClone);
+                imagesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0]++;
+                imageFilesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0] /* Backdrop */ = imageFileClone;
             }
 
             // add images from Links section
-            int numberOfExtraBackdrop = 0;
-            int numberOfExtraCover = 0;
             foreach (XmlNode xMLImageFile in xMLNode.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
                 if (xMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Image")
                 {
-                    imageFile = new ImageFile(this.Configuration)
-                    {
-                        Media = this
-                    };
+                    ImageFile imageFile = new ImageFile(this.Configuration);
+                    imageFile.Media = this;
 
                     imageFile.Description = imageFile.OverrideSeason(xMLImageFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty));
 
@@ -705,6 +710,7 @@ namespace CollectorzToKodi
                     }
 
                     imageFile.UrlForMediaStorage = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    imageFile.ConvertFilename();
 
                     if (imageFile.UrlForMediaStorage != string.Empty)
                     {

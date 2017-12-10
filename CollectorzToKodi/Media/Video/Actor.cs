@@ -1,5 +1,5 @@
 ﻿// <copyright file="Actor.cs" company="Holger Kühn">
-// Copyright (c) 2014 - 2016 Holger Kühn. All rights reserved.
+// Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
@@ -50,11 +50,11 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <inheritdoc/>
-        public override void ReadPerson(XmlNode xmlActor)
+        public override void ReadPersonFromXml(XmlNode xmlActor)
         {
             // extract person and set basic properties
             XmlNode xmlPerson = xmlActor.XMLReadSubnode("person");
-            base.ReadPerson(xmlPerson);
+            base.ReadPersonFromXml(xmlPerson);
 
             // add role
             this.Role = xmlActor.XMLReadSubnode("character").XMLReadInnerText(string.Empty);
