@@ -84,7 +84,7 @@
         /// <param name="movie">Movie, the SubTilte is referring to</param>
         public void SetFilename(Movie movie)
         {
-            this.Filename = movie.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+            this.MediaPath.Filename = movie.MediaPath.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@
         /// <param name="series">Series, the SubTilte is referring to</param>
         public void SetFilename(Series series)
         {
-            this.Filename = series.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+            this.MediaPath.Filename = series.MediaPath.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
 
 
@@ -209,9 +209,9 @@
         /// <param name="swrSH">StreamWriter used to write script to</param>
         public override void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
         {
-            if (this.Filename != string.Empty)
+            if (this.MediaPath.Filename != string.Empty)
             {
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + "\" \"" + this.MediaPath.Filename + "\"");
             }
         }
 

@@ -74,12 +74,12 @@ namespace CollectorzToKodi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video")]
-        public string UrlForMediaStorageLocalFilesystem {
+        public string DevicePathForPublication {
             get {
-                return ((string)(this["UrlForMediaStorageLocalFilesystem"]));
+                return ((string)(this["DevicePathForPublication"]));
             }
             set {
-                this["UrlForMediaStorageLocalFilesystem"] = value;
+                this["DevicePathForPublication"] = value;
             }
         }
         
@@ -110,12 +110,12 @@ namespace CollectorzToKodi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC")]
-        public string UrlForMediaPublicationLocalFilesystem {
+        public string DeviceDestinationPath {
             get {
-                return ((string)(this["UrlForMediaPublicationLocalFilesystem"]));
+                return ((string)(this["DeviceDestinationPath"]));
             }
             set {
-                this["UrlForMediaPublicationLocalFilesystem"] = value;
+                this["DeviceDestinationPath"] = value;
             }
         }
     }

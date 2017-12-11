@@ -94,8 +94,10 @@ namespace CollectorzToKodi
         /// </summary>
         /// <param name="nfoStreamWriter">NFO file that the stream information should be added to</param>
         /// <remarks>If video contains SRT-subtitles, the SRT-files are created as well</remarks>
-        public virtual void WriteSubTitleStreamDataToLibrary(StreamWriter nfoStreamWriter)
+        public virtual void WriteToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.Video.NfoFile.StreamWriter;
+
             nfoStreamWriter.WriteLine("            <subtitle>");
             nfoStreamWriter.WriteLine("                <language>" + this.Language + "</language>");
             nfoStreamWriter.WriteLine("            </subtitle>");

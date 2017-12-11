@@ -98,12 +98,12 @@ namespace CollectorzToKodi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("P:\\Collectorz.com\\nfo-Konverter\\nfoConverter\\nfoConverter\\bin\\Filme.xml")]
-        public string UrlForXMLExport {
+        public string WindowsPathToXmlExport {
             get {
-                return ((string)(this["UrlForXMLExport"]));
+                return ((string)(this["WindowsPathToXmlExport"]));
             }
             set {
-                this["UrlForXMLExport"] = value;
+                this["WindowsPathToXmlExport"] = value;
             }
         }
     }

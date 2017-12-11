@@ -39,8 +39,8 @@ namespace CollectorzToKodi
             set
             {
                 base.Server = value;
-                this.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
-                this.UrlForMediaStorage = this.Configuration.MovieCollectorUrlForXMLExportPath + this.Filename;
+                this.MediaPath.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
+                this.UrlForMediaStorage = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaPath.Filename;
 
                 this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
                 this.WriteToLibrary();
@@ -62,7 +62,7 @@ namespace CollectorzToKodi
 
             shFileClone.Media = this.Media;
             shFileClone.Server = this.Server;
-            shFileClone.Filename = this.Filename;
+            shFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
             return (ShFile)shFileClone;
         }

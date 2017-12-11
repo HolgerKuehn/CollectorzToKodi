@@ -52,8 +52,8 @@ namespace CollectorzToKodi
             SubTitleFile subTitleFileClone = new SubTitleFile(this.Configuration);
             subTitleFileClone.Description = this.Description;
             subTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
-            subTitleFileClone.UrlForMediaPublicationLocalFilesystem = this.UrlForMediaPublicationLocalFilesystem;
-            subTitleFileClone.Filename = this.Filename;
+            subTitleFileClone.DeviceDestinationPath = this.DeviceDestinationPath;
+            subTitleFileClone.MediaPath.Filename = this.MediaPath.Filename;
             subTitleFileClone.Extension = this.Extension;
             subTitleFileClone.Server = this.Server;
             subTitleFileClone.Media = this.Media;
@@ -75,9 +75,9 @@ namespace CollectorzToKodi
 
             // copy SubTitleFile to destination, as it's converted during Export (Offset-times, etc.)
             // valid for all types of SubTitles
-            if (this.Filename != string.Empty)
+            if (this.MediaPath.Filename != string.Empty)
             {
-                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + "\" \"" + this.Filename + "\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + "\" \"" + this.MediaPath.Filename + "\"");
             }
         }
 

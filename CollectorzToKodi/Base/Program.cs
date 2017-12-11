@@ -18,7 +18,7 @@ namespace CollectorzToKodi
             Configuration configuration = new Configuration();
 
             MediaCollection mediaCollection = new MediaCollection(configuration);
-            mediaCollection.ReadXML(configuration.MovieCollectorLocalPathToXMLExport);
+            mediaCollection.ReadFromXml(configuration.MovieCollectorWindowsPathToXmlExport);
 
             mediaCollection.ExportLibrary();
 

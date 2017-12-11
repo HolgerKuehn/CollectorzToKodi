@@ -24,7 +24,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// path of MediaFile
         /// </summary>
-        private MediaPath mediaPath;
+        private MediaPathFile mediaPath;
 
         /// <summary>
         /// media containing file
@@ -81,7 +81,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets path to Media
         /// </summary>
-        public MediaPath MediaPath
+        public virtual MediaPathFile MediaPath
         {
             get
             {
@@ -119,7 +119,7 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets file index of SubTiltle
+        /// Gets or sets file index of MediaFile
         /// </summary>
         public int FileIndex
         {

@@ -4,10 +4,12 @@
 
 namespace CollectorzToKodi
 {
+    using System.Xml;
+
     /// <summary>
     /// class to manage AudioStreams
     /// </summary>
-    public class AudioStream
+    public class AudioStream : MediaStream
     {
         #region Attributes
 
@@ -31,8 +33,10 @@ namespace CollectorzToKodi
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioStream"/> class.
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         /// </summary>
-        public AudioStream()
+        public AudioStream(Configuration configuration)
+            : base (configuration)
         {
             this.codec = "AC3";
             this.language = "Deutsch";
@@ -71,6 +75,16 @@ namespace CollectorzToKodi
 
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
+        }
+
+        /// <inheritdoc/>
+        public override void WriteToLibrary()
+        {
+        }
 
         #endregion
     }

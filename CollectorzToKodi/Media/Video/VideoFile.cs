@@ -42,16 +42,21 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <inheritdoc/>
-        public override string UrlForMediaStorage
+        public override MediaPathFile MediaPath
         {
             get
             {
-                return base.UrlForMediaStorage;
+                if (base.MediaPath == null)
+                {
+                    base.MediaPath = new MediaPathFile(this.Configuration);
+                }
+
+                return base.MediaPath;
             }
 
             set
             {
-                base.UrlForMediaStorage = value;
+                base.MediaPath = value;
 
                 this.Media.AddServer(this.Server);
             }
@@ -62,23 +67,23 @@ namespace CollectorzToKodi
         {
             get
             {
-                return base.Filename;
+                return base.MediaPath.Filename;
             }
 
             set
             {
-                base.Filename = value;
+                base.MediaPath.Filename = value;
 
                 foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
                 {
-                    subTitleFile.Filename = this.Filename;
+                    subTitleFile.MediaPath.Filename = this.MediaPath.Filename;
 
                     if (this.Extension != string.Empty)
                     {
-                        subTitleFile.Filename = this.Filename.Replace(this.Extension, string.Empty);
+                        subTitleFile.MediaPath.Filename = this.MediaPath.Filename.Replace(this.Extension, string.Empty);
                     }
 
-                    subTitleFile.Filename = subTitleFile.Filename + subTitleFile.Extension;
+                    subTitleFile.MediaPath.Filename = subTitleFile.MediaPath.Filename + subTitleFile.Extension;
                 }
             }
         }
@@ -134,7 +139,7 @@ namespace CollectorzToKodi
 
             videoFileClone.Media = this.Media;
             videoFileClone.Server = this.Server;
-            videoFileClone.Filename = this.Filename;
+            videoFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
             return (VideoFile)videoFileClone;
         }
@@ -206,20 +211,6 @@ namespace CollectorzToKodi
             this.SubTitleFiles.AddRange(lstSubTitleFiles);
         }
 
-        /// <summary>
-        /// adds Subtitle to Shell-Script
-        /// </summary>
-        /// <param name="swrSH">Bash-Shell-Script</param>
-        public void WriteSubTitleToSH(StreamWriter swrSH)
-        {
-            this.CreateFinalSubTitleFile();
-
-            foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
-            {
-                subTitleFile.WriteSubTitleToSH(swrSH);
-            }
-        }
-
         /// <inheritdoc/>
         public override void DeleteFromLibrary()
         {
@@ -228,6 +219,12 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
+            this.CreateFinalSubTitleFile();
+
+            foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
+            {
+                subTitleFile.WriteToLibrary();
+            }
         }
 
         /// <summary>
@@ -236,7 +233,7 @@ namespace CollectorzToKodi
         /// </summary>
         private void CreateFinalSubTitleFile()
         {
-            // check, if transformation is necessary (more than one SubTitleFiles)
+            // check, if transformation is necessary (more than one SubTitleFile)
             int numberOfSubTitleFiles = 0;
 
             if (this.SubTitleFiles != null)

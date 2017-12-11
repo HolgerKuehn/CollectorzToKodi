@@ -62,17 +62,8 @@ namespace CollectorzToKodi
         /// </summary>
         public virtual string Filename
         {
-            get
-            {
-                return this.filename;
-            }
-
-            set
-            {
-                this.filename = value;
-
-                this.UrlForMediaPublicationLocalFilesystem = this.Media.UrlForMediaPublicationLocalFilesystem;
-            }
+            get { return this.Filename; }
+            set { this.Filename = value; }
         }
 
         /// <summary>
@@ -111,89 +102,85 @@ namespace CollectorzToKodi
         }
 
         ///// <summary>
-        ///// Gets or sets url or uri of file; used for media storage
+        ///// replaces drive letter with local path on device
         ///// </summary>
-        //public virtual string UrlForMediaStorage
+        ///// <param name="WindowsPath">full path on mapped drive</param>
+        ///// <returns>local path on device</returns>
+        //private void SetDevicePath(string WindowsPath)
         //{
-        //    get
+        //    string devicePath = string.Empty;
+
+        //    this.DevicePathForPublication = this.windowsPath;
+
+        //    if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
         //    {
-        //        return this.urlForMediaStorage;
+        //        this.DevicePathForPublication = this.DevicePathForPublication.ReplaceAll("\\", "/");
         //    }
 
-        //    set
+        //    for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
         //    {
-        //        this.urlForMediaStorage = value;
+        //        string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
+        //        string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
 
-        //        this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorage;
-
-        //        if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
+        //        // determine used servers from assigned driveLetters
+        //        if (this.UrlForMediaStorage.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
         //        {
-        //            this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorageLocalFilesystem.ReplaceAll("\\", "/");
+        //            this.Server = i;
         //        }
 
-        //        for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
-        //        {
-        //            string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
-        //            string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
+        //        // and replace them for local paths
+        //        this.DevicePathForPublication = this.DevicePathForPublication.Replace(driveLetter.Trim() + ":", localPath);
+        //    }
 
-        //            // determine used servers from assigned driveLetters
-        //            if (this.UrlForMediaStorage.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
+        //    // determine file extension
+        //    string extension = this.urlForMediaStorage.ToLower().RightOfLast(".");
+        //    string filename = this.urlForMediaStorage.ToLower().LeftOfLast(".");
+
+        //    if (extension == "jpeg")
+        //    {
+        //        extension = "jpg";
+        //    }
+
+        //    switch (extension)
+        //    {
+        //        case "m2ts":
+        //        case "m4v":
+        //        case "mkv":
+        //        case "mp4":
+        //        case "mpg":
+        //        case "vob":
+
+        //        case "gif":
+        //        case "jpg":
+        //        case "png":
+        //            this.Extension = "." + extension;
+        //            break;
+
+        //        case "srt":
+        //            extension = filename.RightOfLast(".") + "." + extension;
+        //            filename = filename.LeftOfLast(".");
+
+        //            switch (extension)
         //            {
-        //                this.Server = i;
+        //                case "de.srt":
+        //                case "en.srt":
+        //                case "jp.srt":
+        //                    this.Extension = "." + extension;
+        //                    break;
         //            }
 
-        //            // and replace them for local paths
-        //            this.urlForMediaStorageLocalFilesystem = this.urlForMediaStorageLocalFilesystem.Replace(driveLetter.Trim() + ":", localPath);
-        //        }
+        //            break;
 
-        //        // determine file extension
-        //        string extension = this.urlForMediaStorage.ToLower().RightOfLast(".");
-        //        string filename = this.urlForMediaStorage.ToLower().LeftOfLast(".");
-
-        //        if (extension == "jpeg")
-        //        {
-        //            extension = "jpg";
-        //        }
-
-        //        switch (extension)
-        //        {
-        //            case "m2ts":
-        //            case "m4v":
-        //            case "mkv":
-        //            case "mp4":
-        //            case "mpg":
-        //            case "vob":
-
-        //            case "gif":
-        //            case "jpg":
-        //            case "png":
-        //                this.Extension = "." + extension;
-        //                break;
-
-        //            case "srt":
-        //                extension = filename.RightOfLast(".") + "." + extension;
-        //                filename = filename.LeftOfLast(".");
-
-        //                switch (extension)
-        //                {
-        //                    case "de.srt":
-        //                    case "en.srt":
-        //                    case "jp.srt":
-        //                        this.Extension = "." + extension;
-        //                        break;
-        //                }
-
-        //                break;
-
-        //            default:
-        //                throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
-        //        }
-
-        //        if (!this.Filename.Contains(this.Extension))
-        //        {
-        //            this.Filename = this.Filename + this.Extension;
-        //        }
+        //        default:
+        //            throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
         //    }
+
+        //    if (!this.MediaPath.Filename.Contains(this.Extension))
+        //    {
+        //        this.MediaPath.Filename = this.MediaPath.Filename + this.Extension;
+        //    }
+
+
         //}
 
         #endregion

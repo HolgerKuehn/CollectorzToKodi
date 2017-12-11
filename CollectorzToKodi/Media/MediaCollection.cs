@@ -193,7 +193,7 @@ namespace CollectorzToKodi
                 media.ReadCrewFromXml(xMLMovie);
 
                 // media.ReadCast(xMLMovie); moved behind reading Episodes, to read
-                media.ReadStreamData(xMLMovie);
+                media.ReadFromXml(xMLMovie);
 
                 #endregion
                 #region Movie
@@ -201,7 +201,7 @@ namespace CollectorzToKodi
                 if (xMLMovieIsMovie)
                 {
                     ((Movie)media).VideoIndex = 1;
-                    ((Movie)media).ReadMediaFilesFromXml(xMLMovie);
+                    ((Movie)media).ReadFromXml(xMLMovie);
                     media.PublishingDate = xMLMovie.XMLReadSubnode("releasedate").XMLReadSubnode("date").XMLReadInnerText(media.PublishingYear);
                     media.PlayCount = (xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Yes" || xMLMovie.XMLReadSubnode("seenit").XMLReadInnerText(string.Empty) == "Ja") ? "1" : "0";
                     media.PlayDate = xMLMovie.XMLReadSubnode("viewingdate").XMLReadSubnode("date").XMLReadInnerText(string.Empty);
@@ -267,7 +267,7 @@ namespace CollectorzToKodi
                             episode.SubTitles = episode.Series.SubTitles;
                             episode.ReadCrewFromXml(xMLEpisode);
                             episode.ReadCastFromXml(xMLEpisode);
-                            episode.ReadMediaFilesFromXml(xMLEpisode);
+                            episode.ReadFromXml(xMLEpisode);
                             episode.ReadImagesFromXml(xMLEpisode);
 
                             ((Series)media).Episodes.Add(episode);
@@ -275,7 +275,7 @@ namespace CollectorzToKodi
                     }
 
                     // add SubTitles on series-level
-                    ((Series)media).ReadMediaFilesFromXml(xMLMovie);
+                    ((Series)media).ReadFromXml(xMLMovie);
 
                     media.ReadCastFromXml(xMLMovie);
 
@@ -285,7 +285,7 @@ namespace CollectorzToKodi
                 #endregion
                 #region Media (Movie & Series)
 
-                media.Filename = media.Filename; // invoke (re-)setting filenames
+                media.MediaPath.Filename = media.MediaPath.Filename; // invoke (re-)setting filenames
 
                 #endregion
             }
@@ -317,7 +317,7 @@ namespace CollectorzToKodi
                     movie.Title = movie.Title + " (Specials)";
                     movie.TitleSort = movie.TitleSort + " (Specials)";
                     movie.TitleOriginal = movie.TitleOriginal + " (Specials)";
-                    movie.Filename = movie.Filename + " (Specials)";
+                    movie.MediaPath.Filename = movie.MediaPath.Filename + " (Specials)";
                     movieCollectionPerServer.Add(movie);
                 }
             }
@@ -771,8 +771,7 @@ namespace CollectorzToKodi
                             else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraBackdrop)
                             {
                                 numberOfExtraBackdrop++;
-                                imageFilePerMediaGroup.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
-                                imageFilePerMediaGroup.ConvertFilename();
+                                imageFilePerMediaGroup.MediaPath.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
                             }
                             else if (imageFilePerMediaGroup.Season != "-1" && imageFilePerMediaGroup.Season != "0")
                             {
@@ -839,7 +838,7 @@ namespace CollectorzToKodi
                         }
                     }
 
-                    seriesPerMediaGroup.Filename = seriesPerMediaGroup.Filename; // invoke (re-)setting filenames
+                    seriesPerMediaGroup.MediaPath.Filename = seriesPerMediaGroup.MediaPath.Filename; // invoke (re-)setting filenames
 
                     seriesCollectionPerMediaGroup.Add(seriesPerMediaGroup);
                 }

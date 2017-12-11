@@ -39,8 +39,8 @@ namespace CollectorzToKodi
             set
             {
                 base.Media = value;
-                this.Filename = this.Media.Filename + ".nfo";
-                this.UrlForMediaStorage = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Filename;
+                this.MediaPath.Filename = this.Media.MediaPath.Filename + ".nfo";
+                this.UrlForMediaStorage = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.MediaPath.Filename;
 
                 this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
             }
@@ -60,7 +60,7 @@ namespace CollectorzToKodi
 
             nfoFileClone.Media = this.Media;
             nfoFileClone.Server = this.Server;
-            nfoFileClone.Filename = this.Filename;
+            nfoFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
             return (NfoFile)nfoFileClone;
         }

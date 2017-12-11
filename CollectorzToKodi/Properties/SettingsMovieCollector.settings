@@ -20,7 +20,7 @@
     <Setting Name="Language" Type="System.String" Scope="User">
       <Value Profile="(Default)">de</Value>
     </Setting>
-    <Setting Name="UrlForXMLExport" Type="System.String" Scope="User">
+    <Setting Name="WindowsPathToXmlExport" Type="System.String" Scope="User">
       <Value Profile="(Default)">P:\Collectorz.com\nfo-Konverter\nfoConverter\nfoConverter\bin\Filme.xml</Value>
     </Setting>
   </Settings>

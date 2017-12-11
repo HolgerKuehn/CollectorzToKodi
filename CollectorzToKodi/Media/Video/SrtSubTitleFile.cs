@@ -79,7 +79,7 @@ namespace CollectorzToKodi
 
             srtSubTitleFileClone.Media = this.Media;
             srtSubTitleFileClone.Server = this.Server;
-            srtSubTitleFileClone.Filename = this.Filename;
+            srtSubTitleFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
             return (SrtSubTitleFile)srtSubTitleFileClone;
         }
@@ -91,7 +91,7 @@ namespace CollectorzToKodi
             base.WriteToLibrary();
 
             // generating srt-files, as this is one
-            StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorUrlForXMLExportPath + this.Filename, false, Encoding.UTF8, 512);
+            StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaPath.Filename, false, Encoding.UTF8, 512);
 
             int entryNumber = 0;
 

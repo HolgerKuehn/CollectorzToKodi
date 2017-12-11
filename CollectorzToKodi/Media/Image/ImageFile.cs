@@ -71,7 +71,7 @@ namespace CollectorzToKodi
 
             imageFileClone.Media = this.Media;
             imageFileClone.Server = this.Server;
-            imageFileClone.Filename = this.Filename;
+            imageFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
             return (ImageFile)imageFileClone;
         }
