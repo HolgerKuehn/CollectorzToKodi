@@ -6,7 +6,6 @@ namespace CollectorzToKodi
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Xml;
 
     /// <summary>
@@ -386,7 +385,6 @@ namespace CollectorzToKodi
         /// <summary>
         /// Writes cast information to NFO-file of this video
         /// </summary>
-        /// <param name="nfoStreamWriter">NFO file, the cast information should be added to</param>
         public void WriteCastToLibrary()
         {
             int i = 0;
@@ -403,9 +401,34 @@ namespace CollectorzToKodi
         /// <param name="xMLMedia">Part of XML-file representing stream information</param>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
-            this.ReadVideoStreamDataFromXml(xMLMedia);
-            this.ReadAudioStreamDataFromXml(xMLMedia);
-            this.ReadSubTitleStreamData(xMLMedia);
+            // read VideoStreamData
+            VideoStream videoStream = new VideoStream(this.Configuration);
+
+            videoStream.Media = this;
+            videoStream.ReadFromXml(xMLMedia);
+            this.VideoStreams.Add(videoStream);
+
+            // Read AudioStreamData
+            foreach (XmlNode xMLAudio in xMLMedia.XMLReadSubnode("audios").XMLReadSubnodes("audio"))
+            {
+                AudioStream audioStream = new AudioStream(this.Configuration);
+
+                audioStream.Media = this;
+                audioStream.ReadFromXml(xMLAudio);
+                this.AudioStreams.Add(audioStream);
+            }
+
+            // Read SubTitleStreamData
+            foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
+            {
+                SubTitle subTitle = new SubTitle(this.Configuration);
+                subTitle.Video = this;
+
+                string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+                subTitle.Language = displayname;
+
+                this.SubTitles.Add(subTitle);
+            }
         }
 
         /// <summary>
@@ -568,24 +591,6 @@ namespace CollectorzToKodi
         /// <param name="isSpecial">value indicating whether the new CVideo object should contain specials or not</param>
         /// <returns>new instance of video object meeting specification to server and specials</returns>
         public abstract Video Clone(int server, bool isSpecial = false);
-
-        /// <summary>
-        /// Reads stream data representing subtitle information
-        /// </summary>
-        /// <param name="xMLMedia">Part of XML-file representing stream information</param>
-        public virtual void ReadSubTitleStreamData(XmlNode xMLMedia)
-        {
-            foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
-            {
-                SubTitle subTitle = new SubTitle(this.Configuration);
-                subTitle.Video = this;
-
-                string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-                subTitle.Language = displayname;
-
-                this.SubTitles.Add(subTitle);
-            }
-        }
 
         /// <summary>
         /// Adds copy statements for VideoFiles to provided bash-shell-script
@@ -774,80 +779,6 @@ namespace CollectorzToKodi
             foreach (Actor actor in actors)
             {
                 this.AddActor(actor);
-            }
-        }
-
-        /// <summary>
-        /// Reads stream data representing video information
-        /// </summary>
-        /// <param name="xMLMedia">Part of XML-file representing stream information</param>
-        private void ReadVideoStreamDataFromXml(XmlNode xMLMedia)
-        {
-            Configuration.VideoAspectRatio videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
-            Configuration.VideoDefinition videoDefinition = Configuration.VideoDefinition.SD;
-
-            // VideoAspectRatio
-            List<XmlNode> xMLVideoAspectRatios = xMLMedia.XMLReadSubnode("ratios").XMLReadSubnodes("ratio");
-            if (xMLVideoAspectRatios.Count > 0)
-            {
-                XmlNode xMLVideoAspectRatio = xMLVideoAspectRatios.ElementAt(0);
-
-                if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Fullscreen (4:3)"))
-                {
-                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio43;
-                }
-                else if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Widescreen (16:9)"))
-                {
-                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
-                }
-                else if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Theatrical Widescreen (21:9)"))
-                {
-                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio219;
-                }
-            }
-
-            // VideoDefinition
-            XmlNode xMLVideoDefinition = xMLMedia.XMLReadSubnode("condition");
-
-            if (xMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("SD"))
-            {
-                videoDefinition = Configuration.VideoDefinition.SD;
-            }
-            else if (xMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("HD"))
-            {
-                videoDefinition = Configuration.VideoDefinition.HD;
-            }
-
-            // Werte übertragen
-            this.VideoDefinition = videoDefinition;
-            this.VideoAspectRatio = videoAspectRatio;
-        }
-
-        /// <summary>
-        /// Reads stream data representing audio information
-        /// </summary>
-        /// <param name="xMLMedia">Part of XML-file representing stream information</param>
-        private void ReadAudioStreamDataFromXml(XmlNode xMLMedia)
-        {
-            foreach (XmlNode xMLAudio in xMLMedia.XMLReadSubnode("audios").XMLReadSubnodes("audio"))
-            {
-                string displayname = xMLAudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
-
-                AudioStream audioStreamData = new AudioStream();
-                audioStreamData.Codec = "AC3";
-                audioStreamData.Language = displayname.RightOf("[").LeftOf("]");
-
-                if (displayname.LeftOf("[").Contains("2.0") || displayname.LeftOf("[").Contains("Stereo"))
-                {
-                    audioStreamData.NumberOfChannels = "2";
-                }
-
-                if (displayname.LeftOf("[").Contains("5.1"))
-                {
-                    audioStreamData.NumberOfChannels = "6";
-                }
-
-                this.AudioStreams.Add(audioStreamData);
             }
         }
 

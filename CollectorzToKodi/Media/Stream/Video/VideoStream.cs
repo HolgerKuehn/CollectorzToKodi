@@ -4,6 +4,11 @@
 
 namespace CollectorzToKodi
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+
     /// <summary>
     /// class to manage VideoStreams
     /// </summary>
@@ -73,6 +78,54 @@ namespace CollectorzToKodi
 
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
+            Configuration.VideoAspectRatio videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
+            Configuration.VideoDefinition videoDefinition = Configuration.VideoDefinition.SD;
+
+            // VideoAspectRatio
+            List<XmlNode> xMLVideoAspectRatios = xMLMedia.XMLReadSubnode("ratios").XMLReadSubnodes("ratio");
+            if (xMLVideoAspectRatios.Count > 0)
+            {
+                XmlNode xMLVideoAspectRatio = xMLVideoAspectRatios.ElementAt(0);
+
+                if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Fullscreen (4:3)"))
+                {
+                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio43;
+                }
+                else if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Widescreen (16:9)"))
+                {
+                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
+                }
+                else if (xMLVideoAspectRatio.XMLReadSubnode("displayname").XMLReadInnerText("Widescreen (16:9)").Equals("Theatrical Widescreen (21:9)"))
+                {
+                    videoAspectRatio = Configuration.VideoAspectRatio.AspectRatio219;
+                }
+            }
+
+            // VideoDefinition
+            XmlNode xMLVideoDefinition = xMLMedia.XMLReadSubnode("condition");
+
+            if (xMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("SD"))
+            {
+                videoDefinition = Configuration.VideoDefinition.SD;
+            }
+            else if (xMLVideoDefinition.XMLReadSubnode("displayname").XMLReadInnerText("SD").Equals("HD"))
+            {
+                videoDefinition = Configuration.VideoDefinition.HD;
+            }
+
+            // Werte übertragen
+            this.VideoDefinition = videoDefinition;
+            this.VideoAspectRatio = videoAspectRatio;
+        }
+
+        /// <inheritdoc/>
+        public override void WriteToLibrary()
+        {
+        }
 
         #endregion
     }

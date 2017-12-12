@@ -4,6 +4,8 @@
 
 namespace CollectorzToKodi
 {
+    using System.Collections.Generic;
+    using System.IO;
     using System.Xml;
 
     /// <summary>
@@ -33,10 +35,10 @@ namespace CollectorzToKodi
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioStream"/> class.
-        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         /// </summary>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public AudioStream(Configuration configuration)
-            : base (configuration)
+            : base(configuration)
         {
             this.codec = "AC3";
             this.language = "Deutsch";
@@ -79,6 +81,20 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
+            string displayname = xMLAudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+
+            this.Codec = "AC3";
+            this.Language = displayname.RightOf("[").LeftOf("]");
+
+            if (displayname.LeftOf("[").Contains("2.0") || displayname.LeftOf("[").Contains("Stereo"))
+            {
+                this.NumberOfChannels = "2";
+            }
+
+            if (displayname.LeftOf("[").Contains("5.1"))
+            {
+                this.NumberOfChannels = "6";
+            }
         }
 
         /// <inheritdoc/>
