@@ -24,7 +24,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// path of MediaFile
         /// </summary>
-        private MediaPathFile mediaPath;
+        private MediaFilePath mediaPath;
 
         /// <summary>
         /// media containing file
@@ -35,7 +35,7 @@ namespace CollectorzToKodi
         /// list of servers containing parts of media
         /// </summary>
         /// <remarks>number is translated via CConfiguration.ServerListsOfServers[ListOfServerTypes]</remarks>
-        private int server;
+        private Server server;
 
         /// <summary>
         /// index of MediaFile file
@@ -81,13 +81,13 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets path to Media
         /// </summary>
-        public virtual MediaPathFile MediaPath
+        public virtual MediaPath MediaPath
         {
             get
             {
                 if (this.mediaPath == null)
                 {
-                    this.mediaPath = new MediaPathFile(this.Configuration);
+                    this.mediaPath = new MediaFilePath(this.Configuration);
                 }
 
                 return this.mediaPath;

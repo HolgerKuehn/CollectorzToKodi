@@ -276,9 +276,9 @@ namespace CollectorzToKodi
             {
                 if (this.Title != string.Empty)
                 {
-                    bfStreamWriter.WriteLine("if [ -d \"" + this.MediaPath.Filename + "\" ];");
+                    bfStreamWriter.WriteLine("if [ -d \"" + this.Server.Filename + "\" ];");
                     bfStreamWriter.WriteLine("then ");
-                    bfStreamWriter.WriteLine("    rm -r \"" + this.MediaPath.Filename + "\"");
+                    bfStreamWriter.WriteLine("    rm -r \"" + this.Server.Filename + "\"");
                     bfStreamWriter.WriteLine("fi;");
                     bfStreamWriter.WriteLine(string.Empty);
                 }
@@ -603,9 +603,9 @@ namespace CollectorzToKodi
             // copy video files to device
             foreach (VideoFile videoFile in this.MediaFiles)
             {
-                if (videoFile.MediaPath.Filename != string.Empty)
+                if (videoFile.Server.Filename != string.Empty)
                 {
-                    bfStreamWriter.WriteLine("/bin/ln -s \"" + videoFile.MediaPath.DevicePathForPublication + "\" \"" + videoFile.MediaPath.Filename + "\"");
+                    bfStreamWriter.WriteLine("/bin/ln -s \"" + videoFile.Server.DevicePathForPublication + "\" \"" + videoFile.Server.Filename + "\"");
                     videoFile.WriteToLibrary();
                 }
             }

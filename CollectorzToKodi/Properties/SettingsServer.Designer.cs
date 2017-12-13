@@ -110,12 +110,12 @@ namespace CollectorzToKodi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC")]
-        public string DeviceDestinationPath {
+        public string ServerDeviceDestinationPath {
             get {
-                return ((string)(this["DeviceDestinationPath"]));
+                return ((string)(this["ServerDeviceDestinationPath"]));
             }
             set {
-                this["DeviceDestinationPath"] = value;
+                this["ServerDeviceDestinationPath"] = value;
             }
         }
     }

@@ -1121,7 +1121,7 @@ namespace CollectorzToKodi
             this.serverListOfServers = Properties.SettingsServer.Default.ListOfServer.Split(",");
             this.serverDriveMappingOfServers = Properties.SettingsServer.Default.DriveMappingOfServer.Split(",");
             this.serverDevicePathForPublication = Properties.SettingsServer.Default.DevicePathForPublication.Split(",");
-            this.serverDeviceDestinationPath = Properties.SettingsServer.Default.DeviceDestinationPath.Split(",");
+            this.serverDeviceDestinationPath = Properties.SettingsServer.Default.ServerDeviceDestinationPath.Split(",");
             this.serverMappingType = Properties.SettingsServer.Default.MappingType;
             this.serverMovieDirectory = Properties.SettingsServer.Default.MovieDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
             this.serverSeriesDirectory = Properties.SettingsServer.Default.SeriesDirectory + (this.serverMappingType == "UNIX" ? "/" : "\\");
@@ -1142,8 +1142,8 @@ namespace CollectorzToKodi
             {
                 this.serverListsOfServers[(int)ListOfServerTypes.NumberToName].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerListOfServers[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.NumberToDriveLetter].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDriveMappingOfServers[i]);
-                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaStorage].Add(i.ToString(CultureInfo.InvariantCulture), this.UrlForMediaStorage[i]);
-                this.serverListsOfServers[(int)ListOfServerTypes.NumberToLocalPathForMediaPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.DeviceDestinationPath[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToDevicePathForPublication].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDevicePathForPublication[i]);
+                this.serverListsOfServers[(int)ListOfServerTypes.NumberToDeviceDestinationPath].Add(i.ToString(CultureInfo.InvariantCulture), this.ServerDeviceDestinationPath[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.DriveLetterToName].Add(this.ServerDriveMappingOfServers[i], this.ServerListOfServers[i]);
                 this.serverListsOfServers[(int)ListOfServerTypes.NameToDriveLetter].Add(this.ServerListOfServers[i], this.ServerDriveMappingOfServers[i]);
 
@@ -1163,7 +1163,7 @@ namespace CollectorzToKodi
 
                 // determine movieCollectorWindowsPathToXmlExportPathLocalFilesystem
                 string driveLetter = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];
-                string localPath = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaStorage][i.ToString()];
+                string localPath = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDevicePathForPublication][i.ToString()];
 
                 // determine used servers from assigned driveLetters
                 if (this.movieCollectorWindowsPathToXmlExportPathLocalFilesystem.StartsWith(driveLetter.Trim() + ":", true, System.Globalization.CultureInfo.CurrentCulture))
@@ -1222,12 +1222,12 @@ namespace CollectorzToKodi
             /// <summary>
             /// dictionary from number to local path for media storage in file system
             /// </summary>
-            NumberToLocalPathForMediaStorage,
+            NumberToDevicePathForPublication,
 
             /// <summary>
             /// dictionary from number to local path for media publication in file system
             /// </summary>
-            NumberToLocalPathForMediaPublication,
+            NumberToDeviceDestinationPath,
 
             /// <summary>
             /// dictionary from associated drive letter to name
@@ -1598,7 +1598,7 @@ namespace CollectorzToKodi
         /// </summary>
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names to store media</returns>
-        private List<string> UrlForMediaStorage
+        private List<string> ServerDevicePathForPublication
         {
             get { return this.serverDevicePathForPublication; }
         }
@@ -1608,7 +1608,7 @@ namespace CollectorzToKodi
         /// <remarks>values separated by colon</remarks>
         /// <returns>list of local paths used on the associated server names for publication</returns>
         /// </summary>
-        private List<string> DeviceDestinationPath
+        private List<string> ServerDeviceDestinationPath
         {
             get { return this.serverDeviceDestinationPath; }
         }

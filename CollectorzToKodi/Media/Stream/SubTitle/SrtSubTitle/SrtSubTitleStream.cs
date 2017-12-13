@@ -70,7 +70,7 @@ namespace CollectorzToKodi
         {
             SrtSubTitleStream srtSubTitleFileClone = new SrtSubTitleStream(this.Configuration);
             srtSubTitleFileClone.Description = this.Description;
-            srtSubTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            srtSubTitleFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
             srtSubTitleFileClone.Extension = this.Extension;
             srtSubTitleFileClone.SubTitle = this.SubTitle;
             srtSubTitleFileClone.SubTitleEntries.AddRange(this.SubTitleEntries);
@@ -79,7 +79,7 @@ namespace CollectorzToKodi
 
             srtSubTitleFileClone.Media = this.Media;
             srtSubTitleFileClone.Server = this.Server;
-            srtSubTitleFileClone.MediaPath.Filename = this.MediaPath.Filename;
+            srtSubTitleFileClone.Server.Filename = this.Server.Filename;
 
             return (SrtSubTitleStream)srtSubTitleFileClone;
         }
@@ -91,7 +91,7 @@ namespace CollectorzToKodi
             base.WriteToLibrary();
 
             // generating srt-files, as this is one
-            StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaPath.Filename, false, Encoding.UTF8, 512);
+            StreamWriter swrSrtSubTitle = new StreamWriter(this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.Server.Filename, false, Encoding.UTF8, 512);
 
             int entryNumber = 0;
 
@@ -130,12 +130,12 @@ namespace CollectorzToKodi
             this.OffsetTime = timOffsetTime;
 
             // reading subtitle content
-            if (this.UrlForMediaStorage == string.Empty || !File.Exists(this.UrlForMediaStorage))
+            if (this.ServerDevicePathForPublication == string.Empty || !File.Exists(this.ServerDevicePathForPublication))
             {
                 return;
             }
 
-            using (StreamReader srdSrtFile = new StreamReader(this.UrlForMediaStorage, Encoding.UTF8))
+            using (StreamReader srdSrtFile = new StreamReader(this.ServerDevicePathForPublication, Encoding.UTF8))
             {
                 Configuration.SrtSubTitleLineType lineType = default(Configuration.SrtSubTitleLineType);
                 SrtSubTitleStreamEntry srtSubTitleFileEntry = new SrtSubTitleStreamEntry();

@@ -32,16 +32,16 @@ namespace CollectorzToKodi
         {
             get
             {
-                return base.MediaPath.Filename;
+                return base.Server.Filename;
             }
 
             set
             {
-                base.MediaPath.Filename = value;
+                base.Server.Filename = value;
 
                 foreach (VideoFile videoFile in this.MediaFiles)
                 {
-                    videoFile.MediaPath.Filename = this.MediaPath.Filename + " part " + ("0000" + videoFile.FileIndex.ToString()).Substring(videoFile.FileIndex.ToString().Length);
+                    videoFile.Server.Filename = this.Server.Filename + " part " + ("0000" + videoFile.FileIndex.ToString()).Substring(videoFile.FileIndex.ToString().Length);
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace CollectorzToKodi
             {
                 base.Server = value;
 
-                this.DeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + this.Configuration.ServerMovieDirectory;
+                this.ServerDeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + this.Configuration.ServerMovieDirectory;
             }
         }
 
@@ -81,7 +81,7 @@ namespace CollectorzToKodi
                     videoFile.Description = xMLVideodatei.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
                     videoFile.Description = videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
                     videoFile.FileIndex = k;
-                    videoFile.UrlForMediaStorage = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    videoFile.ServerDevicePathForPublication = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     videoFile.Media = this;
 
                     this.MediaFiles.Add(videoFile);
@@ -101,7 +101,7 @@ namespace CollectorzToKodi
                     videoFile.Description = xMLEpisode.XMLReadSubnode("title").XMLReadInnerText(string.Empty);
                     videoFile.OverrideSpecial(discTitle);
                     videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
-                    videoFile.UrlForMediaStorage = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+                    videoFile.ServerDevicePathForPublication = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
                     videoFile.FileIndex = k;
                     videoFile.Media = this;
 
@@ -169,13 +169,13 @@ namespace CollectorzToKodi
                 }
 
                 // write BatchFile
-                bfStreamWriter.WriteLine("mkdir \"" + this.MediaPath.Filename + "\"");
+                bfStreamWriter.WriteLine("mkdir \"" + this.Server.Filename + "\"");
 
-                bfStreamWriter.WriteLine("cd \"/share/XBMC/Filme/" + this.MediaPath.Filename + "\"");
+                bfStreamWriter.WriteLine("cd \"/share/XBMC/Filme/" + this.Server.Filename + "\"");
                 bfStreamWriter.WriteLine("mkdir \"extrafanart\"");
 
-                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + ".nfo\" > \"" + this.MediaPath.Filename + ".nfo\"");
-                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + ".nfo\" \"" + this.MediaPath.Filename + ".nfo\"");
+                // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" > \"" + this.Server.Filename + ".nfo\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" \"" + this.Server.Filename + ".nfo\"");
 
                 // Videofiles and Images
                 this.WriteVideoFilesToLibrary();
@@ -219,7 +219,7 @@ namespace CollectorzToKodi
                 movieClone.MediaFiles.Add((VideoFile)videoFile.Clone());
             }
 
-            movieClone.MediaPath.Filename = this.MediaPath.Filename;
+            movieClone.Server.Filename = this.Server.Filename;
             movieClone.Server = this.Server;
             movieClone.VideoCodec = this.VideoCodec;
             movieClone.VideoDefinition = this.VideoDefinition;
@@ -295,7 +295,7 @@ namespace CollectorzToKodi
                     }
                 }
 
-                movieClone.MediaPath.Filename = this.MediaPath.Filename;
+                movieClone.Server.Filename = this.Server.Filename;
                 movieClone.AddServer(server);
                 movieClone.VideoCodec = this.VideoCodec;
                 movieClone.VideoDefinition = this.VideoDefinition;

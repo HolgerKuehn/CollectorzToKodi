@@ -1,4 +1,4 @@
-﻿// <copyright file="MediaPathFile.cs" company="Holger Kühn">
+﻿// <copyright file="MediaFilePath.cs" company="Holger Kühn">
 // Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
@@ -7,9 +7,14 @@ namespace CollectorzToKodi
     /// <summary>
     /// provides information about storage paths on Windows running Collectorz and the hardwareplattform storing the media
     /// </summary>
-    public class MediaPathFile : MediaPath
+    public class MediaFilePath
     {
         #region Attributes
+
+        /// <summary>
+        /// name of media file
+        /// </summary>
+        private string filename;
 
         /// <summary>
         /// extension for original file
@@ -35,11 +40,10 @@ namespace CollectorzToKodi
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MediaPathFile"/> class.
+        /// Initializes a new instance of the <see cref="MediaFilePath"/> class.
         /// </summary>
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
-        public MediaPathFile(Configuration configuration)
-            : base(configuration)
+        public MediaFilePath(Configuration configuration)
         {
             this.windowsPath = string.Empty;
             this.windowsPathForPublication = string.Empty;
@@ -48,6 +52,15 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
+
+        /// <summary>
+        /// Gets or sets name of Media
+        /// </summary>
+        public string Filename
+        {
+            get { return this.extension; }
+            set { this.extension = value; }
+        }
 
         /// <summary>
         /// Gets or sets extension for original file
@@ -89,12 +102,12 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <summary>
-        /// clones MediaPathFile object
+        /// clones MediaFilePath object
         /// </summary>
-        /// <returns>clone of current MediaPathFile object</returns>
-        public override MediaPath Clone()
+        /// <returns>clone of current MediaFilePath object</returns>
+        public override Server Clone()
         {
-            MediaPathFile mediaPathClone = new MediaPathFile(this.Configuration);
+            MediaFilePath mediaPathClone = new MediaFilePath(this.Configuration);
             mediaPathClone.Configuration = this.Configuration;
             mediaPathClone.WindowsPath = this.WindowsPath;
             mediaPathClone.WindowsPathForPublication = this.WindowsPathForPublication;

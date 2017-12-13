@@ -42,21 +42,21 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <inheritdoc/>
-        public override MediaPathFile MediaPath
+        public override MediaFilePath Server
         {
             get
             {
-                if (base.MediaPath == null)
+                if (base.Server == null)
                 {
-                    base.MediaPath = new MediaPathFile(this.Configuration);
+                    base.Server = new MediaFilePath(this.Configuration);
                 }
 
-                return base.MediaPath;
+                return base.Server;
             }
 
             set
             {
-                base.MediaPath = value;
+                base.Server = value;
 
                 this.Media.AddServer(this.Server);
             }
@@ -67,23 +67,23 @@ namespace CollectorzToKodi
         {
             get
             {
-                return base.MediaPath.Filename;
+                return base.Server.Filename;
             }
 
             set
             {
-                base.MediaPath.Filename = value;
+                base.Server.Filename = value;
 
                 foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
                 {
-                    subTitleFile.MediaPath.Filename = this.MediaPath.Filename;
+                    subTitleFile.Server.Filename = this.Server.Filename;
 
                     if (this.Extension != string.Empty)
                     {
-                        subTitleFile.MediaPath.Filename = this.MediaPath.Filename.Replace(this.Extension, string.Empty);
+                        subTitleFile.Server.Filename = this.Server.Filename.Replace(this.Extension, string.Empty);
                     }
 
-                    subTitleFile.MediaPath.Filename = subTitleFile.MediaPath.Filename + subTitleFile.Extension;
+                    subTitleFile.Server.Filename = subTitleFile.Server.Filename + subTitleFile.Extension;
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace CollectorzToKodi
             VideoFile videoFileClone = new VideoFile(this.Configuration);
 
             videoFileClone.Description = this.Description;
-            videoFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            videoFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
             videoFileClone.Extension = this.Extension;
             videoFileClone.FileIndex = this.FileIndex;
             videoFileClone.IsSpecial = this.IsSpecial;
@@ -139,7 +139,7 @@ namespace CollectorzToKodi
 
             videoFileClone.Media = this.Media;
             videoFileClone.Server = this.Server;
-            videoFileClone.MediaPath.Filename = this.MediaPath.Filename;
+            videoFileClone.Server.Filename = this.Server.Filename;
 
             return (VideoFile)videoFileClone;
         }
@@ -183,7 +183,7 @@ namespace CollectorzToKodi
 
                             // name and filenames
                             Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty),
-                            UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty)
+                            ServerDevicePathForPublication = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty)
                         };
                         srtSubTitleFile.ConvertFilename();
 

@@ -285,7 +285,7 @@ namespace CollectorzToKodi
                 #endregion
                 #region Media (Movie & Series)
 
-                media.MediaPath.Filename = media.MediaPath.Filename; // invoke (re-)setting filenames
+                media.Server.Filename = media.Server.Filename; // invoke (re-)setting filenames
 
                 #endregion
             }
@@ -317,7 +317,7 @@ namespace CollectorzToKodi
                     movie.Title = movie.Title + " (Specials)";
                     movie.TitleSort = movie.TitleSort + " (Specials)";
                     movie.TitleOriginal = movie.TitleOriginal + " (Specials)";
-                    movie.MediaPath.Filename = movie.MediaPath.Filename + " (Specials)";
+                    movie.Server.Filename = movie.Server.Filename + " (Specials)";
                     movieCollectionPerServer.Add(movie);
                 }
             }
@@ -771,7 +771,7 @@ namespace CollectorzToKodi
                             else if (imageFilePerMediaGroup.ImageType == Configuration.ImageType.ExtraBackdrop)
                             {
                                 numberOfExtraBackdrop++;
-                                imageFilePerMediaGroup.MediaPath.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                                imageFilePerMediaGroup.Server.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
                             }
                             else if (imageFilePerMediaGroup.Season != "-1" && imageFilePerMediaGroup.Season != "0")
                             {
@@ -838,7 +838,7 @@ namespace CollectorzToKodi
                         }
                     }
 
-                    seriesPerMediaGroup.MediaPath.Filename = seriesPerMediaGroup.MediaPath.Filename; // invoke (re-)setting filenames
+                    seriesPerMediaGroup.Server.Filename = seriesPerMediaGroup.Server.Filename; // invoke (re-)setting filenames
 
                     seriesCollectionPerMediaGroup.Add(seriesPerMediaGroup);
                 }

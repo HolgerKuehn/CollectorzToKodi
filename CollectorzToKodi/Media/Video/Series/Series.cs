@@ -63,22 +63,22 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <inheritdoc/>
-        public override MediaPath MediaPath
+        public override Server Server
         {
             get
             {
-                return base.MediaPath;
+                return base.Server;
             }
 
             set
             {
-                base.MediaPath = value;
+                base.Server = value;
 
-                base.MediaPath.WindowsPathToDestination = base.MediaPath.WindowsPathToDestination + "\\" + this.Configuration.ServerSeriesDirectory + "\\" + this.MediaPath.Filename;
+                base.Server.WindowsPathToDestination = base.Server.WindowsPathToDestination + "\\" + this.Configuration.ServerSeriesDirectory + "\\" + this.Server.Filename;
 
                 foreach (Episode episode in this.Episodes)
                 {
-                    episode.MediaPath = this.MediaPath;
+                    episode.Server = this.Server;
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace CollectorzToKodi
             {
                 base.Server = value;
 
-                this.DeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + this.Configuration.ServerSeriesDirectory;
+                this.ServerDeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + this.Configuration.ServerSeriesDirectory;
             }
         }
 
@@ -218,9 +218,9 @@ namespace CollectorzToKodi
             if (this.Title != string.Empty)
             {
                 // ######
-                shStreamWriter.WriteLine("mkdir \"" + this.MediaPath.Filename + "\"");
+                shStreamWriter.WriteLine("mkdir \"" + this.Server.Filename + "\"");
 
-                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.MediaPath.Filename + "\"");
+                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.Server.Filename + "\"");
                 for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
                 {
                     shStreamWriter.WriteLine("mkdir \"Season " + this.ConvertSeason(i.ToString()) + "\"");
@@ -229,8 +229,8 @@ namespace CollectorzToKodi
                 shStreamWriter.WriteLine("mkdir \"extrafanart\"");
                 shStreamWriter.WriteLine("mkdir \"extrathumbs\"");
 
-                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.MediaPath.Filename + "\"");
-                shStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + ".nfo\" \"tvshow.nfo\"");
+                shStreamWriter.WriteLine("cd \"/share/XBMC/Serien/" + this.Server.Filename + "\"");
+                shStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" \"tvshow.nfo\"");
 
                 // Images
                 this.WriteImagesToLibrary();
@@ -276,7 +276,7 @@ namespace CollectorzToKodi
                 seriesClone.MediaFiles.Add((VideoFile)videoFile.Clone());
             }
 
-            seriesClone.MediaPath.Filename = this.MediaPath.Filename;
+            seriesClone.Server.Filename = this.Server.Filename;
             seriesClone.Server = this.Server;
             seriesClone.VideoCodec = this.VideoCodec;
             seriesClone.VideoDefinition = this.VideoDefinition;
@@ -342,7 +342,7 @@ namespace CollectorzToKodi
                 seriesClone.Directors = this.Directors;
                 seriesClone.Writers = this.Writers;
                 seriesClone.Actors = this.Actors;
-                seriesClone.MediaPath.Filename = this.MediaPath.Filename;
+                seriesClone.Server.Filename = this.Server.Filename;
                 seriesClone.VideoCodec = this.VideoCodec;
                 seriesClone.VideoDefinition = this.VideoDefinition;
                 seriesClone.VideoAspectRatio = this.VideoAspectRatio;
@@ -367,7 +367,7 @@ namespace CollectorzToKodi
                     bool cloneEpisode = false;
                     foreach (VideoFile videoFile in episode.MediaFiles)
                     {
-                        if (videoFile.UrlForMediaStorage != string.Empty && videoFile.Server.Equals(server))
+                        if (videoFile.ServerDevicePathForPublication != string.Empty && videoFile.Server.Equals(server))
                         {
                             cloneEpisode = true;
                         }

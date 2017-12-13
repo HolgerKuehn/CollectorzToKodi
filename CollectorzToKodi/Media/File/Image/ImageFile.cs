@@ -66,12 +66,12 @@ namespace CollectorzToKodi
             imageFileClone.ImageType = this.ImageType;
             imageFileClone.Season = this.Season;
             imageFileClone.Description = this.Description;
-            imageFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            imageFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
             imageFileClone.Extension = this.Extension;
 
             imageFileClone.Media = this.Media;
             imageFileClone.Server = this.Server;
-            imageFileClone.MediaPath.Filename = this.MediaPath.Filename;
+            imageFileClone.Server.Filename = this.Server.Filename;
 
             return (ImageFile)imageFileClone;
         }

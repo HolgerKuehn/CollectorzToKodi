@@ -23,7 +23,7 @@
     <Setting Name="SeriesDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">Serien</Value>
     </Setting>
-    <Setting Name="DeviceDestinationPath" Type="System.String" Scope="User">
+    <Setting Name="ServerDeviceDestinationPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC</Value>
     </Setting>
   </Settings>

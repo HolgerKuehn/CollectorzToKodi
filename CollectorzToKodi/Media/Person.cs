@@ -130,9 +130,9 @@ namespace CollectorzToKodi
 
             nfoStreamWriter.WriteLine("        <name>" + this.Name + "</name>");
 
-            if (this.UrlForMediaStorage.StartsWith("http"))
+            if (this.ServerDevicePathForPublication.StartsWith("http"))
             {
-                nfoStreamWriter.WriteLine("        <url>" + this.UrlForMediaStorage + "</url>");
+                nfoStreamWriter.WriteLine("        <url>" + this.ServerDevicePathForPublication + "</url>");
             }
 
             if (this.Thumb.StartsWith("http"))

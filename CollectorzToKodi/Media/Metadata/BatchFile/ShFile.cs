@@ -39,10 +39,10 @@ namespace CollectorzToKodi
             set
             {
                 base.Server = value;
-                this.MediaPath.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
-                this.UrlForMediaStorage = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaPath.Filename;
+                this.Server.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
+                this.ServerDevicePathForPublication = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.Server.Filename;
 
-                this.StreamWriter = new StreamWriter(this.UrlForMediaStorage, false, Encoding.UTF8, 512);
+                this.StreamWriter = new StreamWriter(this.ServerDevicePathForPublication, false, Encoding.UTF8, 512);
                 this.WriteToLibrary();
             }
         }
@@ -55,14 +55,14 @@ namespace CollectorzToKodi
         {
             ShFile shFileClone = new ShFile(this.Configuration);
             shFileClone.Description = this.Description;
-            shFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
+            shFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
             shFileClone.Extension = this.Extension;
             shFileClone.FileIndex = this.FileIndex;
             shFileClone.StreamWriter = null;
 
             shFileClone.Media = this.Media;
             shFileClone.Server = this.Server;
-            shFileClone.MediaPath.Filename = this.MediaPath.Filename;
+            shFileClone.Server.Filename = this.Server.Filename;
 
             return (ShFile)shFileClone;
         }

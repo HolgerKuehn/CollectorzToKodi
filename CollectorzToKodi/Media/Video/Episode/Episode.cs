@@ -72,27 +72,27 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <inheritdoc/>
-        public override MediaPath MediaPath
+        public override Server Server
         {
             get
             {
-                return base.MediaPath;
+                return base.Server;
             }
 
             set
             {
-                base.MediaPath = value;
+                base.Server = value;
 
-                base.MediaPath.Filename = this.Series.MediaPath.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
+                base.Server.Filename = this.Series.Server.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
 
                 foreach (VideoFile videoFile in this.MediaFiles)
                 {
-                    videoFile.MediaPath.Filename = this.MediaPath.Filename;
+                    videoFile.Server.Filename = this.Server.Filename;
                 }
 
                 foreach (ImageFile imageFile in this.Images)
                 {
-                    imageFile.MediaPath.Filename = this.MediaPath.Filename + "-thumb";
+                    imageFile.Server.Filename = this.Server.Filename + "-thumb";
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace CollectorzToKodi
             {
                 base.Server = value;
 
-                this.DeviceDestinationPath = this.Series.DeviceDestinationPath + "Season " + this.ConvertSeason(this.actualSeason) + (this.Configuration.ServerMappingType == "UNIX" ? "/" : "\\");
+                this.ServerDeviceDestinationPath = this.Series.ServerDeviceDestinationPath + "Season " + this.ConvertSeason(this.actualSeason) + (this.Configuration.ServerMappingType == "UNIX" ? "/" : "\\");
             }
         }
 
@@ -179,7 +179,7 @@ namespace CollectorzToKodi
 
             videoFile.IsSpecial = this.IsSpecial;
             videoFile.Description = "EpisodeVideoFile";
-            videoFile.UrlForMediaStorage = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+            videoFile.ServerDevicePathForPublication = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
             videoFile.Media = this;
             videoFile.FileIndex = this.VideoIndex;
 
@@ -227,9 +227,9 @@ namespace CollectorzToKodi
             // createNewMedia is only checked for series; episodes are not changed, as not generated
             if (this.Title != string.Empty)
             {
-                bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.MediaPath.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
+                bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Server.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
 
-                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + ".nfo\" \"" + this.MediaPath.Filename + ".nfo\"");
+                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" \"" + this.Server.Filename + ".nfo\"");
 
                 // video files
                 this.WriteVideoFilesToLibrary();
@@ -272,7 +272,7 @@ namespace CollectorzToKodi
                 episodeClone.MediaFiles.Add((VideoFile)mediaFile.Clone());
             }
 
-            episodeClone.MediaPath.Filename = this.MediaPath.Filename;
+            episodeClone.Server.Filename = this.Server.Filename;
             episodeClone.Server = this.Server;
             episodeClone.VideoCodec = this.VideoCodec;
             episodeClone.VideoDefinition = this.VideoDefinition;
@@ -409,11 +409,11 @@ namespace CollectorzToKodi
             image = new ImageFile(this.Configuration);
             image.Media = this;
             image.Season = this.ActualSeason;
-            image.MediaPath.Filename = this.MediaPath.Filename;
-            image.UrlForMediaStorage = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
+            image.Server.Filename = this.Server.Filename;
+            image.ServerDevicePathForPublication = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
             image.ImageType = Configuration.ImageType.EpisodeCover;
 
-            if (image.UrlForMediaStorage != string.Empty)
+            if (image.ServerDevicePathForPublication != string.Empty)
             {
                 image.Media.Images.Add(image);
             }
@@ -430,15 +430,15 @@ namespace CollectorzToKodi
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.MediaPath.Filename != string.Empty && imageFile.ImageType == Configuration.ImageType.EpisodeCover)
+                if (imageFile.Server.Filename != string.Empty && imageFile.ImageType == Configuration.ImageType.EpisodeCover)
                 {
-                    if (!imageFile.UrlForMediaStorage.Contains("http://"))
+                    if (!imageFile.ServerDevicePathForPublication.Contains("http://"))
                     {
-                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.MediaPath.Filename + "/Season " + imageFile.Season + "/" + imageFile.MediaPath.Filename + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Server.Filename + "/Season " + imageFile.Season + "/" + imageFile.Server.Filename + "</thumb>");
                     }
                     else
                     {
-                        nfoStreamWriter.WriteLine("    <thumb>" + imageFile.UrlForMediaStorage + "</thumb>");
+                        nfoStreamWriter.WriteLine("    <thumb>" + imageFile.ServerDevicePathForPublication + "</thumb>");
                     }
                 }
             }
@@ -448,9 +448,9 @@ namespace CollectorzToKodi
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.MediaPath.Filename != string.Empty && !imageFile.UrlForMediaStorage.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
+                if (imageFile.Server.Filename != string.Empty && !imageFile.ServerDevicePathForPublication.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
-                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.DevicePathForPublication + "\" \"" + imageFile.MediaPath.Filename + "\"");
+                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.DevicePathForPublication + "\" \"" + imageFile.Server.Filename + "\"");
                 }
             }
         }

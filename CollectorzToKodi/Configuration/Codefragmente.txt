@@ -84,7 +84,7 @@
         /// <param name="movie">Movie, the SubTilte is referring to</param>
         public void SetFilename(Movie movie)
         {
-            this.MediaPath.Filename = movie.MediaPath.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+            this.Server.Filename = movie.Server.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@
         /// <param name="series">Series, the SubTilte is referring to</param>
         public void SetFilename(Series series)
         {
-            this.MediaPath.Filename = series.MediaPath.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
+            this.Server.Filename = series.Server.Filename + " part " + ("0000" + this.fileIndex.ToString()).Substring(this.fileIndex.ToString().Length) + this.Extension;
         }
 
 
@@ -128,7 +128,7 @@
 
                     // name and filenames
                     srtSubTitleFile.Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
-                    srtSubTitleFile.UrlForMediaStorage = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    srtSubTitleFile.ServerDevicePathForPublication = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
                     srtSubTitleFile.ConvertFilename();
 
                     // check for fileIndex
@@ -209,9 +209,9 @@
         /// <param name="swrSH">StreamWriter used to write script to</param>
         public override void WriteSubTitleStreamDataToSH(StreamWriter swrSH)
         {
-            if (this.MediaPath.Filename != string.Empty)
+            if (this.Server.Filename != string.Empty)
             {
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.MediaPath.Filename + "\" \"" + this.MediaPath.Filename + "\"");
+                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + "\" \"" + this.Server.Filename + "\"");
             }
         }
 
@@ -498,4 +498,69 @@
 
         //    this.SeriesCollectionGroupedByMediaGroup = lstSeriesCollectionPerMediaGroup;
         //    this.SeriesCollectionWithoutMediaGroup = lstSeriesCollectionWithoutMediaGroup;
+        //}
+
+
+
+
+		///// <summary>
+        ///// replaces drive letter with local path on device
+        ///// </summary>
+        ///// <param name="WindowsPath">full path on mapped drive</param>
+        ///// <returns>local path on device</returns>
+        //private void SetDevicePath(string WindowsPath)
+        //{
+        //    string devicePath = string.Empty;
+
+        //    this.DevicePathForPublication = this.windowsPath;
+
+        //    // determine file extension
+        //    string extension = this.urlForMediaStorage.ToLower().RightOfLast(".");
+        //    string filename = this.urlForMediaStorage.ToLower().LeftOfLast(".");
+
+        //    if (extension == "jpeg")
+        //    {
+        //        extension = "jpg";
+        //    }
+
+        //    switch (extension)
+        //    {
+        //        case "m2ts":
+        //        case "m4v":
+        //        case "mkv":
+        //        case "mp4":
+        //        case "mpg":
+        //        case "vob":
+
+        //        case "gif":
+        //        case "jpg":
+        //        case "png":
+        //            this.Extension = "." + extension;
+        //            break;
+
+        //        case "srt":
+        //            extension = filename.RightOfLast(".") + "." + extension;
+        //            filename = filename.LeftOfLast(".");
+
+        //            switch (extension)
+        //            {
+        //                case "de.srt":
+        //                case "en.srt":
+        //                case "jp.srt":
+        //                    this.Extension = "." + extension;
+        //                    break;
+        //            }
+
+        //            break;
+
+        //        default:
+        //            throw new System.NotImplementedException("Extension \"" + extension + "\" is not supported yet.");
+        //    }
+
+        //    if (!this.Server.Filename.Contains(this.Extension))
+        //    {
+        //        this.Server.Filename = this.Server.Filename + this.Extension;
+        //    }
+
+
         //}
