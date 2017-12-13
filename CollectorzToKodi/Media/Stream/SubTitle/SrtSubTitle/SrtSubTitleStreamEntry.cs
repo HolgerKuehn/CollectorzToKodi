@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// SRT-Entry
     /// </summary>
-    public class SrtSubTitleFileEntry
+    public class SrtSubTitleStreamEntry
     {
         #region Attributes
 
@@ -49,9 +49,9 @@ namespace CollectorzToKodi
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SrtSubTitleFileEntry"/> class.
+        /// Initializes a new instance of the <see cref="SrtSubTitleStreamEntry"/> class.
         /// </summary>
-        public SrtSubTitleFileEntry()
+        public SrtSubTitleStreamEntry()
         {
             this.entryNumber = 0;
             TimeSpan.TryParse("00:00:00", out this.startTime);
@@ -124,9 +124,9 @@ namespace CollectorzToKodi
         /// clones SrtSubTitleFileEntry object completely
         /// </summary>
         /// <returns>new instance of SrtSubTitleFileEntry</returns>
-        public SrtSubTitleFileEntry Clone()
+        public SrtSubTitleStreamEntry Clone()
         {
-            SrtSubTitleFileEntry srtSubTitleFileEntryClone = new SrtSubTitleFileEntry();
+            SrtSubTitleStreamEntry srtSubTitleFileEntryClone = new SrtSubTitleStreamEntry();
             srtSubTitleFileEntryClone.EntryNumber = this.EntryNumber;
             srtSubTitleFileEntryClone.StartTime = this.StartTime;
             srtSubTitleFileEntryClone.EndTime = this.EndTime;

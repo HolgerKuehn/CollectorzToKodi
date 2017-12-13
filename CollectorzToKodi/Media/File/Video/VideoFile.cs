@@ -168,7 +168,7 @@ namespace CollectorzToKodi
         {
             List<SubTitleFile> lstSubTitleFiles = new List<SubTitleFile>();
 
-            foreach (SubTitle subTitle in ((Video)this.Media).SubTitles)
+            foreach (SubTitleStream subTitle in ((Video)this.Media).SubTitles)
             {
                 foreach (XmlNode xMLSubTitleStreamFile in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
                 {
@@ -176,7 +176,7 @@ namespace CollectorzToKodi
                     if ((xMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie") && xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel." + subTitle.Language + "."))
                     {
                         // create new subtitle objects
-                        SrtSubTitleFile srtSubTitleFile = new SrtSubTitleFile(this.Configuration)
+                        SrtSubTitleStream srtSubTitleFile = new SrtSubTitleStream(this.Configuration)
                         {
                             Media = this.Media,
                             SubTitle = subTitle,

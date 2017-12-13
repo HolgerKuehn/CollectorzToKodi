@@ -12,14 +12,14 @@ namespace CollectorzToKodi
     /// <summary>
     /// Extension for SRT-Files
     /// </summary>
-    public class SrtSubTitleFile : SubTitleFile
+    public class SrtSubTitleStream : TypeSubTitleStream
     {
         #region Attributes
 
         /// <summary>
         /// SRT-Entries
         /// </summary>
-        private List<SrtSubTitleFileEntry> subTitleEntries;
+        private List<SrtSubTitleStreamEntry> subTitleEntries;
 
         /// <summary>
         /// basic time offset for subtitle entries
@@ -30,13 +30,13 @@ namespace CollectorzToKodi
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SrtSubTitleFile"/> class.
+        /// Initializes a new instance of the <see cref="SrtSubTitleStream"/> class.
         /// </summary>
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
-        public SrtSubTitleFile(Configuration configuration)
+        public SrtSubTitleStream(Configuration configuration)
             : base(configuration)
         {
-            this.subTitleEntries = new List<SrtSubTitleFileEntry>();
+            this.subTitleEntries = new List<SrtSubTitleStreamEntry>();
 
             TimeSpan.TryParse("00:00:00.000", out TimeSpan offsetTime);
         }
@@ -47,7 +47,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets SRT-Entries
         /// </summary>
-        public List<SrtSubTitleFileEntry> SubTitleEntries
+        public List<SrtSubTitleStreamEntry> SubTitleEntries
         {
             get { return this.subTitleEntries; }
             set { this.subTitleEntries = value; }
@@ -68,7 +68,7 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override MediaFile Clone()
         {
-            SrtSubTitleFile srtSubTitleFileClone = new SrtSubTitleFile(this.Configuration);
+            SrtSubTitleStream srtSubTitleFileClone = new SrtSubTitleStream(this.Configuration);
             srtSubTitleFileClone.Description = this.Description;
             srtSubTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
             srtSubTitleFileClone.Extension = this.Extension;
@@ -81,7 +81,7 @@ namespace CollectorzToKodi
             srtSubTitleFileClone.Server = this.Server;
             srtSubTitleFileClone.MediaPath.Filename = this.MediaPath.Filename;
 
-            return (SrtSubTitleFile)srtSubTitleFileClone;
+            return (SrtSubTitleStream)srtSubTitleFileClone;
         }
 
         /// <inheritdoc/>
@@ -95,7 +95,7 @@ namespace CollectorzToKodi
 
             int entryNumber = 0;
 
-            foreach (SrtSubTitleFileEntry srtSubTitleFileEntry in this.SubTitleEntries)
+            foreach (SrtSubTitleStreamEntry srtSubTitleFileEntry in this.SubTitleEntries)
             {
                 // resets Entry-Number
                 entryNumber++;
@@ -111,7 +111,7 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
         {
-            SrtSubTitleFile srtTitleFile = (SrtSubTitleFile)subTitleFile;
+            SrtSubTitleStream srtTitleFile = (SrtSubTitleStream)subTitleFile;
             srtTitleFile.SubTitleEntries.AddRange(this.SubTitleEntries);
 
             return srtTitleFile;
@@ -138,7 +138,7 @@ namespace CollectorzToKodi
             using (StreamReader srdSrtFile = new StreamReader(this.UrlForMediaStorage, Encoding.UTF8))
             {
                 Configuration.SrtSubTitleLineType lineType = default(Configuration.SrtSubTitleLineType);
-                SrtSubTitleFileEntry srtSubTitleFileEntry = new SrtSubTitleFileEntry();
+                SrtSubTitleStreamEntry srtSubTitleFileEntry = new SrtSubTitleStreamEntry();
                 lineType = Configuration.SrtSubTitleLineType.EntryNumber;
 
                 while (true)
@@ -212,7 +212,7 @@ namespace CollectorzToKodi
 
                     if (lineType == Configuration.SrtSubTitleLineType.EmptyLine)
                     {
-                        srtSubTitleFileEntry = new SrtSubTitleFileEntry();
+                        srtSubTitleFileEntry = new SrtSubTitleStreamEntry();
                         lineType = Configuration.SrtSubTitleLineType.EntryNumber;
                     }
                 }

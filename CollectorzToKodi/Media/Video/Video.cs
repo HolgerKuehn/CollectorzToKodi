@@ -73,7 +73,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of subtitles available in video
         /// </summary>
-        private List<SubTitle> subTitles;
+        private List<SubTitleStream> subTitles;
 
         /// <summary>
         /// index of represented Video in "MovieCollector's Episodes and Features tab"
@@ -104,7 +104,7 @@ namespace CollectorzToKodi
             // Parameter
             this.videoStreams = new List<VideoStream>();
             this.audioStreams = new List<AudioStream>();
-            this.subTitles = new List<SubTitle>();
+            this.subTitles = new List<SubTitleStream>();
         }
 
         #endregion
@@ -236,13 +236,13 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of subtitles available in video
         /// </summary>
-        public List<SubTitle> SubTitles
+        public List<SubTitleStream> SubTitles
         {
             get
             {
                 if (this.subTitles == null)
                 {
-                    this.subTitles = new List<SubTitle>();
+                    this.subTitles = new List<SubTitleStream>();
                 }
 
                 return this.subTitles;
@@ -421,7 +421,7 @@ namespace CollectorzToKodi
             // Read SubTitleStreamData
             foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
             {
-                SubTitle subTitle = new SubTitle(this.Configuration);
+                SubTitleStream subTitle = new SubTitleStream(this.Configuration);
                 subTitle.Video = this;
 
                 string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
@@ -673,7 +673,7 @@ namespace CollectorzToKodi
             }
 
             // add SubTitleStreamData to nfo File
-            foreach (SubTitle subTitleStream in this.SubTitles)
+            foreach (SubTitleStream subTitleStream in this.SubTitles)
             {
                 subTitleStream.WriteToLibrary();
             }

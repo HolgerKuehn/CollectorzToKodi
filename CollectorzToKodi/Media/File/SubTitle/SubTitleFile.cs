@@ -16,7 +16,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// SubTitle containing this SubTitleFile
         /// </summary>
-        private SubTitle subTitle;
+        private SubTitleStream subTitleStream;
 
         #endregion
         #region Constructor
@@ -28,7 +28,7 @@ namespace CollectorzToKodi
         public SubTitleFile(Configuration configuration)
             : base(configuration)
         {
-            this.subTitle = null;
+            this.subTitleStream = null;
         }
 
         #endregion
@@ -37,10 +37,10 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets SubTitle containing this SubTitleFile
         /// </summary>
-        public SubTitle SubTitle
+        public SubTitleStream SubTitle
         {
-            get { return this.subTitle; }
-            set { this.subTitle = value; }
+            get { return this.subTitleStream; }
+            set { this.subTitleStream = value; }
         }
 
         #endregion
@@ -51,10 +51,7 @@ namespace CollectorzToKodi
         {
             SubTitleFile subTitleFileClone = new SubTitleFile(this.Configuration);
             subTitleFileClone.Description = this.Description;
-            subTitleFileClone.UrlForMediaStorage = this.UrlForMediaStorage;
-            subTitleFileClone.DeviceDestinationPath = this.DeviceDestinationPath;
             subTitleFileClone.MediaPath.Filename = this.MediaPath.Filename;
-            subTitleFileClone.Extension = this.Extension;
             subTitleFileClone.Server = this.Server;
             subTitleFileClone.Media = this.Media;
             subTitleFileClone.SubTitle = this.SubTitle;
