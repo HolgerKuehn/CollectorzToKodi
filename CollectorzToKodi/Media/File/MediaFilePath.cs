@@ -12,6 +12,11 @@ namespace CollectorzToKodi
         #region Attributes
 
         /// <summary>
+        /// current configuration of CollectorzToKodi
+        /// </summary>
+        private Configuration configuration;
+
+        /// <summary>
         /// name of media file
         /// </summary>
         private string filename;
@@ -36,6 +41,16 @@ namespace CollectorzToKodi
         /// </summary>
         private string devicePathForPublication;
 
+        /// <summary>
+        /// windows path to destination
+        /// </summary>
+        private string windowsPathToDestination;
+
+        /// <summary>
+        /// device path to destination
+        /// </summary>
+        private string devicePathToDestination;
+
         #endregion
         #region Constructor
 
@@ -45,13 +60,27 @@ namespace CollectorzToKodi
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public MediaFilePath(Configuration configuration)
         {
+            this.configuration = configuration;
+            this.filename = string.Empty;
+            this.extension = string.Empty;
             this.windowsPath = string.Empty;
             this.windowsPathForPublication = string.Empty;
             this.devicePathForPublication = string.Empty;
+            this.windowsPathToDestination = string.Empty;
+            this.devicePathToDestination = string.Empty;
         }
 
         #endregion
         #region Properties
+
+        /// <summary>
+        /// Gets or sets current configuration of CollectorzToKodi
+        /// </summary>
+        public Configuration Configuration
+        {
+            get { return this.configuration; }
+            set { this.configuration = value; }
+        }
 
         /// <summary>
         /// Gets or sets name of Media
@@ -105,17 +134,18 @@ namespace CollectorzToKodi
         /// clones MediaFilePath object
         /// </summary>
         /// <returns>clone of current MediaFilePath object</returns>
-        public override Server Clone()
+        public MediaFilePath Clone()
         {
-            MediaFilePath mediaPathClone = new MediaFilePath(this.Configuration);
-            mediaPathClone.Configuration = this.Configuration;
-            mediaPathClone.WindowsPath = this.WindowsPath;
-            mediaPathClone.WindowsPathForPublication = this.WindowsPathForPublication;
-            mediaPathClone.DevicePathForPublication = this.DevicePathForPublication;
-            mediaPathClone.WindowsPathToDestination = this.WindowsPathToDestination;
-            mediaPathClone.DevicePathToDestination = this.DevicePathToDestination;
+            MediaFilePath mediaFilePathClone = new MediaFilePath(this.Configuration);
+            mediaFilePathClone.Filename = this.Filename;
+            mediaFilePathClone.Extension = this.Extension;
+            mediaFilePathClone.WindowsPath = this.WindowsPath;
+            mediaFilePathClone.WindowsPathForPublication = this.WindowsPathForPublication;
+            mediaFilePathClone.devicePathForPublication = this.devicePathForPublication;
+            mediaFilePathClone.windowsPathToDestination = this.windowsPathToDestination;
+            mediaFilePathClone.devicePathToDestination = this.devicePathToDestination;
 
-            return mediaPathClone;
+            return mediaFilePathClone;
         }
 
         #endregion

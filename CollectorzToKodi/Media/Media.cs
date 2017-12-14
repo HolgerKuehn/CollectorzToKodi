@@ -312,17 +312,17 @@ namespace CollectorzToKodi
         {
             get
             {
-                if (this.mediaPath == null)
+                if (this.mediaFilePath == null)
                 {
-                    this.mediaPath = new Server(this.Configuration);
+                    this.mediaFilePath = new Server(this.Configuration);
                 }
 
-                return this.mediaPath;
+                return this.mediaFilePath;
             }
 
             set
             {
-                this.mediaPath = value;
+                this.mediaFilePath = value;
 
                
             }

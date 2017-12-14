@@ -24,7 +24,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// path of MediaFile
         /// </summary>
-        private MediaFilePath mediaPath;
+        private MediaFilePath mediaFilePath;
 
         /// <summary>
         /// media containing file
@@ -54,6 +54,8 @@ namespace CollectorzToKodi
             this.configuration = configuration;
             this.description = string.Empty;
             this.media = null;
+            this.mediaFilePath = null;
+            this.server = null;
             this.fileIndex = 1;
         }
 
@@ -81,21 +83,21 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets path to Media
         /// </summary>
-        public virtual MediaPath MediaPath
+        public virtual MediaFilePath MediaFilePath
         {
             get
             {
-                if (this.mediaPath == null)
+                if (this.mediaFilePath == null)
                 {
-                    this.mediaPath = new MediaFilePath(this.Configuration);
+                    this.mediaFilePath = new MediaFilePath(this.Configuration);
                 }
 
-                return this.mediaPath;
+                return this.mediaFilePath;
             }
 
             set
             {
-                this.mediaPath = value;
+                this.mediaFilePath = value;
             }
         }
 
@@ -112,7 +114,7 @@ namespace CollectorzToKodi
         /// Gets or sets list of servers containing parts of media
         /// </summary>
         /// <remarks>number is translated via CConfiguration.ServerListsOfServers[ListOfServerTypes]</remarks>
-        public virtual int Server
+        public virtual Server Server
         {
             get { return this.server; }
             set { this.server = value; }

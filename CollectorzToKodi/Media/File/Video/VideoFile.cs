@@ -23,7 +23,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of subtitles available in video; specific to this MediaFile
         /// </summary>
-        private List<SubTitleFile> subTitleFiles;
+        private List<SubTitleStream> subTitleStreams;
 
         #endregion
         #region Constructor
@@ -41,53 +41,6 @@ namespace CollectorzToKodi
         #endregion
         #region Properties
 
-        /// <inheritdoc/>
-        public override MediaFilePath Server
-        {
-            get
-            {
-                if (base.Server == null)
-                {
-                    base.Server = new MediaFilePath(this.Configuration);
-                }
-
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                this.Media.AddServer(this.Server);
-            }
-        }
-
-        /// <inheritdoc/>
-        public override string Filename
-        {
-            get
-            {
-                return base.Server.Filename;
-            }
-
-            set
-            {
-                base.Server.Filename = value;
-
-                foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
-                {
-                    subTitleFile.Server.Filename = this.Server.Filename;
-
-                    if (this.Extension != string.Empty)
-                    {
-                        subTitleFile.Server.Filename = this.Server.Filename.Replace(this.Extension, string.Empty);
-                    }
-
-                    subTitleFile.Server.Filename = subTitleFile.Server.Filename + subTitleFile.Extension;
-                }
-            }
-        }
-
         /// <summary>
         /// Gets or sets a value indicating whether the video files is a special or not
         /// </summary>
@@ -100,21 +53,21 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of subtitles available in video
         /// </summary>
-        public List<SubTitleFile> SubTitleFiles
+        public List<SubTitleStream> SubTitleFiles
         {
             get
             {
-                if (this.subTitleFiles == null)
+                if (this.subTitleStreams == null)
                 {
-                    this.subTitleFiles = new List<SubTitleFile>();
+                    this.subTitleStreams = new List<SubTitleStream>();
                 }
 
-                return this.subTitleFiles;
+                return this.subTitleStreams;
             }
 
             set
             {
-                this.subTitleFiles = value;
+                this.subTitleStreams = value;
             }
         }
 
@@ -125,21 +78,21 @@ namespace CollectorzToKodi
         public override MediaFile Clone()
         {
             VideoFile videoFileClone = new VideoFile(this.Configuration);
-
+            
+            // MediaFile
             videoFileClone.Description = this.Description;
-            videoFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
-            videoFileClone.Extension = this.Extension;
+            videoFileClone.MediaFilePath = this.MediaFilePath.Clone();
+            videoFileClone.Media = this.Media;
+            videoFileClone.Server = this.Server.Clone();
             videoFileClone.FileIndex = this.FileIndex;
+
+            // VideoFile
             videoFileClone.IsSpecial = this.IsSpecial;
 
-            foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
+            foreach (SubTitleStream subTitleFile in this.SubTitleFiles)
             {
-                videoFileClone.SubTitleFiles.Add((SubTitleFile)subTitleFile.Clone());
+                videoFileClone.SubTitleFiles.Add((SubTitleStream)subTitleFile.Clone());
             }
-
-            videoFileClone.Media = this.Media;
-            videoFileClone.Server = this.Server;
-            videoFileClone.Server.Filename = this.Server.Filename;
 
             return (VideoFile)videoFileClone;
         }
@@ -166,7 +119,7 @@ namespace CollectorzToKodi
         /// <param name="xMLMedia">XML-file from MovieCollector</param>
         public void ReadSubTitleFile(XmlNode xMLMedia)
         {
-            List<SubTitleFile> lstSubTitleFiles = new List<SubTitleFile>();
+            List<SubTitleStream> lstSubTitleFiles = new List<SubTitleStream>();
 
             foreach (SubTitleStream subTitle in ((Video)this.Media).SubTitles)
             {
@@ -185,7 +138,6 @@ namespace CollectorzToKodi
                             Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty),
                             ServerDevicePathForPublication = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty)
                         };
-                        srtSubTitleFile.ConvertFilename();
 
                         // check for fileIndex
                         int completeLength = srtSubTitleFile.Description.Length;
@@ -221,19 +173,19 @@ namespace CollectorzToKodi
         {
             this.CreateFinalSubTitleFile();
 
-            foreach (SubTitleFile subTitleFile in this.SubTitleFiles)
+            foreach (SubTitleStream subTitleFile in this.SubTitleFiles)
             {
                 subTitleFile.WriteToLibrary();
             }
         }
 
         /// <summary>
-        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleFile (multiple one will be overwritten due to the same filename)
-        /// <remarks>creates new List with just one SubTitleFile and sets this</remarks>
+        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleStream (multiple one will be overwritten due to the same filename)
+        /// <remarks>creates new List with just one SubTitleStream and sets this</remarks>
         /// </summary>
         private void CreateFinalSubTitleFile()
         {
-            // check, if transformation is necessary (more than one SubTitleFile)
+            // check, if transformation is necessary (more than one SubTitleStream)
             int numberOfSubTitleFiles = 0;
 
             if (this.SubTitleFiles != null)
@@ -241,19 +193,19 @@ namespace CollectorzToKodi
                 numberOfSubTitleFiles = this.SubTitleFiles.Count;
             }
 
-            // create new SubTitleFile
+            // create new SubTitleStream
             if (numberOfSubTitleFiles > 1)
             {
-                SubTitleFile firstSubTitleFile = this.SubTitleFiles[0];
-                SubTitleFile extendedSubTitleFile = (SubTitleFile)firstSubTitleFile.Clone();
+                SubTitleStream firstSubTitleFile = this.SubTitleFiles[0];
+                SubTitleStream extendedSubTitleFile = (SubTitleStream)firstSubTitleFile.Clone();
 
                 for (int i = 1; i < this.SubTitleFiles.Count; i++)
                 {
-                    extendedSubTitleFile = ((SubTitleFile)this.SubTitleFiles[i]).CreateFinalSubTitleFile(extendedSubTitleFile);
+                    extendedSubTitleFile = ((SubTitleStream)this.SubTitleFiles[i]).CreateFinalSubTitleFile(extendedSubTitleFile);
                 }
 
                 // reset SubTitleFiles with one new File
-                this.SubTitleFiles = new List<SubTitleFile>
+                this.SubTitleFiles = new List<SubTitleStream>
                 {
                     extendedSubTitleFile
                 };

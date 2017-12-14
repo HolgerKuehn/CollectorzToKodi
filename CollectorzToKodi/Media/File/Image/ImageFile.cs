@@ -63,16 +63,18 @@ namespace CollectorzToKodi
         public override MediaFile Clone()
         {
             ImageFile imageFileClone = new ImageFile(this.Configuration);
+
+            // MediaFile
+            imageFileClone.Description = this.Description;
+            imageFileClone.MediaFilePath = this.MediaFilePath.Clone();
+            imageFileClone.Media = this.Media;
+            imageFileClone.Server = this.Server.Clone();
+            imageFileClone.FileIndex = this.FileIndex;
+
+            // ImageFile
             imageFileClone.ImageType = this.ImageType;
             imageFileClone.Season = this.Season;
-            imageFileClone.Description = this.Description;
-            imageFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
-            imageFileClone.Extension = this.Extension;
-
-            imageFileClone.Media = this.Media;
-            imageFileClone.Server = this.Server;
-            imageFileClone.Server.Filename = this.Server.Filename;
-
+            
             return (ImageFile)imageFileClone;
         }
 

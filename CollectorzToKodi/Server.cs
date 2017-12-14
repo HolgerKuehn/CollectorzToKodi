@@ -110,7 +110,7 @@ namespace CollectorzToKodi
         /// <returns>clone of current Server object</returns>
         public virtual Server Clone()
         {
-            Server serverClone = new Server(this.Configuration);
+            Server serverClone = new Server(this.Configuration, this.server);
             serverClone.Configuration = this.Configuration;
             serverClone.Media = this.Media;
             serverClone.WindowsPathToDestination = this.WindowsPathToDestination;
