@@ -5,7 +5,6 @@
 namespace CollectorzToKodi
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Xml;
 
     /// <summary>
@@ -53,7 +52,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of subtitles available in video
         /// </summary>
-        public List<SubTitleStream> SubTitleFiles
+        public List<SubTitleStream> SubTitleStreams
         {
             get
             {
@@ -78,7 +77,7 @@ namespace CollectorzToKodi
         public override MediaFile Clone()
         {
             VideoFile videoFileClone = new VideoFile(this.Configuration);
-            
+
             // MediaFile
             videoFileClone.Description = this.Description;
             videoFileClone.MediaFilePath = this.MediaFilePath.Clone();
@@ -89,9 +88,9 @@ namespace CollectorzToKodi
             // VideoFile
             videoFileClone.IsSpecial = this.IsSpecial;
 
-            foreach (SubTitleStream subTitleFile in this.SubTitleFiles)
+            foreach (SubTitleStream subTitleFile in this.SubTitleStreams)
             {
-                videoFileClone.SubTitleFiles.Add((SubTitleStream)subTitleFile.Clone());
+                videoFileClone.SubTitleStreams.Add((SubTitleStream)subTitleFile.Clone());
             }
 
             return (VideoFile)videoFileClone;
@@ -113,54 +112,80 @@ namespace CollectorzToKodi
             return title.Trim();
         }
 
-        /// <summary>
-        /// checks XML-file from MovieCollector for SubTitles linked to the Video and sets them for this VideoFile
-        /// </summary>
-        /// <param name="xMLMedia">XML-file from MovieCollector</param>
-        public void ReadSubTitleFile(XmlNode xMLMedia)
+        /// <inheritdoc/>
+        public override void ReadFromXml(XmlNode xMLMedia)
         {
-            List<SubTitleStream> lstSubTitleFiles = new List<SubTitleStream>();
+            List<SubTitleStream> lstSubTitleSteams = new List<SubTitleStream>();
 
-            foreach (SubTitleStream subTitle in ((Video)this.Media).SubTitles)
+            foreach (SubTitleStream subTitleStream in ((Video)this.Media).SubTitles)
             {
-                foreach (XmlNode xMLSubTitleStreamFile in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
+                // SrtSubTitleStream for language
+                SrtSubTitleStream srtSubTitleStream = new SrtSubTitleStream(this.Configuration);
+                srtSubTitleStream.Media = this.Media;
+                srtSubTitleStream.Language = subTitleStream.Language;
+                srtSubTitleStream.SourceSubTitleFiles = null;
+                srtSubTitleStream.DestinationSubTitleFile = null;
+
+                // search Links for SubTitleFiles for SubTitleStream
+                foreach (XmlNode xMLSubTitleStream in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
                 {
                     // check all links for subtitle in language
-                    if ((xMLSubTitleStreamFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie") && xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel." + subTitle.Language + "."))
+                    if ((xMLSubTitleStream.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Movie") && xMLSubTitleStream.XMLReadSubnode("description").XMLReadInnerText(string.Empty).Contains("Untertitel." + subTitleStream.Language + "."))
                     {
-                        // create new subtitle objects
-                        SrtSubTitleStream srtSubTitleFile = new SrtSubTitleStream(this.Configuration)
+                        string description = xMLSubTitleStream.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
+                        string windowsPath = xMLSubTitleStream.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                        int completeLength = 0;
+                        int subtitleLength = 0;
+                        int fileIndex;
+
+                        // checking, if it's an srt SubTitle
+                        if (windowsPath.EndsWith(".srt"))
                         {
-                            Media = this.Media,
-                            SubTitle = subTitle,
+                            // create new SubTitleFile
+                            SubTitleFile srtSubTitleFile = new SubTitleFile(this.Configuration);
 
-                            // name and filenames
-                            Description = xMLSubTitleStreamFile.XMLReadSubnode("description").XMLReadInnerText(string.Empty),
-                            ServerDevicePathForPublication = xMLSubTitleStreamFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty)
-                        };
+                            // MediaFile
+                            srtSubTitleFile.Description = description;
+                            srtSubTitleFile.Media = this.Media;
+                            srtSubTitleFile.Server = this.Server;
+                            srtSubTitleFile.MediaFilePath.WindowsPath = windowsPath;
+                            srtSubTitleFile.MediaFilePath.Filename = this.MediaFilePath.Filename;
+                            srtSubTitleFile.FileIndex = this.FileIndex;
 
-                        // check for fileIndex
-                        int completeLength = srtSubTitleFile.Description.Length;
-                        int subtitleLength = ("Untertitel." + subTitle.Language + ".").Length;
+                            // SubTitleFile
+                            srtSubTitleFile.SubTitleStream = srtSubTitleStream;
 
-                        if (!int.TryParse(srtSubTitleFile.Description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out int fileIndex))
-                        {
-                            fileIndex = 1;
+                            // check for fileIndex
+                            completeLength = description.Length;
+                            subtitleLength = ("Untertitel." + subTitleStream.Language + ".").Length;
+
+                            if (!int.TryParse(description.Substring(subtitleLength, completeLength - subtitleLength).LeftOf("."), out fileIndex))
+                            {
+                                fileIndex = 1;
+                            }
+
+                            if (this.FileIndex == fileIndex)
+                            {
+                                srtSubTitleStream.SourceSubTitleFiles.Add(srtSubTitleFile);
+                            }
                         }
 
-                        // subtitle file name and type
-                        if (srtSubTitleFile.Extension.Contains(".srt") && this.FileIndex == fileIndex)
-                        {
-                            srtSubTitleFile.FileIndex = fileIndex;
-                            srtSubTitleFile.ReadFromSubTitleFile();
-
-                            lstSubTitleFiles.Add(srtSubTitleFile);
-                        }
+                        /* else if windowsPath.EndsWith(".ass") {} */
                     }
                 }
+
+                // add SubTitleStreams per Language
+                lstSubTitleSteams.Add(srtSubTitleStream);
             }
 
-            this.SubTitleFiles.AddRange(lstSubTitleFiles);
+            // assign SubTitleStreams to VideoFile
+            this.SubTitleStreams.AddRange(lstSubTitleSteams);
+
+            // read SubTitleFiles from SourceFiles
+            foreach (SubTitleStream subTitleStream in this.SubTitleStreams)
+            {
+                subTitleStream.ReadFromXml(xMLMedia);
+            }
         }
 
         /// <inheritdoc/>
@@ -171,44 +196,9 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
-            this.CreateFinalSubTitleFile();
-
-            foreach (SubTitleStream subTitleFile in this.SubTitleFiles)
+            foreach (SubTitleStream subTitleStream in this.SubTitleStreams)
             {
-                subTitleFile.WriteToLibrary();
-            }
-        }
-
-        /// <summary>
-        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleStream (multiple one will be overwritten due to the same filename)
-        /// <remarks>creates new List with just one SubTitleStream and sets this</remarks>
-        /// </summary>
-        private void CreateFinalSubTitleFile()
-        {
-            // check, if transformation is necessary (more than one SubTitleStream)
-            int numberOfSubTitleFiles = 0;
-
-            if (this.SubTitleFiles != null)
-            {
-                numberOfSubTitleFiles = this.SubTitleFiles.Count;
-            }
-
-            // create new SubTitleStream
-            if (numberOfSubTitleFiles > 1)
-            {
-                SubTitleStream firstSubTitleFile = this.SubTitleFiles[0];
-                SubTitleStream extendedSubTitleFile = (SubTitleStream)firstSubTitleFile.Clone();
-
-                for (int i = 1; i < this.SubTitleFiles.Count; i++)
-                {
-                    extendedSubTitleFile = ((SubTitleStream)this.SubTitleFiles[i]).CreateFinalSubTitleFile(extendedSubTitleFile);
-                }
-
-                // reset SubTitleFiles with one new File
-                this.SubTitleFiles = new List<SubTitleStream>
-                {
-                    extendedSubTitleFile
-                };
+                subTitleStream.WriteToLibrary();
             }
         }
 

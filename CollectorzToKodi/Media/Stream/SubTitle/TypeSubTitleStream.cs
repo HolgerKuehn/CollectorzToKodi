@@ -1,4 +1,4 @@
-﻿// <copyright file="SubTitle.cs" company="Holger Kühn">
+﻿// <copyright file="TypeSubTitleStream.cs" company="Holger Kühn">
 // Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
@@ -60,6 +60,14 @@ namespace CollectorzToKodi
             }
         }
 
+        /// <summary>
+        /// Gets or sets list of destination file of SubTitle
+        /// </summary>
+        public SubTitleFile DestinationSubTitleFile
+        {
+            get { return this.destinationSubTitleFile; }
+            set { this.destinationSubTitleFile = value; }
+        }
         #endregion
         #region Functions
         #endregion

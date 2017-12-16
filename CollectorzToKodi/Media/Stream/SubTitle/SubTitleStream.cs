@@ -1,10 +1,9 @@
-﻿// <copyright file="SubTitle.cs" company="Holger Kühn">
+﻿// <copyright file="SubTitleStream.cs" company="Holger Kühn">
 // Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
 namespace CollectorzToKodi
 {
-    using System.Collections.Generic;
     using System.IO;
     using System.Xml;
 
@@ -48,17 +47,18 @@ namespace CollectorzToKodi
         #endregion
         #region Functions
 
-        /// <summary>
-        /// clones SubTitle
-        /// </summary>
-        /// <returns>new instance of CSubTitle</returns>
-        public virtual SubTitleStream Clone()
+        /// <inheritdoc/>>
+        public override MediaStream Clone()
         {
-            SubTitleStream subTitleClone = new SubTitleStream(this.Configuration);
-            subTitleClone.Language = this.Language;
-            subTitleClone.Media = this.Media;
+            SubTitleStream subTitleStreamClone = new SubTitleStream(this.Configuration);
 
-            return (SubTitleStream)subTitleClone;
+            // MediaStream
+            subTitleStreamClone.Media = this.Media;
+
+            // SubTitleStream
+            subTitleStreamClone.Language = this.Language;
+
+            return (SubTitleStream)subTitleStreamClone;
         }
 
         /// <inheritdoc/>

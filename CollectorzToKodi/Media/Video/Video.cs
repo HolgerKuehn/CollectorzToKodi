@@ -421,10 +421,11 @@ namespace CollectorzToKodi
             // Read SubTitleStreamData
             foreach (XmlNode xMLSubTitle in xMLMedia.XMLReadSubnode("subtitles").XMLReadSubnodes("subtitle"))
             {
-                SubTitleStream subTitle = new SubTitleStream(this.Configuration);
-                subTitle.Video = this;
-
                 string displayname = xMLSubTitle.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+
+                SubTitleStream subTitle = new SubTitleStream(this.Configuration);
+                subTitle.Media = this;
+
                 subTitle.Language = displayname;
 
                 this.SubTitles.Add(subTitle);

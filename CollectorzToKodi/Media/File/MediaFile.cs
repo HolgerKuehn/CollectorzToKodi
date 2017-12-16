@@ -4,6 +4,8 @@
 
 namespace CollectorzToKodi
 {
+    using System.Xml;
+
     /// <summary>
     /// base type for media files, e.g. images, videos, etc.
     /// </summary>
@@ -137,6 +139,12 @@ namespace CollectorzToKodi
         /// </summary>
         /// <returns>new instance of MediaFile</returns>
         public abstract MediaFile Clone();
+
+        /// <summary>
+        /// Reads XML-files into media collection
+        /// </summary>
+        /// <param name="xMLMedia">part of XML export representing Movie, Series, Episode or Music</param>
+        public abstract void ReadFromXml(XmlNode xMLMedia);
 
         /// <summary>
         /// delete from Library

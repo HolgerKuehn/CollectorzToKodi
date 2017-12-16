@@ -5,6 +5,7 @@
 namespace CollectorzToKodi
 {
     using System.IO;
+    using System.Xml;
 
     /// <summary>
     /// Class managing Subtitles
@@ -37,7 +38,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets SubTitle containing this SubTitleFile
         /// </summary>
-        public SubTitleStream SubTitle
+        public SubTitleStream SubTitleStream
         {
             get { return this.subTitleStream; }
             set { this.subTitleStream = value; }
@@ -50,14 +51,23 @@ namespace CollectorzToKodi
         public override MediaFile Clone()
         {
             SubTitleFile subTitleFileClone = new SubTitleFile(this.Configuration);
+
+            // MediaFile
             subTitleFileClone.Description = this.Description;
-            subTitleFileClone.Server.Filename = this.Server.Filename;
-            subTitleFileClone.Server = this.Server;
+            subTitleFileClone.MediaFilePath = this.MediaFilePath.Clone();
             subTitleFileClone.Media = this.Media;
-            subTitleFileClone.SubTitle = this.SubTitle;
+            subTitleFileClone.Server = this.Server.Clone();
             subTitleFileClone.FileIndex = this.FileIndex;
 
+            // subTitleFile
+            subTitleFileClone.subTitleStream = this.subTitleStream;
+
             return (SubTitleFile)subTitleFileClone;
+        }
+
+        /// <inheritdoc/>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
         }
 
         /// <inheritdoc/>
@@ -68,26 +78,14 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Media.Server[0].Number].StreamWriter;
 
             // copy SubTitleFile to destination, as it's converted during Export (Offset-times, etc.)
             // valid for all types of SubTitles
-            if (this.Server.Filename != string.Empty)
+            if (this.MediaFilePath.DevicePathForPublication != string.Empty)
             {
-                bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + "\" \"" + this.Server.Filename + "\"");
+                bfStreamWriter.WriteLine("/bin/cp \"" + this.MediaFilePath.DevicePathForPublication + "\"" + this.MediaFilePath.Filename + "\"");
             }
-        }
-
-        /// <summary>
-        /// consolidates multiple SubTitleFiles into one, as one MediaFile can only have one SubTitleFile (multiple one will be overwritten due to the same filename)
-        /// <remarks>creates new List with just one SubTitleFile and sets this</remarks>
-        /// </summary>
-        /// <param name="subTitleFile">subTitleFile that should be extended</param>
-        /// <returns>new subTitleFile extended by this object</returns>
-        public virtual SubTitleFile CreateFinalSubTitleFile(SubTitleFile subTitleFile)
-        {
-            // leave object unchanged for generic SubTitle
-            return subTitleFile;
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// number of server
         /// </summary>
-        private int server;
+        private int number;
 
         /// <summary>
         /// windows path to destination
@@ -43,17 +43,17 @@ namespace CollectorzToKodi
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
-        /// <param name="server">Number of Server represented by object</param>
-        public Server(Configuration configuration, int server)
+        /// <param name="number">Number of Server represented by object</param>
+        public Server(Configuration configuration, int number)
         {
             this.configuration = configuration;
             this.media = null;
-            this.server = server;
+            this.number = number;
 
-            string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][server.ToString()];
+            string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][number.ToString()];
             this.windowsPathToDestination = driveLetter + ":\\";
 
-            string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][server.ToString()];
+            string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][number.ToString()];
             this.devicePathToDestination = this.windowsPathToDestination.Replace(driveLetter.Trim() + ":", localPath);
 
             if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
@@ -84,6 +84,14 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// Gets number of Server
+        /// </summary>
+        public int Number
+        {
+            get { return this.number; }
+        }
+
+        /// <summary>
         /// Gets or sets windows path to destination
         /// </summary>
         public string WindowsPathToDestination
@@ -110,7 +118,7 @@ namespace CollectorzToKodi
         /// <returns>clone of current Server object</returns>
         public virtual Server Clone()
         {
-            Server serverClone = new Server(this.Configuration, this.server);
+            Server serverClone = new Server(this.Configuration, this.number);
             serverClone.Configuration = this.Configuration;
             serverClone.Media = this.Media;
             serverClone.WindowsPathToDestination = this.WindowsPathToDestination;

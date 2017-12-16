@@ -1,4 +1,4 @@
-﻿// <copyright file="SrtSubTitleFileEntry.cs" company="Holger Kühn">
+﻿// <copyright file="SrtSubTitleStreamEntry.cs" company="Holger Kühn">
 // Copyright (c) 2014 - 2018 Holger Kühn. All rights reserved.
 // </copyright>
 
@@ -138,10 +138,10 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Writes srtSubTitle entry to provided file
+        /// exports Library to Disk
         /// </summary>
-        /// <param name="swrSrtSubTitle">StreamWriter for new SRT subtitle file</param>
-        public void WriteSrtSubTitleStreamDataToSRT(StreamWriter swrSrtSubTitle)
+        /// <param name="swrSrtSubTitle">StreamWriter of new SrtSubTitleFile</param>
+        public void WriteToLibrary(StreamWriter swrSrtSubTitle)
         {
             TimeSpan startTime;
             TimeSpan endTime;

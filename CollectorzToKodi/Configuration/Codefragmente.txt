@@ -13,16 +13,16 @@
         /// <summary>
         /// Gets or sets subTitleFiles part of this SubTitle
         /// </summary>
-        public List<CSubTitleFile> SubTitleFiles
+        public List<CSubTitleFile> SubTitleStreams
         {
             get { return this.subTitleFiles; }
             set { this.subTitleFiles = value; }
         }
 
 
-            foreach (CSubTitleFile subTitleFiles in this.SubTitleFiles)
+            foreach (CSubTitleFile subTitleFiles in this.SubTitleStreams)
             {
-                subTitleClone.SubTitleFiles.Add((CSubTitleFile)subTitleFiles.Clone());
+                subTitleClone.SubTitleStreams.Add((CSubTitleFile)subTitleFiles.Clone());
             }
 
         /// <summary>
@@ -31,7 +31,7 @@
         /// <param name="movie">Movie, the SubTilte is referring to</param>
         public virtual void SetFilename(Movie movie)
         {
-            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            foreach (CSubTitleFile subTitleFile in this.SubTitleStreams)
             {
                 subTitleFile.SetFilename(movie);
             }
@@ -43,14 +43,14 @@
         /// <param name="series">Series, the SubTilte is referring to</param>
         public virtual void SetFilename(Series series)
         {
-            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            foreach (CSubTitleFile subTitleFile in this.SubTitleStreams)
             {
                 subTitleFile.SetFilename(series);
             }
         }
 
 		
-            foreach (CSubTitleFile subTitleFile in this.SubTitleFiles)
+            foreach (CSubTitleFile subTitleFile in this.SubTitleStreams)
             {
                 subTitleFile.WriteSubTitleStreamDataToLibrary(nfoStreamWriter);
             }
@@ -101,7 +101,7 @@
         /// checks XML-file from MovieCollector for SubTitles linked to the Video
         /// </summary>
         /// <param name="xMLMedia">XML-file from MovieCollector</param>
-        /// <returns>List of assigned SubTitleFiles</returns>
+        /// <returns>List of assigned SubTitleStreams</returns>
         public virtual List<SubTitleFile> ReadSubTitleFile(XmlNode xMLMedia)
         {
             List<SubTitleFile> lstSubTitleFile = new List<SubTitleFile>();
@@ -436,7 +436,7 @@
         //                {
         //                    videoFile.FileIndex = videoFile.FileIndex + intDisplayEpisodeOffset;
 
-        //                    foreach (SubTitleFile subTitleFile in videoFile.SubTitleFiles)
+        //                    foreach (SubTitleFile subTitleFile in videoFile.SubTitleStreams)
         //                    {
         //                        subTitleFile.FileIndex = subTitleFile.FileIndex + intDisplayEpisodeOffset;
         //                    }

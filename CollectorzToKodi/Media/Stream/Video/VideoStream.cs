@@ -36,8 +36,8 @@ namespace CollectorzToKodi
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoStream"/> class.
-        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         /// </summary>
+        /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public VideoStream(Configuration configuration)
             : base(configuration)
         {
@@ -78,6 +78,22 @@ namespace CollectorzToKodi
 
         #endregion
         #region Functions
+
+        /// <inheritdoc/>
+        public override MediaStream Clone()
+        {
+            VideoStream videoStreamClone = new VideoStream(this.Configuration);
+
+            // MediaStream
+            videoStreamClone.Media = this.Media;
+
+            // VideoStream
+            videoStreamClone.VideoCodec = this.VideoCodec;
+            videoStreamClone.VideoDefinition = this.VideoDefinition;
+            videoStreamClone.VideoAspectRatio = this.VideoAspectRatio;
+
+            return (VideoStream)videoStreamClone;
+        }
 
         /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)

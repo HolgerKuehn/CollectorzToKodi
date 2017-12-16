@@ -4,6 +4,10 @@
 
 namespace CollectorzToKodi
 {
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+
     /// <summary>
     /// Class managing images
     /// </summary>
@@ -74,8 +78,13 @@ namespace CollectorzToKodi
             // ImageFile
             imageFileClone.ImageType = this.ImageType;
             imageFileClone.Season = this.Season;
-            
+
             return (ImageFile)imageFileClone;
+        }
+
+        /// <inheritdoc/>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
         }
 
         /// <inheritdoc/>
@@ -86,6 +95,34 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+
+            if (this.MediaFilePath.Filename != string.Empty)
+            {
+                if (/* Fanart */ this.ImageType == Configuration.ImageType.CoverFront || this.ImageType == Configuration.ImageType.Backdrop ||
+                    /* Poster */ this.ImageType == Configuration.ImageType.Poster)
+                {
+                    if (/* Fanart */ this.ImageType == Configuration.ImageType.Backdrop ||
+                        /* Poster */ this.ImageType == Configuration.ImageType.Poster)
+                    {
+                        nfoStreamWriter.Write("    ");
+                    }
+
+                    nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.Filename + "/" + this.MediaFilePath.Filename + "</thumb>");
+                }
+
+                if (/* Fanart */ this.ImageType == Configuration.ImageType.SeasonCover || this.ImageType == Configuration.ImageType.SeasonBackdrop ||
+                    /* Poster */ this.ImageType == Configuration.ImageType.SeasonPoster)
+                {
+                    if (/* Fanart */ this.ImageType == Configuration.ImageType.SeasonBackdrop ||
+                        /* Poster*/ this.ImageType == Configuration.ImageType.SeasonPoster)
+                    {
+                        nfoStreamWriter.Write("    ");
+                    }
+
+                    nfoStreamWriter.WriteLine("    <thumb type=\"season\" season=\"" + this.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.Filename + "/" + (this.Season != "-1" ? "Season " + this.Media.ConvertSeason(this.Season) + "/" : string.Empty) + this.MediaFilePath.Filename + "</thumb>");
+                }
+            }
         }
 
         /// <summary>

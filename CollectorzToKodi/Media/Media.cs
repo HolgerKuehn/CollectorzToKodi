@@ -38,6 +38,11 @@ namespace CollectorzToKodi
         private string titleSort;
 
         /// <summary>
+        /// Filename of Media
+        /// </summary>
+        private string filename;
+
+        /// <summary>
         /// Original title of media
         /// </summary>
         private string titleOriginal;
@@ -163,11 +168,12 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets Filename including part of the path dependig on Media type
+        /// Gets or sets Filename including part of the path dependig on Media type
         /// </summary>
         public string Filename
         {
-            get { return System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim(); }
+            get { return this.filename; }
+            set { this.filename = value; }
         }
 
         /// <summary>
@@ -175,8 +181,17 @@ namespace CollectorzToKodi
         /// </summary>
         public virtual string Title
         {
-            get { return this.title; }
-            set { this.title = value; }
+            get
+            {
+                return this.title;
+            }
+
+            set
+            {
+                this.title = value;
+
+                this.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
+            }
         }
 
         /// <summary>
@@ -308,23 +323,21 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets path to Media
         /// </summary>
-        public virtual Server Server
+        public virtual List<Server> Server
         {
             get
             {
-                if (this.mediaFilePath == null)
+                if (this.server == null)
                 {
-                    this.mediaFilePath = new Server(this.Configuration);
+                    this.server = new List<Server>();
                 }
 
-                return this.mediaFilePath;
+                return this.server;
             }
 
             set
             {
-                this.mediaFilePath = value;
-
-               
+                this.server = value;
             }
         }
 
@@ -356,170 +369,9 @@ namespace CollectorzToKodi
         /// Reads XML-files into media collection
         /// </summary>
         /// <param name="xMLMedia">part of XML export representing Movie, Series, Episode or Music</param>
-        public abstract void ReadFromXml(XmlNode xMLMedia);
-
-        /// <summary>
-        /// delete from Library
-        /// </summary>
-        public abstract void DeleteFromLibrary();
-
-        /// <summary>
-        /// exports Library to Disk
-        /// </summary>
-        public abstract void WriteToLibrary();
-
-        /// <summary>
-        /// Clones media object completely
-        /// </summary>
-        /// <returns>new instance of media object</returns>
-        public abstract Media Clone();
-
-        /// <summary>
-        /// Clones media to specified languages
-        /// </summary>
-        /// <param name="isoCodesToBeReplaced">list target languages</param>
-        /// <param name="isoCodeForReplacemant">language used as placeholder in CollectorzToKodi programs</param>
-        public virtual void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
+        public void ReadFromXml(XmlNode xMLMedia)
         {
-            // check for target-language
-            bool episodeContainsTargetLanguage = false;
-
-            foreach (string mediaLanguage in this.MediaLanguages)
-            {
-                if (mediaLanguage == isoCodeForReplacemant)
-                {
-                    episodeContainsTargetLanguage = true;
-                }
-            }
-
-            // replace all associated languages
-            this.MediaLanguages = new List<string>
-            {
-                isoCodeForReplacemant
-            };
-
-            foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
-            {
-                this.Title = this.Title.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                this.Title = this.Title.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
-
-                this.TitleSort = this.TitleSort.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
-
-                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
-
-                this.Server.Filename = this.Server.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                this.Server.Filename = this.Server.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
-
-                foreach (MediaFile mediaFile in this.MediaFiles)
-                {
-                    if (!episodeContainsTargetLanguage)
-                    {
-                        mediaFile.Server.Filename = string.Empty;
-                    }
-
-                    mediaFile.Server.Filename = mediaFile.Server.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                    mediaFile.Server.Filename = mediaFile.Server.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
-
-                    mediaFile.Server.WindowsPath = mediaFile.Server.WindowsPath.ReplaceAll(isoCodeToBeReplaced + mediaFile.Server.Extension, isoCodeForReplacemant + mediaFile.Server.Extension);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds reference to Server, if any part of media is stored on it
-        /// </summary>
-        /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
-        public virtual void AddServer(int serverList)
-        {
-            bool addServer = true;
-            foreach (int currentServerList in this.Server)
-            {
-                if (currentServerList.Equals(serverList))
-                {
-                    addServer = false;
-                }
-            }
-
-            if (addServer)
-            {
-                this.Server.Add(serverList);
-            }
-        }
-
-        /// <summary>
-        /// Adds reference to Server, if any part of media is stored on it
-        /// </summary>
-        /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
-        public virtual void AddServer(List<int> serverList)
-        {
-            foreach (int server in serverList)
-            {
-                this.AddServer(server);
-            }
-        }
-
-        /// <summary>
-        /// Reads genre from XML-File
-        /// </summary>
-        /// <param name="xMLNode">Part of Collectors export, representing genres of media</param>
-        public void ReadGenreFromXml(XmlNode xMLNode)
-        {
-            foreach (XmlNode xMLGenre in xMLNode.XMLReadSubnode("genres").XMLReadSubnodes("genre"))
-            {
-                this.Genres.Add(xMLGenre.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
-            }
-        }
-
-        /// <summary>
-        /// Writes genres to provided NFO file
-        /// </summary>
-        public void WriteGenreToLibrary()
-        {
-            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-
-            int i = 0;
-            foreach (string genre in this.Genres)
-            {
-                nfoStreamWriter.WriteLine("    <genre" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + genre + "</genre>");
-                i++;
-            }
-        }
-
-        /// <summary>
-        /// Reads studios from XML-File
-        /// </summary>
-        /// <param name="xMLNode">Part of Collectors export, representing studios of media</param>
-        public void ReadStudioFromXml(XmlNode xMLNode)
-        {
-            foreach (XmlNode xMLStudio in xMLNode.XMLReadSubnode("studios").XMLReadSubnodes("studio"))
-            {
-                this.Studios.Add(xMLStudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
-            }
-        }
-
-        /// <summary>
-        /// Writes studios to provided NFO file
-        /// </summary>
-        public void WriteStudioToLibrary()
-        {
-            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-
-            int i = 0;
-            foreach (string studio in this.Studios)
-            {
-                nfoStreamWriter.WriteLine("    <studio" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + studio + "</studio>");
-                i++;
-            }
-        }
-
-        /// <summary>
-        /// Reads images from XML-File
-        /// </summary>
-        /// <param name="xMLNode">Part of Collectors export, representing images of media</param>
-        public virtual void ReadImagesFromXml(XmlNode xMLNode)
-        {
+            // read images
             ImageFile image = null;
             ImageFile imageFileClone = null;
             int numberOfExtraBackdrop = 0;
@@ -546,11 +398,11 @@ namespace CollectorzToKodi
             // Cover-Front-Image
             image = new ImageFile(this.Configuration);
             image.Media = this;
-            image.Server.Filename = "cover";
-            image.Server.WindowsPath = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+            image.MediaFilePath.Filename = "cover";
+            image.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
             image.ImageType = Configuration.ImageType.CoverFront;
 
-            if (image.Server.WindowsPath != string.Empty)
+            if (image.MediaFilePath.WindowsPath != string.Empty)
             {
                 image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.CoverFront][0]++;
@@ -560,11 +412,11 @@ namespace CollectorzToKodi
             // Cover-Back-Image
             image = new ImageFile(this.Configuration);
             image.Media = this;
-            image.Server.Filename = "coverback";
-            image.Server.WindowsPath = xMLNode.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
+            image.MediaFilePath.Filename = "coverback";
+            image.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("coverback").XMLReadInnerText(string.Empty);
             image.ImageType = Configuration.ImageType.CoverBack;
 
-            if (image.Server.WindowsPath != string.Empty)
+            if (image.MediaFilePath.WindowsPath != string.Empty)
             {
                 image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.CoverBack][0]++;
@@ -574,18 +426,18 @@ namespace CollectorzToKodi
             // Poster-Image
             image = new ImageFile(this.Configuration);
             image.Media = this;
-            image.Server.Filename = "poster";
-            image.Server.WindowsPath = xMLNode.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
+            image.MediaFilePath.Filename = "poster";
+            image.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("poster").XMLReadInnerText(string.Empty);
 
             /* Estuary just displays poster instead of cover; so setting this as poster when empty */
-            if (image.Server.WindowsPath == string.Empty)
+            if (image.MediaFilePath.WindowsPath == string.Empty)
             {
-                image.Server.WindowsPath = xMLNode.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
+                image.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("coverfront").XMLReadInnerText(string.Empty);
             }
 
             image.ImageType = Configuration.ImageType.Poster;
 
-            if (image.Server.WindowsPath != string.Empty)
+            if (image.MediaFilePath.WindowsPath != string.Empty)
             {
                 image.Media.Images.Add(image);
                 imagesPerSeason[(int)Configuration.ImageType.Poster][0]++;
@@ -595,11 +447,11 @@ namespace CollectorzToKodi
             // Backdrop-Image
             image = new ImageFile(this.Configuration);
             image.Media = this;
-            image.Server.Filename = "fanart";
-            image.Server.WindowsPath = xMLNode.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty);
+            image.MediaFilePath.Filename = "fanart";
+            image.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("backdropurl").XMLReadInnerText(string.Empty);
             image.ImageType = Configuration.ImageType.Backdrop;
 
-            if (image.Server.WindowsPath != string.Empty)
+            if (image.MediaFilePath.WindowsPath != string.Empty)
             {
                 // add Backdrop
                 image.Media.Images.Add(image);
@@ -610,14 +462,14 @@ namespace CollectorzToKodi
                 numberOfExtraBackdrop++;
                 imageFileClone = (ImageFile)image.Clone();
                 imageFileClone.ImageType = Configuration.ImageType.ExtraBackdrop;
-                imageFileClone.Server.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                imageFileClone.MediaFilePath.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
                 imageFileClone.Media.Images.Add(imageFileClone);
                 imagesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0]++;
                 imageFilesPerSeason[(int)Configuration.ImageType.ExtraBackdrop][0] /* Backdrop */ = imageFileClone;
             }
 
             // add images from Links section
-            foreach (XmlNode xMLImageFile in xMLNode.XMLReadSubnode("links").XMLReadSubnodes("link"))
+            foreach (XmlNode xMLImageFile in xMLMedia.XMLReadSubnode("links").XMLReadSubnodes("link"))
             {
                 if (xMLImageFile.XMLReadSubnode("urltype").XMLReadInnerText(string.Empty) == "Image")
                 {
@@ -632,7 +484,7 @@ namespace CollectorzToKodi
                     {
                         numberOfExtraBackdrop++;
                         imageFile.ImageType = Configuration.ImageType.ExtraBackdrop;
-                        imageFile.Server.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
+                        imageFile.MediaFilePath.Filename = "fanart" + ("0000" + numberOfExtraBackdrop.ToString()).Substring(numberOfExtraBackdrop.ToString().Length);
                     }
 
                     // Extra-Cover only for movies
@@ -640,37 +492,37 @@ namespace CollectorzToKodi
                     {
                         numberOfExtraCover++;
                         imageFile.ImageType = Configuration.ImageType.ExtraCover;
-                        imageFile.Server.Filename = "thumb" + ("0000" + numberOfExtraCover.ToString()).Substring(numberOfExtraCover.ToString().Length);
+                        imageFile.MediaFilePath.Filename = "thumb" + ("0000" + numberOfExtraCover.ToString()).Substring(numberOfExtraCover.ToString().Length);
                     }
                     else if (imageFile.Description.Contains("Backdrop"))
                     {
                         imageFile.ImageType = Configuration.ImageType.SeasonBackdrop;
-                        imageFile.Server.Filename = "fanart";
+                        imageFile.MediaFilePath.Filename = "fanart";
                     }
                     else if (imageFile.Description.Contains("Cover"))
                     {
                         imageFile.ImageType = Configuration.ImageType.SeasonCover;
-                        imageFile.Server.Filename = "cover";
+                        imageFile.MediaFilePath.Filename = "cover";
                     }
                     else if (imageFile.Description.Contains("Poster"))
                     {
                         imageFile.ImageType = Configuration.ImageType.SeasonPoster;
-                        imageFile.Server.Filename = "poster";
+                        imageFile.MediaFilePath.Filename = "poster";
                     }
 
                     if (imageFile.Season == "all")
                     {
                         imageFile.Season = "-1";
-                        imageFile.Server.Filename = imageFile.Server.Filename + "_all";
+                        imageFile.MediaFilePath.Filename = imageFile.MediaFilePath.Filename + "_all";
                     }
                     else if (imageFile.Season == "spe")
                     {
                         imageFile.Season = "0";
                     }
 
-                    imageFile.Server.WindowsPath = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    imageFile.MediaFilePath.WindowsPath = xMLImageFile.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
 
-                    if (imageFile.Server.WindowsPath != string.Empty)
+                    if (imageFile.MediaFilePath.WindowsPath != string.Empty)
                     {
                         imageFile.Media.Images.Add(imageFile);
                     }
@@ -747,28 +599,34 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Writes images to provided NFO file
+        /// delete from Library
         /// </summary>
-        public virtual void WriteImagesToLibrary()
+        public abstract void DeleteFromLibrary();
+
+        /// <summary>
+        /// exports Library to Disk
+        /// </summary>
+        public void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
+            // write Images to Library
             // adding images to NfoFile
             // Cover-Thumb
-            this.WriteImagesToLibrary(Configuration.ImageType.CoverFront);
-            this.WriteImagesToLibrary(Configuration.ImageType.SeasonCover);
+            this.WriteToLibrary(Configuration.ImageType.CoverFront);
+            this.WriteToLibrary(Configuration.ImageType.SeasonCover);
 
             // fan art
             nfoStreamWriter.WriteLine("    <fanart>");
-            this.WriteImagesToLibrary(Configuration.ImageType.Backdrop);
-            this.WriteImagesToLibrary(Configuration.ImageType.SeasonBackdrop);
+            this.WriteToLibrary(Configuration.ImageType.Backdrop);
+            this.WriteToLibrary(Configuration.ImageType.SeasonBackdrop);
             nfoStreamWriter.WriteLine("    </fanart>");
 
             // poster
             nfoStreamWriter.WriteLine("    <poster>");
-            this.WriteImagesToLibrary(Configuration.ImageType.Poster);
-            this.WriteImagesToLibrary(Configuration.ImageType.SeasonPoster);
+            this.WriteToLibrary(Configuration.ImageType.Poster);
+            this.WriteToLibrary(Configuration.ImageType.SeasonPoster);
             nfoStreamWriter.WriteLine("    </poster>");
 
             // adding images to BatchFile
@@ -776,7 +634,7 @@ namespace CollectorzToKodi
             {
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Server.Filename != string.Empty && !imageFile.Server.WindowsPath.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
+                if (imageFile.MediaFilePath.Filename != string.Empty && !imageFile.MediaFilePath.WindowsPath.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
                 {
                     if (!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1" && imageFile.ImageType != Configuration.ImageType.ExtraBackdrop && imageFile.ImageType != Configuration.ImageType.ExtraCover)
                     {
@@ -793,7 +651,7 @@ namespace CollectorzToKodi
                         bfStreamWriter.WriteLine("cd \"extrathumbs\"");
                     }
 
-                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.Server.DevicePathForPublication + "\" \"" + imageFile.Server.Filename + "\"");
+                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.MediaFilePath.DevicePathForPublication + "\" \"" + imageFile.MediaFilePath.DevicePathToDestination + "\"");
 
                     if ((!imageFile.Media.GetType().ToString().Contains("Movie") && imageFile.Season != string.Empty && imageFile.Season != "-1") || imageFile.ImageType == Configuration.ImageType.ExtraBackdrop || imageFile.ImageType == Configuration.ImageType.ExtraCover)
                     {
@@ -827,11 +685,158 @@ namespace CollectorzToKodi
                             filename = filename + "-fanart";
                         }
 
-                        filename = filename + imageFile.Server.Extension;
+                        filename = filename + imageFile.MediaFilePath.Extension;
 
-                        bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.Server.DevicePathForPublication + "\" \"" + filename + "\"");
+                        bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.MediaFilePath.DevicePathForPublication + "\" \"" + imageFile.MediaFilePath.DevicePathToDestination + "\"");
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clones media object completely
+        /// </summary>
+        /// <returns>new instance of media object</returns>
+        public abstract Media Clone();
+
+        /// <summary>
+        /// Clones media to specified languages
+        /// </summary>
+        /// <param name="isoCodesToBeReplaced">list target languages</param>
+        /// <param name="isoCodeForReplacemant">language used as placeholder in CollectorzToKodi programs</param>
+        public virtual void ClonePerLanguage(List<string> isoCodesToBeReplaced, string isoCodeForReplacemant)
+        {
+            // check for target-language
+            bool episodeContainsTargetLanguage = false;
+
+            foreach (string mediaLanguage in this.MediaLanguages)
+            {
+                if (mediaLanguage == isoCodeForReplacemant)
+                {
+                    episodeContainsTargetLanguage = true;
+                }
+            }
+
+            // replace all associated languages
+            this.MediaLanguages = new List<string>
+            {
+                isoCodeForReplacemant
+            };
+
+            foreach (string isoCodeToBeReplaced in isoCodesToBeReplaced)
+            {
+                this.Title = this.Title.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Title = this.Title.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
+                this.TitleSort = this.TitleSort.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.TitleSort = this.TitleSort.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
+                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.MediaGroup = this.MediaGroup.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
+                this.Filename = this.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
+                foreach (MediaFile mediaFile in this.MediaFiles)
+                {
+                    if (!episodeContainsTargetLanguage)
+                    {
+                        mediaFile.MediaFilePath.Filename = string.Empty;
+                    }
+
+                    mediaFile.MediaFilePath.Filename = mediaFile.MediaFilePath.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                    mediaFile.MediaFilePath.Filename = mediaFile.MediaFilePath.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+
+                    mediaFile.MediaFilePath.WindowsPath = mediaFile.MediaFilePath.WindowsPath.ReplaceAll(isoCodeToBeReplaced + mediaFile.MediaFilePath.Extension, isoCodeForReplacemant + mediaFile.MediaFilePath.Extension);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds reference to Server, if any part of media is stored on it
+        /// </summary>
+        /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        public virtual void AddServer(Server serverList)
+        {
+            bool addServer = true;
+
+            foreach (Server currentServerList in this.Server)
+            {
+                if (currentServerList.Number.Equals(serverList.Number))
+                {
+                    addServer = false;
+                }
+            }
+
+            if (addServer)
+            {
+                this.Server.Add(serverList);
+            }
+        }
+
+        /// <summary>
+        /// Adds reference to Server, if any part of media is stored on it
+        /// </summary>
+        /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
+        public virtual void AddServer(List<Server> serverList)
+        {
+            foreach (Server server in serverList)
+            {
+                this.AddServer(server);
+            }
+        }
+
+        /// <summary>
+        /// Reads genre from XML-File
+        /// </summary>
+        /// <param name="xMLNode">Part of Collectors export, representing genres of media</param>
+        public void ReadGenreFromXml(XmlNode xMLNode)
+        {
+            foreach (XmlNode xMLGenre in xMLNode.XMLReadSubnode("genres").XMLReadSubnodes("genre"))
+            {
+                this.Genres.Add(xMLGenre.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// Writes genres to provided NFO file
+        /// </summary>
+        public void WriteGenreToLibrary()
+        {
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+
+            int i = 0;
+            foreach (string genre in this.Genres)
+            {
+                nfoStreamWriter.WriteLine("    <genre" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + genre + "</genre>");
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Reads studios from XML-File
+        /// </summary>
+        /// <param name="xMLNode">Part of Collectors export, representing studios of media</param>
+        public void ReadStudioFromXml(XmlNode xMLNode)
+        {
+            foreach (XmlNode xMLStudio in xMLNode.XMLReadSubnode("studios").XMLReadSubnodes("studio"))
+            {
+                this.Studios.Add(xMLStudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// Writes studios to provided NFO file
+        /// </summary>
+        public void WriteStudioToLibrary()
+        {
+            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
+
+            int i = 0;
+            foreach (string studio in this.Studios)
+            {
+                nfoStreamWriter.WriteLine("    <studio" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + studio + "</studio>");
+                i++;
             }
         }
 
@@ -847,42 +852,18 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        ///  Writes images to provided NFO file, when they meet to specified image type
+        ///  Writes images to Library, when they meet to specified image type
         /// </summary>
         /// <param name="imageType">Image type, that should be added</param>
-        private void WriteImagesToLibrary(Configuration.ImageType imageType)
+        private void WriteToLibrary(Configuration.ImageType imageType)
         {
             for (int i = 0; i < this.Images.Count; i++)
             {
-                StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-
                 ImageFile imageFile = this.Images.ElementAt(i);
 
-                if (imageFile.Server.Filename != string.Empty && imageFile.ImageType == imageType)
+                if (imageFile.ImageType == imageType)
                 {
-                    if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.CoverFront || imageFile.ImageType == Configuration.ImageType.Backdrop ||
-                        /* Poster */ imageFile.ImageType == Configuration.ImageType.Poster)
-                    {
-                        if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.Backdrop ||
-                            /* Poster */ imageFile.ImageType == Configuration.ImageType.Poster)
-                        {
-                            nfoStreamWriter.Write("    ");
-                        }
-
-                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Server.Filename + "/" + imageFile.Server.Filename + "</thumb>");
-                    }
-
-                    if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonCover || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
-                        /* Poster */ imageFile.ImageType == Configuration.ImageType.SeasonPoster)
-                    {
-                        if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
-                            /* Poster*/ imageFile.ImageType == Configuration.ImageType.SeasonPoster)
-                        {
-                            nfoStreamWriter.Write("    ");
-                        }
-
-                        nfoStreamWriter.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Server.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Server.Filename + "</thumb>");
-                    }
+                    imageFile.WriteToLibrary();
                 }
             }
         }

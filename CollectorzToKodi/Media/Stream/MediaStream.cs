@@ -61,6 +61,12 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <summary>
+        /// clones MediaStream
+        /// </summary>
+        /// <returns>new instance of CSubTitle</returns>
+        public abstract MediaStream Clone();
+
+        /// <summary>
         /// Reads XML-files into media collection
         /// </summary>
         /// <param name="xMLMedia">part of XML export representing Movie, Series, Episode or Music</param>

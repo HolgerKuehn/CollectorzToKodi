@@ -127,6 +127,24 @@ namespace CollectorzToKodi
             set { this.devicePathForPublication = value; }
         }
 
+        /// <summary>
+        /// Gets or sets windows path to destination
+        /// </summary>
+        public string WindowsPathToDestination
+        {
+            get { return this.windowsPathToDestination; }
+            set { this.windowsPathToDestination = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets device path to destination
+        /// </summary>
+        public string DevicePathToDestination
+        {
+            get { return this.devicePathToDestination; }
+            set { this.devicePathToDestination = value; }
+        }
+        
         #endregion
         #region Functions
 
