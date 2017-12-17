@@ -5,6 +5,7 @@
 namespace CollectorzToKodi
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Xml;
 
     /// <summary>
@@ -80,7 +81,7 @@ namespace CollectorzToKodi
 
             // MediaFile
             videoFileClone.Description = this.Description;
-            videoFileClone.MediaFilePath = this.MediaFilePath.Clone();
+            videoFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
             videoFileClone.Media = this.Media;
             videoFileClone.Server = this.Server.Clone();
             videoFileClone.FileIndex = this.FileIndex;
@@ -93,7 +94,7 @@ namespace CollectorzToKodi
                 videoFileClone.SubTitleStreams.Add((SubTitleStream)subTitleFile.Clone());
             }
 
-            return (VideoFile)videoFileClone;
+            return videoFileClone;
         }
 
         /// <summary>
@@ -196,6 +197,14 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Media.Server[0].Number].StreamWriter;
+
+            if (this.MediaFilePath.Filename != string.Empty)
+            {
+                bfStreamWriter.WriteLine("/bin/ln -s \"" + this.MediaFilePath.DevicePathForPublication + "\" \"" + this.MediaFilePath.DeviceFilenameOnDestination + "\"");
+            }
+
+            // export Srt-Files, etc.
             foreach (SubTitleStream subTitleStream in this.SubTitleStreams)
             {
                 subTitleStream.WriteToLibrary();

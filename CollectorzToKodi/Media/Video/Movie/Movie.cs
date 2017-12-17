@@ -22,43 +22,28 @@ namespace CollectorzToKodi
         public Movie(Configuration configuration)
             : base(configuration)
         {
+            this.MediaPath.WindowsPathToDestination = this.MediaPath.WindowsPathToDestination + this.Configuration.ServerMovieDirectory + "\\";
         }
 
         #endregion
         #region Properties
 
         /// <inheritdoc/>
-        public override string Filename
+        public override string Title
         {
             get
             {
-                return base.Server.Filename;
+                return this.Title;
             }
 
             set
             {
-                base.Server.Filename = value;
+                string setTitle = value;
 
-                foreach (VideoFile videoFile in this.MediaFiles)
-                {
-                    videoFile.Server.Filename = this.Server.Filename + " part " + ("0000" + videoFile.FileIndex.ToString()).Substring(videoFile.FileIndex.ToString().Length);
-                }
-            }
-        }
+                setTitle = this.VideoStreams[0].OverrideVideoStreamData(setTitle);
+                this.CheckForDefaultMediaLanguages();
 
-        /// <inheritdoc/>
-        public override List<int> Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                this.ServerDeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + this.Configuration.ServerMovieDirectory;
+                this.Title = setTitle;
             }
         }
 
@@ -68,6 +53,8 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
+            base.ReadFromXml(xMLMedia);
+
             int k = 0;
 
             // video files from Link-List
@@ -78,11 +65,12 @@ namespace CollectorzToKodi
                     VideoFile videoFile = new VideoFile(this.Configuration);
                     k++;
 
+                    videoFile.Media = this;
                     videoFile.Description = xMLVideodatei.XMLReadSubnode("description").XMLReadInnerText(string.Empty);
                     videoFile.Description = videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
                     videoFile.FileIndex = k;
-                    videoFile.ServerDevicePathForPublication = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
-                    videoFile.Media = this;
+                    videoFile.MediaFilePath.WindowsPath = xMLVideodatei.XMLReadSubnode("url").XMLReadInnerText(string.Empty);
+                    videoFile.MediaFilePath.WindowsPathForPublication = videoFile.MediaFilePath.WindowsPath;
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -91,19 +79,20 @@ namespace CollectorzToKodi
             // video files from Discs and override MediaStreamData
             foreach (XmlNode xMLMovieDisc in xMLMedia.XMLReadSubnode("discs").XMLReadSubnodes("disc"))
             {
-                string discTitle = this.OverrideVideoStreamData(xMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(string.Empty));
+                string discTitle = this.VideoStreams[0].OverrideVideoStreamData(xMLMovieDisc.XMLReadSubnode("title").XMLReadInnerText(string.Empty));
 
                 foreach (XmlNode xMLEpisode in xMLMovieDisc.XMLReadSubnode("episodes").XMLReadSubnodes("episode"))
                 {
                     VideoFile videoFile = new VideoFile(this.Configuration);
                     k++;
 
+                    videoFile.Media = this;
                     videoFile.Description = xMLEpisode.XMLReadSubnode("title").XMLReadInnerText(string.Empty);
                     videoFile.OverrideSpecial(discTitle);
-                    videoFile.OverrideSpecial(this.OverrideVideoStreamData(videoFile.Description));
-                    videoFile.ServerDevicePathForPublication = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+                    videoFile.OverrideSpecial(this.VideoStreams[0].OverrideVideoStreamData(videoFile.Description));
+                    videoFile.MediaFilePath.WindowsPath = xMLEpisode.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+                    videoFile.MediaFilePath.WindowsPathForPublication = videoFile.MediaFilePath.WindowsPath;
                     videoFile.FileIndex = k;
-                    videoFile.Media = this;
 
                     this.MediaFiles.Add(videoFile);
                 }
@@ -112,7 +101,7 @@ namespace CollectorzToKodi
             // SubTitles
             foreach (VideoFile videoFile in this.MediaFiles)
             {
-                videoFile.ReadSubTitleFile(xMLMedia);
+                videoFile.ReadFromXml(xMLMedia);
             }
     }
 
@@ -219,16 +208,19 @@ namespace CollectorzToKodi
                 movieClone.MediaFiles.Add((VideoFile)videoFile.Clone());
             }
 
-            movieClone.Server.Filename = this.Server.Filename;
+            movieClone.MediaPath.Filename = this.MediaPath.Filename;
             movieClone.Server = this.Server;
-            movieClone.VideoCodec = this.VideoCodec;
-            movieClone.VideoDefinition = this.VideoDefinition;
-            movieClone.VideoAspectRatio = this.VideoAspectRatio;
+
+            foreach (VideoStream videoStream in this.VideoStreams)
+            {
+                movieClone.VideoStreams.Add((VideoStream)videoStream.Clone());
+            }
+
             movieClone.AudioStreams = this.AudioStreams;
             movieClone.SubTitles = this.SubTitles;
             movieClone.MediaLanguages = this.MediaLanguages;
 
-            return (Movie)movieClone;
+            return movieClone;
         }
 
         /// <inheritdoc/>
@@ -295,26 +287,28 @@ namespace CollectorzToKodi
                     }
                 }
 
-                movieClone.Server.Filename = this.Server.Filename;
+                movieClone.MediaPath = this.MediaPath.Clone();
                 movieClone.AddServer(server);
-                movieClone.VideoCodec = this.VideoCodec;
-                movieClone.VideoDefinition = this.VideoDefinition;
-                movieClone.VideoAspectRatio = this.VideoAspectRatio;
-                movieClone.AudioStreams = this.AudioStreams;
-                movieClone.SubTitles = this.SubTitles;
+
+                foreach (VideoStream videoStream in this.VideoStreams)
+                {
+                    movieClone.VideoStreams.Add((VideoStream)videoStream.Clone());
+                }
+
+                foreach (AudioStream audioStream in this.AudioStreams)
+                {
+                    movieClone.AudioStreams.Add((AudioStream)audioStream.Clone());
+                }
+
+                foreach (SubTitleStream subtTitleStream in this.SubTitles)
+                {
+                    movieClone.SubTitles.Add((SubTitleStream)subtTitleStream.Clone());
+                }
+
                 movieClone.MediaLanguages = this.MediaLanguages;
             }
 
             return movieClone;
-        }
-
-        /// <inheritdoc/>
-        public override string OverrideVideoStreamData(string title)
-        {
-            string returnTitle = base.OverrideVideoStreamData(title);
-            this.CheckForDefaultMediaLanguages();
-
-            return returnTitle;
         }
 
         /// <inheritdoc/>

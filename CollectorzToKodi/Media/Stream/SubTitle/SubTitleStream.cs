@@ -58,7 +58,7 @@ namespace CollectorzToKodi
             // SubTitleStream
             subTitleStreamClone.Language = this.Language;
 
-            return (SubTitleStream)subTitleStreamClone;
+            return subTitleStreamClone;
         }
 
         /// <inheritdoc/>

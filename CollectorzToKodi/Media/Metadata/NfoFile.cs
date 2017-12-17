@@ -62,7 +62,7 @@ namespace CollectorzToKodi
             nfoFileClone.Server = this.Server;
             nfoFileClone.Server.Filename = this.Server.Filename;
 
-            return (NfoFile)nfoFileClone;
+            return nfoFileClone;
         }
 
         /// <inheritdoc/>

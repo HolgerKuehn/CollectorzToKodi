@@ -55,16 +55,14 @@ namespace CollectorzToKodi
         {
             ShFile shFileClone = new ShFile(this.Configuration);
             shFileClone.Description = this.Description;
-            shFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
-            shFileClone.Extension = this.Extension;
             shFileClone.FileIndex = this.FileIndex;
             shFileClone.StreamWriter = null;
 
             shFileClone.Media = this.Media;
             shFileClone.Server = this.Server;
-            shFileClone.Server.Filename = this.Server.Filename;
+            shFileClone.Filename = this.Filename;
 
-            return (ShFile)shFileClone;
+            return shFileClone;
         }
 
         /// <inheritdoc/>

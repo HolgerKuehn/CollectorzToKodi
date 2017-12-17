@@ -79,9 +79,25 @@ namespace CollectorzToKodi
         #region Functions
 
         /// <inheritdoc/>
+        public override MediaStream Clone()
+        {
+            AudioStream audioStreamClone = new AudioStream(this.Configuration);
+
+            // MediaStream
+            audioStreamClone.Media = this.Media;
+
+            // AudioStream
+            audioStreamClone.Codec = this.Codec;
+            audioStreamClone.Language = this.Language;
+            audioStreamClone.NumberOfChannels = this.NumberOfChannels;
+
+            return audioStreamClone;
+        }
+
+        /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
-            string displayname = xMLAudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
+            string displayname = xMLMedia.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty);
 
             this.Codec = "AC3";
             this.Language = displayname.RightOf("[").LeftOf("]");
@@ -100,6 +116,13 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+
+            nfoStreamWriter.WriteLine("            <audio>");
+            nfoStreamWriter.WriteLine("                <codec>" + this.Codec + "</codec>");
+            nfoStreamWriter.WriteLine("                <language>" + this.Language + "</language>");
+            nfoStreamWriter.WriteLine("                <channels>" + this.NumberOfChannels + "</channels>");
+            nfoStreamWriter.WriteLine("            </audio>");
         }
 
         #endregion

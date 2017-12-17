@@ -54,7 +54,7 @@ namespace CollectorzToKodi
 
             // MediaFile
             subTitleFileClone.Description = this.Description;
-            subTitleFileClone.MediaFilePath = this.MediaFilePath.Clone();
+            subTitleFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
             subTitleFileClone.Media = this.Media;
             subTitleFileClone.Server = this.Server.Clone();
             subTitleFileClone.FileIndex = this.FileIndex;
@@ -62,7 +62,7 @@ namespace CollectorzToKodi
             // subTitleFile
             subTitleFileClone.subTitleStream = this.subTitleStream;
 
-            return (SubTitleFile)subTitleFileClone;
+            return subTitleFileClone;
         }
 
         /// <inheritdoc/>

@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Media\File\MediaFilePath.cs" />
+    <Compile Include="Media\MediaPath.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />
@@ -69,12 +70,12 @@
     <Compile Include="Media\File\SubTitle\SubTitleFile.cs" />
     <Compile Include="Media\Stream\SubTitle\TypeSubTitleStream.cs" />
     <Compile Include="Media\Stream\Video\VideoStream.cs" />
-    <Compile Include="Media\Video\Actor.cs" />
+    <Compile Include="Media\Person\Video\Actor.cs" />
     <Compile Include="Media\Stream\Audio\AudioStream.cs" />
     <Compile Include="Configuration\BaseClassExtention.cs" />
-    <Compile Include="Media\Video\Director.cs" />
+    <Compile Include="Media\Person\Video\Director.cs" />
     <Compile Include="Media\Metadata\NfoFile.cs" />
-    <Compile Include="Media\Video\Series\SeriesActor.cs" />
+    <Compile Include="Media\Person\Video\SeriesActor.cs" />
     <Compile Include="Media\File\Image\ImageFile.cs" />
     <Compile Include="Media\Video\Episode\Episode.cs" />
     <Compile Include="Media\Media.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Media\File\MediaFile.cs" />
     <Compile Include="Media\Video\Video.cs" />
     <Compile Include="Media\File\Video\VideoFile.cs" />
-    <Compile Include="Media\Person.cs" />
+    <Compile Include="Media\Person\Person.cs" />
     <Compile Include="Media\MediaCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,7 +106,7 @@
       <DependentUpon>SettingsMovieCollector.settings</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Media\Video\Writer.cs" />
+    <Compile Include="Media\Person\Video\Writer.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>

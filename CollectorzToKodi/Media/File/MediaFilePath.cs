@@ -7,19 +7,9 @@ namespace CollectorzToKodi
     /// <summary>
     /// provides information about storage paths on Windows running Collectorz and the hardwareplattform storing the media
     /// </summary>
-    public class MediaFilePath
+    public class MediaFilePath : MediaPath
     {
         #region Attributes
-
-        /// <summary>
-        /// current configuration of CollectorzToKodi
-        /// </summary>
-        private Configuration configuration;
-
-        /// <summary>
-        /// name of media file
-        /// </summary>
-        private string filename;
 
         /// <summary>
         /// extension for original file
@@ -51,6 +41,16 @@ namespace CollectorzToKodi
         /// </summary>
         private string devicePathToDestination;
 
+        /// <summary>
+        /// device filename on destination
+        /// </summary>
+        private string deviceFilenameOnDestination;
+
+        /// <summary>
+        /// device path in UMC notation for NFO Files
+        /// </summary>
+        private string deviceUmcPathToDestination;
+
         #endregion
         #region Constructor
 
@@ -59,37 +59,19 @@ namespace CollectorzToKodi
         /// </summary>
         /// <param name="configuration">current configuration for CollectorzToKodi programs and Kodi</param>
         public MediaFilePath(Configuration configuration)
+            : base(configuration)
         {
-            this.configuration = configuration;
-            this.filename = string.Empty;
             this.extension = string.Empty;
             this.windowsPath = string.Empty;
             this.windowsPathForPublication = string.Empty;
             this.devicePathForPublication = string.Empty;
             this.windowsPathToDestination = string.Empty;
             this.devicePathToDestination = string.Empty;
+            this.deviceFilenameOnDestination = string.Empty;
         }
 
         #endregion
         #region Properties
-
-        /// <summary>
-        /// Gets or sets current configuration of CollectorzToKodi
-        /// </summary>
-        public Configuration Configuration
-        {
-            get { return this.configuration; }
-            set { this.configuration = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets name of Media
-        /// </summary>
-        public string Filename
-        {
-            get { return this.extension; }
-            set { this.extension = value; }
-        }
 
         /// <summary>
         /// Gets or sets extension for original file
@@ -127,24 +109,6 @@ namespace CollectorzToKodi
             set { this.devicePathForPublication = value; }
         }
 
-        /// <summary>
-        /// Gets or sets windows path to destination
-        /// </summary>
-        public string WindowsPathToDestination
-        {
-            get { return this.windowsPathToDestination; }
-            set { this.windowsPathToDestination = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets device path to destination
-        /// </summary>
-        public string DevicePathToDestination
-        {
-            get { return this.devicePathToDestination; }
-            set { this.devicePathToDestination = value; }
-        }
-        
         #endregion
         #region Functions
 
@@ -152,7 +116,7 @@ namespace CollectorzToKodi
         /// clones MediaFilePath object
         /// </summary>
         /// <returns>clone of current MediaFilePath object</returns>
-        public MediaFilePath Clone()
+        public override MediaPath Clone()
         {
             MediaFilePath mediaFilePathClone = new MediaFilePath(this.Configuration);
             mediaFilePathClone.Filename = this.Filename;
@@ -162,6 +126,8 @@ namespace CollectorzToKodi
             mediaFilePathClone.devicePathForPublication = this.devicePathForPublication;
             mediaFilePathClone.windowsPathToDestination = this.windowsPathToDestination;
             mediaFilePathClone.devicePathToDestination = this.devicePathToDestination;
+            mediaFilePathClone.deviceFilenameOnDestination = this.deviceFilenameOnDestination;
+            mediaFilePathClone.deviceUmcPathToDestination = this.deviceUmcPathToDestination;
 
             return mediaFilePathClone;
         }

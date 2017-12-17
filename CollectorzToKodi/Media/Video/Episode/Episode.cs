@@ -66,52 +66,12 @@ namespace CollectorzToKodi
             this.displayEpisode = string.Empty;
             this.series = null;
             this.isSpecial = false;
+
+            this.MediaPath.WindowsPathToDestination = this.MediaPath.WindowsPathToDestination + this.Configuration.ServerSeriesDirectory + "\\" + this.Series.MediaPath.Filename + "\\";
         }
 
         #endregion
         #region Properties
-
-        /// <inheritdoc/>
-        public override Server Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                base.Server.Filename = this.Series.Server.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
-
-                foreach (VideoFile videoFile in this.MediaFiles)
-                {
-                    videoFile.Server.Filename = this.Server.Filename;
-                }
-
-                foreach (ImageFile imageFile in this.Images)
-                {
-                    imageFile.Server.Filename = this.Server.Filename + "-thumb";
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override List<int> Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                this.ServerDeviceDestinationPath = this.Series.ServerDeviceDestinationPath + "Season " + this.ConvertSeason(this.actualSeason) + (this.Configuration.ServerMappingType == "UNIX" ? "/" : "\\");
-            }
-        }
 
         /// <summary>
         /// Gets or sets number of season the episode is placed
@@ -138,8 +98,16 @@ namespace CollectorzToKodi
         /// </summary>
         public string ActualEpisode
         {
-            get { return this.actualEpisode; }
-            set { this.actualEpisode = value; }
+            get
+            {
+                return this.actualEpisode;
+            }
+
+            set
+            {
+                this.actualEpisode = value;
+                this.MediaPath.Filename = this.Series.MediaPath.Filename + " S" + ("0000" + this.actualSeason).Substring(this.actualSeason.Length) + " E" + ("0000" + this.actualEpisode.ToString()).Substring(this.actualEpisode.ToString().Length);
+            }
         }
 
         /// <summary>
@@ -175,15 +143,26 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
+            // VideoFile
             VideoFile videoFile = new VideoFile(this.Configuration);
-
             videoFile.IsSpecial = this.IsSpecial;
             videoFile.Description = "EpisodeVideoFile";
-            videoFile.ServerDevicePathForPublication = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+            videoFile.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("movielink").XMLReadInnerText(string.Empty);
+            videoFile.MediaFilePath.WindowsPathForPublication = videoFile.MediaFilePath.WindowsPath;
             videoFile.Media = this;
             videoFile.FileIndex = this.VideoIndex;
-
             this.MediaFiles.Add(videoFile);
+
+            // ImageFile
+            ImageFile imageFile;
+            imageFile = new ImageFile(this.Configuration);
+            imageFile.Media = this;
+            imageFile.Season = this.ActualSeason;
+            imageFile.MediaFilePath.Filename = this.MediaPath.Filename;
+            imageFile.MediaFilePath.WindowsPath = xMLMedia.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
+            imageFile.MediaFilePath.WindowsPathForPublication = imageFile.MediaFilePath.WindowsPath;
+            imageFile.ImageType = Configuration.ImageType.EpisodeCover;
+            imageFile.Media.Images.Add(imageFile);
         }
 
         /// <inheritdoc/>
@@ -219,8 +198,14 @@ namespace CollectorzToKodi
             this.WriteStudioToLibrary();
             this.WriteCrewToLibrary();
             this.WriteCastToLibrary();
-            this.WriteStreamDataToLibraryToLibrary();
-            this.WriteImagesToLibrary();
+
+            // <fileinfo>
+            base.WriteToLibrary();
+
+            foreach (ImageFile imageFile in this.Images)
+            {
+                imageFile.WriteToLibrary();
+            }
 
             nfoStreamWriter.WriteLine("</episodedetails>");
 
@@ -228,12 +213,13 @@ namespace CollectorzToKodi
             if (this.Title != string.Empty)
             {
                 bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Server.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
-
                 bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" \"" + this.Server.Filename + ".nfo\"");
 
                 // video files
-                this.WriteVideoFilesToLibrary();
-                this.WriteImagesToLibrary();
+                foreach (VideoFile videoFile in this.MediaFiles)
+                {
+                    videoFile.WriteToLibrary();
+                }
 
                 bfStreamWriter.WriteLine("cd /share/XBMC/Serien/");
             }
@@ -272,11 +258,14 @@ namespace CollectorzToKodi
                 episodeClone.MediaFiles.Add((VideoFile)mediaFile.Clone());
             }
 
-            episodeClone.Server.Filename = this.Server.Filename;
+            episodeClone.MediaPath = this.MediaPath.Clone();
             episodeClone.Server = this.Server;
-            episodeClone.VideoCodec = this.VideoCodec;
-            episodeClone.VideoDefinition = this.VideoDefinition;
-            episodeClone.VideoAspectRatio = this.VideoAspectRatio;
+
+            foreach (VideoStream videoStream in this.VideoStreams)
+            {
+                episodeClone.VideoStreams.Add((VideoStream)videoStream.Clone());
+            }
+
             episodeClone.AudioStreams = this.AudioStreams;
             episodeClone.SubTitles = this.SubTitles;
             episodeClone.MediaLanguages = this.MediaLanguages;
@@ -288,7 +277,7 @@ namespace CollectorzToKodi
             episodeClone.IsSpecial = this.IsSpecial;
             episodeClone.Series = this.Series;
 
-            return (Episode)episodeClone;
+            return episodeClone;
         }
 
         /// <inheritdoc/>
@@ -310,8 +299,12 @@ namespace CollectorzToKodi
         {
             // clone only relevant Attributes
             this.MPAA = series.MPAA;
-            this.VideoDefinition = series.VideoDefinition;
-            this.VideoAspectRatio = series.VideoAspectRatio;
+
+            foreach (VideoStream videoStream in series.VideoStreams)
+            {
+                this.VideoStreams.Add((VideoStream)videoStream.Clone());
+            }
+
             this.Rating = series.Rating;
         }
 
@@ -333,9 +326,12 @@ namespace CollectorzToKodi
         {
             // clone only relevant Attributes
             this.MPAA = episode.MPAA;
-            this.VideoCodec = episode.VideoCodec;
-            this.VideoDefinition = episode.VideoDefinition;
-            this.VideoAspectRatio = episode.VideoAspectRatio;
+
+            foreach (VideoStream videoStream in this.VideoStreams)
+            {
+                this.VideoStreams.Add((VideoStream)videoStream.Clone());
+            }
+
             this.Rating = episode.Rating;
 
             this.IsSpecial = episode.IsSpecial;
@@ -401,61 +397,6 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void ReadImagesFromXml(XmlNode xMLNode)
-        {
-            ImageFile image;
-
-            // Image
-            image = new ImageFile(this.Configuration);
-            image.Media = this;
-            image.Season = this.ActualSeason;
-            image.Server.Filename = this.Server.Filename;
-            image.ServerDevicePathForPublication = xMLNode.XMLReadSubnode("largeimage").XMLReadInnerText(string.Empty);
-            image.ImageType = Configuration.ImageType.EpisodeCover;
-
-            if (image.ServerDevicePathForPublication != string.Empty)
-            {
-                image.Media.Images.Add(image);
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void WriteImagesToLibrary()
-        {
-            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
-
-            // write to NFO-File
-            for (int i = 0; i < this.Images.Count; i++)
-            {
-                ImageFile imageFile = this.Images.ElementAt(i);
-
-                if (imageFile.Server.Filename != string.Empty && imageFile.ImageType == Configuration.ImageType.EpisodeCover)
-                {
-                    if (!imageFile.ServerDevicePathForPublication.Contains("http://"))
-                    {
-                        nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Server.Filename + "/Season " + imageFile.Season + "/" + imageFile.Server.Filename + "</thumb>");
-                    }
-                    else
-                    {
-                        nfoStreamWriter.WriteLine("    <thumb>" + imageFile.ServerDevicePathForPublication + "</thumb>");
-                    }
-                }
-            }
-
-            // write to BatchFile
-            for (int i = 0; i < this.Images.Count; i++)
-            {
-                ImageFile imageFile = this.Images.ElementAt(i);
-
-                if (imageFile.Server.Filename != string.Empty && !imageFile.ServerDevicePathForPublication.Contains("http://") && imageFile.ImageType != Configuration.ImageType.Unknown)
-                {
-                    bfStreamWriter.WriteLine("/bin/cp \"" + imageFile.DevicePathForPublication + "\" \"" + imageFile.Server.Filename + "\"");
-                }
-            }
-        }
-
-        /// <inheritdoc/>
         public override string OverrideVideoStreamData(string title)
         {
             string returnTitle = base.OverrideVideoStreamData(title);
@@ -472,7 +413,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void AddServer(int serverList)
+        public override void AddServer(Server serverList)
         {
             base.AddServer(serverList);
             this.Series.AddServer(serverList);

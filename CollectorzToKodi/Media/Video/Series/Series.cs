@@ -57,47 +57,12 @@ namespace CollectorzToKodi
             this.numberOfEpisodesPerSeason = new List<int>();
             this.numberOfEpisodesPerSeason.Add(0); // Specials
             this.numberOfEpisodesPerSeason.Add(0); // Season 1
+
+            this.MediaPath.WindowsPathToDestination = this.MediaPath.WindowsPathToDestination + this.Configuration.ServerSeriesDirectory + "\\";
         }
 
         #endregion
         #region Properties
-
-        /// <inheritdoc/>
-        public override Server Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                base.Server.WindowsPathToDestination = base.Server.WindowsPathToDestination + "\\" + this.Configuration.ServerSeriesDirectory + "\\" + this.Server.Filename;
-
-                foreach (Episode episode in this.Episodes)
-                {
-                    episode.Server = this.Server;
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override List<int> Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-
-                this.ServerDeviceDestinationPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + this.Configuration.ServerSeriesDirectory;
-            }
-        }
 
         /// <summary>
         /// Gets or sets list of episodes in this series
@@ -156,12 +121,14 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
+            base.ReadFromXml(xMLMedia);
+
             // read SubTitles for each Episode
             foreach (Episode episode in this.Episodes)
             {
                 foreach (VideoFile videoFileSubtitle in episode.MediaFiles)
                 {
-                    videoFileSubtitle.ReadSubTitleFile(xMLMedia);
+                    videoFileSubtitle.ReadFromXml(xMLMedia);
                 }
             }
         }
@@ -278,9 +245,12 @@ namespace CollectorzToKodi
 
             seriesClone.Server.Filename = this.Server.Filename;
             seriesClone.Server = this.Server;
-            seriesClone.VideoCodec = this.VideoCodec;
-            seriesClone.VideoDefinition = this.VideoDefinition;
-            seriesClone.VideoAspectRatio = this.VideoAspectRatio;
+
+            foreach (VideoStream videoStream in this.VideoStreams)
+            {
+                seriesClone.VideoStreams.Add((VideoStream)videoStream.Clone());
+            }
+
             seriesClone.AudioStreams = this.AudioStreams;
             seriesClone.SubTitles = this.SubTitles;
             seriesClone.MediaLanguages = this.MediaLanguages;
@@ -299,7 +269,7 @@ namespace CollectorzToKodi
             seriesClone.NumberOfSpecials = this.NumberOfSpecials;
             seriesClone.NumberOfEpisodesPerSeason = this.NumberOfEpisodesPerSeason;
 
-            return (Series)seriesClone;
+            return seriesClone;
         }
 
         /// <inheritdoc/>

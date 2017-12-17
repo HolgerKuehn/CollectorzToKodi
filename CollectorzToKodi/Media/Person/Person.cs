@@ -126,13 +126,13 @@ namespace CollectorzToKodi
         public virtual void WritePersonToLibrary(bool isFirst = false)
         {
             StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Media.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Media.Server[0].Number].StreamWriter;
 
             nfoStreamWriter.WriteLine("        <name>" + this.Name + "</name>");
 
-            if (this.ServerDevicePathForPublication.StartsWith("http"))
+            if (this.URL.StartsWith("http"))
             {
-                nfoStreamWriter.WriteLine("        <url>" + this.ServerDevicePathForPublication + "</url>");
+                nfoStreamWriter.WriteLine("        <url>" + this.URL + "</url>");
             }
 
             if (this.Thumb.StartsWith("http"))

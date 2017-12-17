@@ -92,7 +92,7 @@ namespace CollectorzToKodi
             videoStreamClone.VideoDefinition = this.VideoDefinition;
             videoStreamClone.VideoAspectRatio = this.VideoAspectRatio;
 
-            return (VideoStream)videoStreamClone;
+            return videoStreamClone;
         }
 
         /// <inheritdoc/>
@@ -141,6 +141,181 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void WriteToLibrary()
         {
+            StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+
+            // add VideoStreamData to nfo File
+            nfoStreamWriter.WriteLine("            <video>");
+
+            // VideoCodec
+            if (this.VideoCodec.Equals(Configuration.VideoCodec.TV))
+            {
+                nfoStreamWriter.WriteLine("                <codec>tv</codec>");
+            }
+            else if (this.VideoCodec.Equals(Configuration.VideoCodec.BluRay))
+            {
+                nfoStreamWriter.WriteLine("                <codec>bluray</codec>");
+            }
+            else if (this.VideoCodec.Equals(Configuration.VideoCodec.H264))
+            {
+                nfoStreamWriter.WriteLine("                <codec>h264</codec>");
+            }
+            else if (this.VideoCodec.Equals(Configuration.VideoCodec.H265))
+            {
+                nfoStreamWriter.WriteLine("                <codec>hevc</codec>");
+            }
+
+            // AspectRatio
+            if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio43))
+            {
+                nfoStreamWriter.WriteLine("                <aspect>1.33</aspect>");
+            }
+            else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio169))
+            {
+                nfoStreamWriter.WriteLine("                <aspect>1.78</aspect>");
+            }
+            else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio219))
+            {
+                nfoStreamWriter.WriteLine("                <aspect>2.33</aspect>");
+            }
+
+            // VideoDefinition
+            if (this.VideoDefinition.Equals(Configuration.VideoDefinition.SD))
+            {
+                nfoStreamWriter.WriteLine("                <width>768</width>");
+                nfoStreamWriter.WriteLine("                <height>576</height>");
+            }
+            else if (this.VideoDefinition.Equals(Configuration.VideoDefinition.HD))
+            {
+                nfoStreamWriter.WriteLine("                <width>1920</width>");
+                nfoStreamWriter.WriteLine("                <height>1080</height>");
+            }
+
+            nfoStreamWriter.WriteLine("            </video>");
+        }
+
+        /// <summary>
+        /// Overrides specific stream data from XML-file, thats stored in titles
+        /// </summary>
+        /// <param name="title">String containing additional information for stream data</param>
+        /// <returns>cleared string without special tags representing additional information for stream data</returns>
+        /// <remarks>
+        /// available modifiers are:<br />
+        /// (TV) - represents video as recording from TV program<br />
+        /// (BluRay) - represents video as part of BluRay<br />
+        /// (H264) - represents video using the H264 codec<br />
+        /// (H265) - represents video using the H265 codec<br />
+        /// (SD) - represents video with SD resolution<br />
+        /// (HD) - represents video with HD resolution<br />
+        /// (4:3) - represents video as Full frame<br />
+        /// (16:9) - represents video as Widescreen<br />
+        /// (21:9) - represents video as Theatrical Widescreen<br />
+        /// (F###) - represent different MPAA Rating<br />
+        /// (R###) - represent different Rating<br />
+        /// (L## ##) - represents languages (2 digit ISO code) that are stored in different files for this video
+        /// </remarks>
+        public virtual string OverrideVideoStreamData(string title)
+        {
+            if (title.Contains("(TV)"))
+            {
+                if (this.Configuration.KodiSkin == "Transparency!")
+                {
+                    this.VideoCodec = Configuration.VideoCodec.H264; // BluRay Standard-Codec
+                }
+
+                if (this.Configuration.KodiSkin != "Transparency!")
+                {
+                    this.VideoCodec = Configuration.VideoCodec.TV;
+                }
+
+                title = title.Replace("(TV)", string.Empty);
+            }
+
+            if (title.Contains("(BluRay)"))
+            {
+                if (this.Configuration.KodiSkin == "Transparency!")
+                {
+                    this.VideoCodec = Configuration.VideoCodec.H264; // BluRay Standard-Codec
+                }
+
+                if (this.Configuration.KodiSkin != "Transparency!")
+                {
+                    this.VideoCodec = Configuration.VideoCodec.BluRay;
+                }
+
+                title = title.Replace("(BluRay)", string.Empty);
+            }
+
+            if (title.Contains("(H264)"))
+            {
+                this.VideoCodec = Configuration.VideoCodec.H264;
+            }
+
+            title = title.Replace("(H264)", string.Empty);
+
+            if (title.Contains("(H265)"))
+            {
+                this.VideoCodec = Configuration.VideoCodec.H265;
+                title = title.Replace("(H265)", string.Empty);
+            }
+
+            if (title.Contains("(SD)"))
+            {
+                this.VideoDefinition = Configuration.VideoDefinition.SD;
+                title = title.Replace("(SD)", string.Empty);
+            }
+
+            if (title.Contains("(HD)"))
+            {
+                this.VideoDefinition = Configuration.VideoDefinition.HD;
+                title = title.Replace("(HD)", string.Empty);
+            }
+
+            if (title.Contains("(4:3)"))
+            {
+                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio43;
+                title = title.Replace("(4:3)", string.Empty);
+            }
+
+            if (title.Contains("(16:9)"))
+            {
+                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
+                title = title.Replace("(16:9)", string.Empty);
+            }
+
+            if (title.Contains("(21:9)"))
+            {
+                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio219;
+                title = title.Replace("(21:9)", string.Empty);
+            }
+
+            if (title.Contains("(F"))
+            {
+                ((Video)this.Media).MPAA = title.RightOf("(F").LeftOf(")");
+                title = title.Replace("(F" + ((Video)this.Media).MPAA + ")", string.Empty);
+            }
+
+            if (title.Contains("(R"))
+            {
+                ((Video)this.Media).Rating = title.RightOf("(R").LeftOf(")");
+                title = title.Replace("(R" + ((Video)this.Media).Rating + ")", string.Empty);
+            }
+
+            // check for multiple Instances per Language
+            if (title.Contains("(L"))
+            {
+                // reset list if a new definition is available
+                ((Video)this.Media).MediaLanguages = new List<string>();
+
+                string movieLanguages = title.RightOfLast("(L").LeftOf(")");
+                foreach (string movieLanguage in movieLanguages.Split(" ", null, false))
+                {
+                    ((Video)this.Media).MediaLanguages.Add(movieLanguage);
+                }
+
+                title = title.Replace("(L" + movieLanguages + ")", string.Empty).Trim();
+            }
+
+            return title.Trim();
         }
 
         #endregion

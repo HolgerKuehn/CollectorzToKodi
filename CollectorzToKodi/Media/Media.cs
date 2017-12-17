@@ -38,9 +38,9 @@ namespace CollectorzToKodi
         private string titleSort;
 
         /// <summary>
-        /// Filename of Media
+        /// MediaPath of Media
         /// </summary>
-        private string filename;
+        private MediaPath mediaPath;
 
         /// <summary>
         /// Original title of media
@@ -168,15 +168,6 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets Filename including part of the path dependig on Media type
-        /// </summary>
-        public string Filename
-        {
-            get { return this.filename; }
-            set { this.filename = value; }
-        }
-
-        /// <summary>
         /// Gets or sets title of media
         /// </summary>
         public virtual string Title
@@ -190,7 +181,7 @@ namespace CollectorzToKodi
             {
                 this.title = value;
 
-                this.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
+                this.MediaPath.Filename = System.Text.Encoding.ASCII.GetString(System.Text.Encoding.Convert(System.Text.Encoding.UTF8, Encoding.ASCII, System.Text.Encoding.UTF8.GetBytes(this.Title + " (" + this.PublishingYear + ")"))).Replace("?", string.Empty).Replace("-", string.Empty).Replace(":", string.Empty).Trim();
             }
         }
 
@@ -342,6 +333,15 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
+        /// Gets or sets MediaPath of Media
+        /// </summary>
+        public MediaPath MediaPath
+        {
+            get { return this.mediaPath; }
+            set { this.mediaPath = value; }
+        }
+
+        /// <summary>
         /// Gets or sets NFO-File representing the actual media file
         /// </summary>
         public NfoFile NfoFile
@@ -369,7 +369,7 @@ namespace CollectorzToKodi
         /// Reads XML-files into media collection
         /// </summary>
         /// <param name="xMLMedia">part of XML export representing Movie, Series, Episode or Music</param>
-        public void ReadFromXml(XmlNode xMLMedia)
+        public virtual void ReadFromXml(XmlNode xMLMedia)
         {
             // read images
             ImageFile image = null;
@@ -606,7 +606,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// exports Library to Disk
         /// </summary>
-        public void WriteToLibrary()
+        public virtual void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
             StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
@@ -734,8 +734,8 @@ namespace CollectorzToKodi
                 this.MediaGroup = this.MediaGroup.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
                 this.MediaGroup = this.MediaGroup.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
-                this.Filename = this.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
-                this.Filename = this.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
+                this.MediaPath.Filename = this.MediaPath.Filename.ReplaceAll("(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeToBeReplaced) + ")", "(" + this.Configuration.CovertLanguageIsoCodeToDescription(isoCodeForReplacemant) + ")");
+                this.MediaPath.Filename = this.MediaPath.Filename.ReplaceAll("(" + isoCodeToBeReplaced + ")", "(" + isoCodeForReplacemant + ")");
 
                 foreach (MediaFile mediaFile in this.MediaFiles)
                 {

@@ -105,6 +105,8 @@ namespace CollectorzToKodi
             this.videoStreams = new List<VideoStream>();
             this.audioStreams = new List<AudioStream>();
             this.subTitles = new List<SubTitleStream>();
+
+            this.MediaPath.WindowsPathToDestination = string.Empty;
         }
 
         #endregion
@@ -269,16 +271,16 @@ namespace CollectorzToKodi
         /// <inheritdoc/>
         public override void DeleteFromLibrary()
         {
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             // write NFO-file
             using (bfStreamWriter)
             {
                 if (this.Title != string.Empty)
                 {
-                    bfStreamWriter.WriteLine("if [ -d \"" + this.Server.Filename + "\" ];");
+                    bfStreamWriter.WriteLine("if [ -d \"" + this.MediaPath.Filename + "\" ];");
                     bfStreamWriter.WriteLine("then ");
-                    bfStreamWriter.WriteLine("    rm -r \"" + this.Server.Filename + "\"");
+                    bfStreamWriter.WriteLine("    rm -r \"" + this.MediaPath.Filename + "\"");
                     bfStreamWriter.WriteLine("fi;");
                     bfStreamWriter.WriteLine(string.Empty);
                 }
@@ -401,6 +403,8 @@ namespace CollectorzToKodi
         /// <param name="xMLMedia">Part of XML-file representing stream information</param>
         public override void ReadFromXml(XmlNode xMLMedia)
         {
+            base.ReadFromXml(xMLMedia);
+
             // read VideoStreamData
             VideoStream videoStream = new VideoStream(this.Configuration);
 
@@ -430,131 +434,6 @@ namespace CollectorzToKodi
 
                 this.SubTitles.Add(subTitle);
             }
-        }
-
-        /// <summary>
-        /// Overrides specific stream data from XML-file, thats stored in titles
-        /// </summary>
-        /// <param name="title">String containing additional information for stream data</param>
-        /// <returns>cleared string without special tags representing additional information for stream data</returns>
-        /// <remarks>
-        /// available modifiers are:<br />
-        /// (TV) - represents video as recording from TV program<br />
-        /// (BluRay) - represents video as part of BluRay<br />
-        /// (H264) - represents video using the H264 codec<br />
-        /// (H265) - represents video using the H265 codec<br />
-        /// (SD) - represents video with SD resolution<br />
-        /// (HD) - represents video with HD resolution<br />
-        /// (4:3) - represents video as Full frame<br />
-        /// (16:9) - represents video as Widescreen<br />
-        /// (21:9) - represents video as Theatrical Widescreen<br />
-        /// (F###) - represent different MPAA Rating<br />
-        /// (R###) - represent different Rating<br />
-        /// (L## ##) - represents languages (2 digit ISO code) that are stored in different files for this video
-        /// </remarks>
-        public virtual string OverrideVideoStreamData(string title)
-        {
-            if (title.Contains("(TV)"))
-            {
-                if (this.Configuration.KodiSkin == "Transparency!")
-                {
-                    this.VideoCodec = Configuration.VideoCodec.H264; // BluRay Standard-Codec
-                }
-
-                if (this.Configuration.KodiSkin != "Transparency!")
-                {
-                    this.VideoCodec = Configuration.VideoCodec.TV;
-                }
-
-                title = title.Replace("(TV)", string.Empty);
-            }
-
-            if (title.Contains("(BluRay)"))
-            {
-                if (this.Configuration.KodiSkin == "Transparency!")
-                {
-                    this.VideoCodec = Configuration.VideoCodec.H264; // BluRay Standard-Codec
-                }
-
-                if (this.Configuration.KodiSkin != "Transparency!")
-                {
-                    this.VideoCodec = Configuration.VideoCodec.BluRay;
-                }
-
-                title = title.Replace("(BluRay)", string.Empty);
-            }
-
-            if (title.Contains("(H264)"))
-            {
-                this.VideoCodec = Configuration.VideoCodec.H264;
-            }
-
-            title = title.Replace("(H264)", string.Empty);
-
-            if (title.Contains("(H265)"))
-            {
-                this.VideoCodec = Configuration.VideoCodec.H265;
-                title = title.Replace("(H265)", string.Empty);
-            }
-
-            if (title.Contains("(SD)"))
-            {
-                this.VideoDefinition = Configuration.VideoDefinition.SD;
-                title = title.Replace("(SD)", string.Empty);
-            }
-
-            if (title.Contains("(HD)"))
-            {
-                this.VideoDefinition = Configuration.VideoDefinition.HD;
-                title = title.Replace("(HD)", string.Empty);
-            }
-
-            if (title.Contains("(4:3)"))
-            {
-                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio43;
-                title = title.Replace("(4:3)", string.Empty);
-            }
-
-            if (title.Contains("(16:9)"))
-            {
-                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio169;
-                title = title.Replace("(16:9)", string.Empty);
-            }
-
-            if (title.Contains("(21:9)"))
-            {
-                this.VideoAspectRatio = Configuration.VideoAspectRatio.AspectRatio219;
-                title = title.Replace("(21:9)", string.Empty);
-            }
-
-            if (title.Contains("(F"))
-            {
-                this.MPAA = title.RightOf("(F").LeftOf(")");
-                title = title.Replace("(F" + this.MPAA + ")", string.Empty);
-            }
-
-            if (title.Contains("(R"))
-            {
-                this.Rating = title.RightOf("(R").LeftOf(")");
-                title = title.Replace("(R" + this.Rating + ")", string.Empty);
-            }
-
-            // check for multiple Instances per Language
-            if (title.Contains("(L"))
-            {
-                // reset list if a new definition is available
-                this.MediaLanguages = new List<string>();
-
-                string movieLanguages = title.RightOfLast("(L").LeftOf(")");
-                foreach (string movieLanguage in movieLanguages.Split(" ", null, false))
-                {
-                    this.MediaLanguages.Add(movieLanguage);
-                }
-
-                title = title.Replace("(L" + movieLanguages + ")", string.Empty).Trim();
-            }
-
-            return title.Trim();
         }
 
         /// <summary>
@@ -599,78 +478,27 @@ namespace CollectorzToKodi
         public override void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             // copy video files to device
             foreach (VideoFile videoFile in this.MediaFiles)
             {
-                if (videoFile.Server.Filename != string.Empty)
-                {
-                    bfStreamWriter.WriteLine("/bin/ln -s \"" + videoFile.Server.DevicePathForPublication + "\" \"" + videoFile.Server.Filename + "\"");
-                    videoFile.WriteToLibrary();
-                }
+                videoFile.WriteToLibrary();
             }
 
             nfoStreamWriter.WriteLine("    <fileinfo>");
             nfoStreamWriter.WriteLine("        <streamdetails>");
 
-            // add VideoStreamData to nfo File
-            nfoStreamWriter.WriteLine("            <video>");
-
-            // VideoCodec
-            if (this.VideoCodec.Equals(Configuration.VideoCodec.TV))
+            // add VideoStream to nfo File
+            foreach (VideoStream viedeoStream in this.VideoStreams)
             {
-                nfoStreamWriter.WriteLine("                <codec>tv</codec>");
+                viedeoStream.WriteToLibrary();
             }
-            else if (this.VideoCodec.Equals(Configuration.VideoCodec.BluRay))
-            {
-                nfoStreamWriter.WriteLine("                <codec>bluray</codec>");
-            }
-            else if (this.VideoCodec.Equals(Configuration.VideoCodec.H264))
-            {
-                nfoStreamWriter.WriteLine("                <codec>h264</codec>");
-            }
-            else if (this.VideoCodec.Equals(Configuration.VideoCodec.H265))
-            {
-                nfoStreamWriter.WriteLine("                <codec>hevc</codec>");
-            }
-
-            // AspectRatio
-            if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio43))
-            {
-                nfoStreamWriter.WriteLine("                <aspect>1.33</aspect>");
-            }
-            else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio169))
-            {
-                nfoStreamWriter.WriteLine("                <aspect>1.78</aspect>");
-            }
-            else if (this.VideoAspectRatio.Equals(Configuration.VideoAspectRatio.AspectRatio219))
-            {
-                nfoStreamWriter.WriteLine("                <aspect>2.33</aspect>");
-            }
-
-            // VideoDefinition
-            if (this.VideoDefinition.Equals(Configuration.VideoDefinition.SD))
-            {
-                nfoStreamWriter.WriteLine("                <width>768</width>");
-                nfoStreamWriter.WriteLine("                <height>576</height>");
-            }
-            else if (this.VideoDefinition.Equals(Configuration.VideoDefinition.HD))
-            {
-                nfoStreamWriter.WriteLine("                <width>1920</width>");
-                nfoStreamWriter.WriteLine("                <height>1080</height>");
-            }
-
-            nfoStreamWriter.WriteLine("            </video>");
 
             // add AudioStreamData to nfo File
             foreach (AudioStream audioStream in this.AudioStreams)
             {
-                nfoStreamWriter.WriteLine("            <audio>");
-                nfoStreamWriter.WriteLine("                <codec>" + audioStream.Codec + "</codec>");
-                nfoStreamWriter.WriteLine("                <language>" + audioStream.Language + "</language>");
-                nfoStreamWriter.WriteLine("                <channels>" + audioStream.NumberOfChannels + "</channels>");
-                nfoStreamWriter.WriteLine("            </audio>");
+                audioStream.WriteToLibrary();
             }
 
             // add SubTitleStreamData to nfo File

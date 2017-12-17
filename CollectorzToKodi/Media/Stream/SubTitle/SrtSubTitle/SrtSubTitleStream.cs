@@ -81,7 +81,7 @@ namespace CollectorzToKodi
             srtSubTitleFileClone.SrtSubTitleEntries = this.SrtSubTitleEntries;
             srtSubTitleFileClone.OffsetTime = this.OffsetTime;
 
-            return (SrtSubTitleStream)srtSubTitleFileClone;
+            return srtSubTitleFileClone;
         }
 
         /// <inheritdoc/>

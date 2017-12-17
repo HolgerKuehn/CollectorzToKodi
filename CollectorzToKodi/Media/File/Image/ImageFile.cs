@@ -70,7 +70,7 @@ namespace CollectorzToKodi
 
             // MediaFile
             imageFileClone.Description = this.Description;
-            imageFileClone.MediaFilePath = this.MediaFilePath.Clone();
+            imageFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
             imageFileClone.Media = this.Media;
             imageFileClone.Server = this.Server.Clone();
             imageFileClone.FileIndex = this.FileIndex;
@@ -79,7 +79,7 @@ namespace CollectorzToKodi
             imageFileClone.ImageType = this.ImageType;
             imageFileClone.Season = this.Season;
 
-            return (ImageFile)imageFileClone;
+            return imageFileClone;
         }
 
         /// <inheritdoc/>
@@ -96,6 +96,7 @@ namespace CollectorzToKodi
         public override void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.Media.NfoFile.StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             if (this.MediaFilePath.Filename != string.Empty)
             {
@@ -108,7 +109,7 @@ namespace CollectorzToKodi
                         nfoStreamWriter.Write("    ");
                     }
 
-                    nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.Filename + "/" + this.MediaFilePath.Filename + "</thumb>");
+                    nfoStreamWriter.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.MediaPath + "/" + this.MediaFilePath.Filename + "</thumb>");
                 }
 
                 if (/* Fanart */ this.ImageType == Configuration.ImageType.SeasonCover || this.ImageType == Configuration.ImageType.SeasonBackdrop ||
@@ -120,7 +121,12 @@ namespace CollectorzToKodi
                         nfoStreamWriter.Write("    ");
                     }
 
-                    nfoStreamWriter.WriteLine("    <thumb type=\"season\" season=\"" + this.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.Filename + "/" + (this.Season != "-1" ? "Season " + this.Media.ConvertSeason(this.Season) + "/" : string.Empty) + this.MediaFilePath.Filename + "</thumb>");
+                    nfoStreamWriter.WriteLine("    <thumb type=\"season\" season=\"" + this.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Media.Server.ElementAt(0).Number.ToString()] + "/XBMC/" + (this.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + this.Media.MediaPath + "/" + (this.Season != "-1" ? "Season " + this.Media.ConvertSeason(this.Season) + "/" : string.Empty) + this.MediaFilePath.Filename + "</thumb>");
+                }
+
+                if (!this.MediaFilePath.DevicePathToDestination.Contains("http://") && this.ImageType != Configuration.ImageType.Unknown)
+                {
+                    bfStreamWriter.WriteLine("/bin/cp \"" + this.MediaFilePath.DevicePathForPublication + "\" \"" + this.MediaFilePath.DeviceFilenameOnDestination + "\"");
                 }
             }
         }
