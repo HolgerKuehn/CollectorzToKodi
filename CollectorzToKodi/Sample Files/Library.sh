@@ -14,7 +14,7 @@ cd SHIRYOUSOOCHI
 if [ ! -d Programme ];
 then
 	mkdir Programme 
-	mount.cifs //192.168.2.252/Programme Programme -o user=<user>,pass=<pass>
+	mount.cifs //192.168.2.252/Programme Programme -o user=<user>,pass=<pass> vers=3.0
 fi;
 
 cd /share/XBMC/
