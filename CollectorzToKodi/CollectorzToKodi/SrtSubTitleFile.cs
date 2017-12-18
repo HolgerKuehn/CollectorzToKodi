@@ -120,6 +120,12 @@ namespace CollectorzToKodi
                     // end of file
                     if (srtLine == null)
                     {
+                        // add last SubTitleEntry, before EOF
+                        if (srtSubTitleFileEntry != null)
+                        {
+                            this.SubTitleEntries.Add(srtSubTitleFileEntry);
+                        }
+
                         break;
                     }
 

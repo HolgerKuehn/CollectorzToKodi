@@ -480,7 +480,7 @@ namespace CollectorzToKodi
             List<Series> seriesCollection = this.ClonePerLanguage(this.SeriesCollection); /* original collection, cloned per language */
             List<Series> seriesCollectionPerMediaGroup = new List<Series>(); /* new collection of grouped series */
             List<Series> seriesCollectionWithoutMediaGroup = new List<Series>(); /* original series, used to remove old folders  */
-            int numberOfExtraBackdrop = 0;
+            int numberOfExtraBackdrop;
 
             #region creating seriesListsPerMediaGroup
             string activeMediaGroup = string.Empty;
@@ -519,6 +519,8 @@ namespace CollectorzToKodi
 
             foreach (List<Series> seriesList in seriesListsPerMediaGroup)
             {
+                numberOfExtraBackdrop = 0;
+
                 if (seriesList.Count == 1)
                 {
                     // adding directly, if only one series in MediaGroup
