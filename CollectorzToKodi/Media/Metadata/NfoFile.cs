@@ -6,6 +6,7 @@ namespace CollectorzToKodi
 {
     using System.IO;
     using System.Text;
+    using System.Xml;
 
     /// <summary>
     /// Class to manage video files
@@ -39,10 +40,11 @@ namespace CollectorzToKodi
             set
             {
                 base.Media = value;
-                this.Server.Filename = this.Media.Server.Filename + ".nfo";
-                this.ServerDevicePathForPublication = this.Configuration.MovieCollectorLocalPathToXMLExportPath + this.Server.Filename;
+                this.MediaFilePath.Filename = this.Media.MediaPath.Filename + ".nfo";
+                this.MediaFilePath.WindowsPath = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaFilePath.Filename;
+                this.MediaFilePath.WindowsPathForPublication = this.MediaFilePath.WindowsPath;
 
-                this.StreamWriter = new StreamWriter(this.ServerDevicePathForPublication, false, Encoding.UTF8, 512);
+                this.StreamWriter = new StreamWriter(this.MediaFilePath.WindowsPathForPublication, false, Encoding.UTF8, 512);
             }
         }
 
@@ -54,15 +56,18 @@ namespace CollectorzToKodi
         {
             NfoFile nfoFileClone = new NfoFile(this.Configuration);
             nfoFileClone.Description = this.Description;
-            nfoFileClone.ServerDevicePathForPublication = this.ServerDevicePathForPublication;
-            nfoFileClone.Extension = this.Extension;
             nfoFileClone.FileIndex = this.FileIndex;
 
             nfoFileClone.Media = this.Media;
             nfoFileClone.Server = this.Server;
-            nfoFileClone.Server.Filename = this.Server.Filename;
+            nfoFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
 
             return nfoFileClone;
+        }
+
+        /// <inheritdoc/>>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
         }
 
         /// <inheritdoc/>

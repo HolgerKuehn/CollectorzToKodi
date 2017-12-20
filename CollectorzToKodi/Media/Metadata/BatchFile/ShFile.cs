@@ -6,6 +6,7 @@ namespace CollectorzToKodi
 {
     using System.IO;
     using System.Text;
+    using System.Xml;
 
     /// <summary>
     /// Class to manage video files
@@ -29,7 +30,7 @@ namespace CollectorzToKodi
         #region Properties
 
         /// <inheritdoc/>
-        public override int Server
+        public override Server Server
         {
             get
             {
@@ -39,10 +40,11 @@ namespace CollectorzToKodi
             set
             {
                 base.Server = value;
-                this.Server.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ToString()] + "Win.sh";
-                this.ServerDevicePathForPublication = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.Server.Filename;
+                this.MediaFilePath.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.Number.ToString()] + "Win.sh";
+                this.MediaFilePath.WindowsPath = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaFilePath.Filename;
+                this.MediaFilePath.WindowsPathForPublication = this.MediaFilePath.WindowsPath;
 
-                this.StreamWriter = new StreamWriter(this.ServerDevicePathForPublication, false, Encoding.UTF8, 512);
+                this.StreamWriter = new StreamWriter(this.MediaFilePath.WindowsPathForPublication, false, Encoding.UTF8, 512);
                 this.WriteToLibrary();
             }
         }
@@ -60,9 +62,14 @@ namespace CollectorzToKodi
 
             shFileClone.Media = this.Media;
             shFileClone.Server = this.Server;
-            shFileClone.Filename = this.Filename;
+            shFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
 
             return shFileClone;
+        }
+
+        /// <inheritdoc/>>
+        public override void ReadFromXml(XmlNode xMLMedia)
+        {
         }
 
         /// <inheritdoc/>
