@@ -90,7 +90,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// List genres of media
         /// </summary>
-        private List<string> genres;
+        private GenreCollection genres;
 
         /// <summary>
         /// List of studios of media
@@ -140,7 +140,7 @@ namespace CollectorzToKodi
             this.runTime = string.Empty;
             this.images = new List<ImageFile>();
             this.country = string.Empty;
-            this.genres = new List<string>();
+            this.genres = new GenreCollection(this.Configuration);
             this.studios = new List<string>();
             this.mediaFiles = new List<MediaFile>();
             this.mediaLanguages = new List<string>();
@@ -278,7 +278,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list genres of media
         /// </summary>
-        public List<string> Genres
+        public GenreCollection Genres
         {
             get { return this.genres; }
             set { this.genres = value; }
@@ -783,33 +783,6 @@ namespace CollectorzToKodi
             foreach (Server server in serverList)
             {
                 this.AddServer(server);
-            }
-        }
-
-        /// <summary>
-        /// Reads genre from XML-File
-        /// </summary>
-        /// <param name="xMLNode">Part of Collectors export, representing genres of media</param>
-        public void ReadGenreFromXml(XmlNode xMLNode)
-        {
-            foreach (XmlNode xMLGenre in xMLNode.XMLReadSubnode("genres").XMLReadSubnodes("genre"))
-            {
-                this.Genres.Add(xMLGenre.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
-            }
-        }
-
-        /// <summary>
-        /// Writes genres to provided NFO file
-        /// </summary>
-        public void WriteGenreToLibrary()
-        {
-            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-
-            int i = 0;
-            foreach (string genre in this.Genres)
-            {
-                nfoStreamWriter.WriteLine("    <genre" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + genre + "</genre>");
-                i++;
             }
         }
 

@@ -59,10 +59,13 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Media\File\MediaFilePath.cs" />
+    <Compile Include="Media\Genre.cs" />
+    <Compile Include="Media\GenreCollection.cs" />
     <Compile Include="Media\MediaPath.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />
+    <Compile Include="Media\Person\PersonCollection.cs" />
     <Compile Include="Media\Stream\MediaStream.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStream.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStreamEntry.cs" />
