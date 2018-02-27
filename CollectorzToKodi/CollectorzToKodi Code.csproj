@@ -61,6 +61,8 @@
     <Compile Include="Media\File\MediaFilePath.cs" />
     <Compile Include="Media\Genre.cs" />
     <Compile Include="Media\GenreCollection.cs" />
+    <Compile Include="Media\MediaLanguage.cs" />
+    <Compile Include="Media\MediaLanguageCollection.cs" />
     <Compile Include="Media\MediaPath.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
@@ -80,6 +82,8 @@
     <Compile Include="Media\Metadata\NfoFile.cs" />
     <Compile Include="Media\Person\Video\SeriesActor.cs" />
     <Compile Include="Media\File\Image\ImageFile.cs" />
+    <Compile Include="Media\Studio.cs" />
+    <Compile Include="Media\StudioCollection.cs" />
     <Compile Include="Media\Video\Episode\Episode.cs" />
     <Compile Include="Media\Media.cs" />
     <Compile Include="Media\Video\Series\Series.cs" />

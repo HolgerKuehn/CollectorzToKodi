@@ -95,12 +95,12 @@ namespace CollectorzToKodi
         /// <summary>
         /// List of studios of media
         /// </summary>
-        private List<string> studios;
+        private StudioCollection studios;
 
         /// <summary>
         /// List of languages that are stored in different files of this media
         /// </summary>
-        private List<string> mediaLanguages;
+        private MediaLanguageCollection mediaLanguages;
 
         /// <summary>
         /// list of associated media files
@@ -141,9 +141,9 @@ namespace CollectorzToKodi
             this.images = new List<ImageFile>();
             this.country = string.Empty;
             this.genres = new GenreCollection(this.Configuration);
-            this.studios = new List<string>();
+            this.studios = new StudioCollection(this.Configuration);
             this.mediaFiles = new List<MediaFile>();
-            this.mediaLanguages = new List<string>();
+            this.mediaLanguages = new MediaLanguageCollection();
         }
 
         #endregion
@@ -287,7 +287,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of studios of media
         /// </summary>
-        public List<string> Studios
+        public StudioCollection Studios
         {
             get { return this.studios; }
             set { this.studios = value; }
@@ -296,7 +296,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets List of languages that are stored in different files of this media
         /// </summary>
-        public List<string> MediaLanguages
+        public MediaLanguageCollection MediaLanguages
         {
             get { return this.mediaLanguages; }
             set { this.mediaLanguages = value; }
@@ -783,33 +783,6 @@ namespace CollectorzToKodi
             foreach (Server server in serverList)
             {
                 this.AddServer(server);
-            }
-        }
-
-        /// <summary>
-        /// Reads studios from XML-File
-        /// </summary>
-        /// <param name="xMLNode">Part of Collectors export, representing studios of media</param>
-        public void ReadStudioFromXml(XmlNode xMLNode)
-        {
-            foreach (XmlNode xMLStudio in xMLNode.XMLReadSubnode("studios").XMLReadSubnodes("studio"))
-            {
-                this.Studios.Add(xMLStudio.XMLReadSubnode("displayname").XMLReadInnerText(string.Empty));
-            }
-        }
-
-        /// <summary>
-        /// Writes studios to provided NFO file
-        /// </summary>
-        public void WriteStudioToLibrary()
-        {
-            StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-
-            int i = 0;
-            foreach (string studio in this.Studios)
-            {
-                nfoStreamWriter.WriteLine("    <studio" + (i == 0 ? " clear=\"true\"" : string.Empty) + ">" + studio + "</studio>");
-                i++;
             }
         }
 
