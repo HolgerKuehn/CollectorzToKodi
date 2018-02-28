@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage List of genres
     /// </summary>
-    public class GenreCollection
+    public class GenreCollection : IMediaCollection
     {
         #region Attributes
 
@@ -89,6 +89,13 @@ namespace CollectorzToKodi
                 genre.ReadFromXml(xmlGenre);
                 this.Genres.Add(genre);
             }
+        }
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        public void DeleteFromLibrary()
+        {
         }
 
         /// <summary>

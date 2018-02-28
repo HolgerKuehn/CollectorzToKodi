@@ -14,7 +14,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// provides methods to handle the complete media-collection (e.g. movies and series) from MovieCollector
     /// </summary>
-    public class MediaCollection
+    public class MediaCollection : ICollection
     {
         #region Attributes
 
@@ -120,13 +120,13 @@ namespace CollectorzToKodi
         ///     "XBMC Series" - true if entry is to be interpreted as a series<br/>
         /// </remarks>
         /// <param name="eingabeXML">File that was used while export from MovieCollector - complete local path</param>
-        public void ReadFromXml(string eingabeXML)
+        public void ReadFromXml(XmlNode eingabeXML)
         {
             bool xMLMovieIsMovie = true;
             bool xMLMovieIsSeries = false;
             Video media = null;
 
-            foreach (XmlNode xMLMovie in BaseClassExtention.XMLReadFile(eingabeXML, "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
+            foreach (XmlNode xMLMovie in BaseClassExtention.XMLReadFile(eingabeXML.XMLReadSubnode("MovieCollectorWindowsPathToXmlExport").XMLReadInnerText(string.Empty), "movieinfo").XMLReadSubnode("movielist").XMLReadSubnodes("movie"))
             {
                 #region evaluate Type and create media-object
                 if (xMLMovie.XMLReadSubnode("istvseries").XMLReadInnerText(string.Empty) == "Yes")
@@ -337,6 +337,7 @@ namespace CollectorzToKodi
             foreach (Movie movie in this.ClonePerLanguage(this.MovieCollection))
             {
                 bool addMovie = false;
+
                 foreach (int serverList in movie.Server)
                 {
                     if (serverList.Equals(server))
@@ -450,7 +451,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// delete from Library
         /// </summary>
-        private void DeleteFromLibrary()
+        public void DeleteFromLibrary()
         {
             for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
             {
@@ -477,7 +478,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// exports Library to Disk
         /// </summary>
-        private void WriteToLibrary()
+        public void WriteToLibrary()
         {
             for (int i = 0; i < this.Configuration.ServerNumberOfServers; i++)
             {

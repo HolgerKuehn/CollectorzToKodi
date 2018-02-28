@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage List of Persons
     /// </summary>
-    public abstract class PersonCollection
+    public abstract class PersonCollection : IMediaCollection
     {
         #region Attributes
 
@@ -82,6 +82,11 @@ namespace CollectorzToKodi
         /// </summary>
         /// <param name="xmlPersons">xml-node representing a list of Person</param>
         public abstract void ReadFromXml(XmlNode xmlPersons);
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        public abstract void DeleteFromLibrary();
 
         /// <summary>
         /// exports Person

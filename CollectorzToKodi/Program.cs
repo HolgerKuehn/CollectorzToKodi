@@ -4,6 +4,8 @@
 
 namespace CollectorzToKodi
 {
+    using System.Xml;
+
     /// <summary>
     /// Main class of CollectorzToKodi converter, managing main program flow<br/>
     /// </summary>
@@ -18,7 +20,11 @@ namespace CollectorzToKodi
             Configuration configuration = new Configuration();
 
             MediaCollection mediaCollection = new MediaCollection(configuration);
-            mediaCollection.ReadFromXml(configuration.MovieCollectorWindowsPathToXmlExport);
+
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlNode xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, "MovieCollectorWindowsPathToXmlExport", configuration.MovieCollectorWindowsPathToXmlExport);
+
+            mediaCollection.ReadFromXml(xmlNode);
 
             mediaCollection.ExportLibrary();
 

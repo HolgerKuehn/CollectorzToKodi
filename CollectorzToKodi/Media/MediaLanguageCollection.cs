@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage List of mediaLanguages
     /// </summary>
-    public class MediaLanguageCollection
+    public class MediaLanguageCollection : IMediaCollection
     {
         #region Attributes
 
@@ -89,6 +89,13 @@ namespace CollectorzToKodi
                 mediaLanguage.ReadFromXml(xmlMediaLanguage);
                 this.MediaLanguages.Add(mediaLanguage);
             }
+        }
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        public void DeleteFromLibrary()
+        {
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace CollectorzToKodi
     /// <summary>
     /// Class to manage List of studios
     /// </summary>
-    public class StudioCollection
+    public class StudioCollection : IMediaCollection
     {
         #region Attributes
 
@@ -89,6 +89,13 @@ namespace CollectorzToKodi
                 studio.ReadFromXml(xmlStudio);
                 this.Studios.Add(studio);
             }
+        }
+
+        /// <summary>
+        /// delete from Library
+        /// </summary>
+        public void DeleteFromLibrary()
+        {
         }
 
         /// <summary>

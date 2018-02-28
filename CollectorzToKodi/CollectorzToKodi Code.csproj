@@ -61,6 +61,8 @@
     <Compile Include="Media\File\MediaFilePath.cs" />
     <Compile Include="Media\Genre.cs" />
     <Compile Include="Media\GenreCollection.cs" />
+    <Compile Include="Interfaces\ICollection.cs" />
+    <Compile Include="Interfaces\IMediaCollection.cs" />
     <Compile Include="Media\MediaLanguage.cs" />
     <Compile Include="Media\MediaLanguageCollection.cs" />
     <Compile Include="Media\MediaPath.cs" />
