@@ -49,7 +49,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// device path in UMC notation for NFO Files
         /// </summary>
-        private string deviceUmcPathToDestination;
+        private string deviceUncPathToDestination;
 
         #endregion
         #region Constructor
@@ -123,11 +123,11 @@ namespace CollectorzToKodi
             mediaFilePathClone.Extension = this.Extension;
             mediaFilePathClone.WindowsPath = this.WindowsPath;
             mediaFilePathClone.WindowsPathForPublication = this.WindowsPathForPublication;
-            mediaFilePathClone.devicePathForPublication = this.devicePathForPublication;
-            mediaFilePathClone.windowsPathToDestination = this.windowsPathToDestination;
-            mediaFilePathClone.devicePathToDestination = this.devicePathToDestination;
-            mediaFilePathClone.deviceFilenameOnDestination = this.deviceFilenameOnDestination;
-            mediaFilePathClone.deviceUmcPathToDestination = this.deviceUmcPathToDestination;
+            mediaFilePathClone.DevicePathForPublication = this.DevicePathForPublication;
+            mediaFilePathClone.WindowsPathToDestination = this.WindowsPathToDestination;
+            mediaFilePathClone.DevicePathToDestination = this.DevicePathToDestination;
+            mediaFilePathClone.DeviceFilenameOnDestination = this.DeviceFilenameOnDestination;
+            mediaFilePathClone.DeviceUncPathToDestination = this.DeviceUncPathToDestination;
 
             return mediaFilePathClone;
         }

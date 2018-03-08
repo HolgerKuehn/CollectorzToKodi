@@ -15,7 +15,7 @@ namespace CollectorzToKodi
         /// Gets current configuration of CollectorzToKodi
         /// </summary>
         Configuration Configuration { get; }
-        
+
         /// <summary>
         /// extracts properties from XML-node
         /// </summary>

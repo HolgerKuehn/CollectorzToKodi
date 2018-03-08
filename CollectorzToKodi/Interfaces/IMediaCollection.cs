@@ -4,8 +4,6 @@
 
 namespace CollectorzToKodi
 {
-    using System.Xml;
-
     /// <summary>
     /// Interface for all Collection Classes
     /// </summary>
