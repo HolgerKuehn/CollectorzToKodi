@@ -29,12 +29,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// windows path to destination
         /// </summary>
-        private string windowsPathToDestination;
-
-        /// <summary>
-        /// device path to destination
-        /// </summary>
-        private string devicePathToDestination;
+        private Path path;
 
         #endregion
         #region Constructor
@@ -49,16 +44,17 @@ namespace CollectorzToKodi
             this.configuration = configuration;
             this.media = null;
             this.number = number;
+            this.path = new Path(configuration);
 
             string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][number.ToString()];
-            this.windowsPathToDestination = driveLetter + ":\\";
+            this.Path.WindowsPathToDestination = driveLetter + ":\\";
 
             string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][number.ToString()];
-            this.devicePathToDestination = this.windowsPathToDestination.Replace(driveLetter.Trim() + ":", localPath);
+            this.Path.DevicePathToDestination = this.Path.WindowsPathToDestination.Replace(driveLetter.Trim() + ":", localPath);
 
             if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
             {
-                this.devicePathToDestination = this.devicePathToDestination.ReplaceAll("\\", "/");
+                this.Path.DevicePathToDestination = this.Path.DevicePathToDestination.ReplaceAll("\\", "/");
             }
         }
 
@@ -92,21 +88,12 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets windows path to destination
+        /// Gets or sets path of server
         /// </summary>
-        public string WindowsPathToDestination
+        public Path Path
         {
-            get { return this.windowsPathToDestination; }
-            set { this.windowsPathToDestination = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets device path to destination
-        /// </summary>
-        public string DevicePathToDestination
-        {
-            get { return this.devicePathToDestination; }
-            set { this.devicePathToDestination = value; }
+            get { return this.Path; }
+            set { this.path = value; }
         }
 
         #endregion
@@ -121,8 +108,7 @@ namespace CollectorzToKodi
             Server serverClone = new Server(this.Configuration, this.number);
             serverClone.Configuration = this.Configuration;
             serverClone.Media = this.Media;
-            serverClone.WindowsPathToDestination = this.WindowsPathToDestination;
-            serverClone.DevicePathToDestination = this.DevicePathToDestination;
+            serverClone.Path = this.Path.Clone();
 
             return serverClone;
         }

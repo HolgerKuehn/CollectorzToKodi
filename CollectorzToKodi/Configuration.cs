@@ -1159,7 +1159,7 @@ namespace CollectorzToKodi
                 }
                 */
 
-                this.listOfBatchFiles[i].Server = i;
+                this.listOfBatchFiles[i].Server = new Server(this, i);
 
                 // determine movieCollectorWindowsPathToXmlExportPathLocalFilesystem
                 string driveLetter = this.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][i.ToString()];

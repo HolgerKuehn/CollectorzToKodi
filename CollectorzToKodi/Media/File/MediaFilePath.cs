@@ -47,7 +47,7 @@ namespace CollectorzToKodi
         private string deviceFilenameOnDestination;
 
         /// <summary>
-        /// device path in UMC notation for NFO Files
+        /// device path in UNC notation for NFO Files
         /// </summary>
         private string deviceUncPathToDestination;
 

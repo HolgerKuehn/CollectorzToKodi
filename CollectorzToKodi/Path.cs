@@ -27,7 +27,7 @@ namespace CollectorzToKodi
         private string devicePathToDestination;
 
         /// <summary>
-        /// device path in UMC notation for NFO Files
+        /// device path in UNC notation for NFO Files
         /// </summary>
         private string deviceUncPathToDestination;
 
@@ -76,7 +76,7 @@ namespace CollectorzToKodi
         }
 
         /// <summary>
-        /// Gets or sets device path in UMC notation for NFO Files
+        /// Gets or sets device path in UNC notation for NFO Files
         /// </summary>
         public string DeviceUncPathToDestination
         {
