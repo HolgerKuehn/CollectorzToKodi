@@ -137,7 +137,7 @@ namespace CollectorzToKodi
         public override void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter shStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter shStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             // write NFO-file for Series
             nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");

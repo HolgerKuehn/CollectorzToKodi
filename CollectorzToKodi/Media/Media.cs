@@ -778,9 +778,9 @@ namespace CollectorzToKodi
         /// Adds reference to Server, if any part of media is stored on it
         /// </summary>
         /// <param name="serverList">Server to be added; Server is resolved via CConfiguration.ServerListsOfServers[ListOfServerTypes]</param>
-        public virtual void AddServer(List<Server> serverList)
+        public virtual void AddServer(ServerCollection serverList)
         {
-            foreach (Server server in serverList)
+            foreach (Server server in serverList.Servers)
             {
                 this.AddServer(server);
             }

@@ -109,7 +109,7 @@ namespace CollectorzToKodi
         public override void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             if (this.Title != string.Empty)
             {
@@ -138,12 +138,13 @@ namespace CollectorzToKodi
                 nfoStreamWriter.WriteLine("    <id>" + this.ID + "</id>");
                 nfoStreamWriter.WriteLine("    <country>" + this.Country + "</country>");
 
-                this.WriteGenreToLibrary();
-                this.WriteStudioToLibrary();
+                this.Genres.WriteToLibrary();
+                this.Studios.WriteToLibrary();
                 this.WriteCrewToLibrary();
                 this.WriteCastToLibrary();
-                this.WriteStreamDataToLibrary();
-                this.WriteImagesToLibrary();
+                this.VideoStreams.WriteToLibrary();
+                this.AudioStreams.WriteToLibrary();
+                this.Images.WriteToLibrary();
 
                 nfoStreamWriter.WriteLine("</movie>");
 
@@ -287,7 +288,7 @@ namespace CollectorzToKodi
                     }
                 }
 
-                movieClone.MediaPath = this.MediaPath.Clone();
+                movieClone.MediaPath = (MediaPath)this.MediaPath.Clone();
                 movieClone.AddServer(server);
 
                 foreach (VideoStream videoStream in this.VideoStreams)
@@ -312,7 +313,7 @@ namespace CollectorzToKodi
         }
 
         /// <inheritdoc/>
-        public override void AddServer(int serverList)
+        public override void AddServer(ServerCollection serverList)
         {
             base.AddServer(serverList);
         }

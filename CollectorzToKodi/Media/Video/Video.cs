@@ -48,17 +48,17 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of directors of video
         /// </summary>
-        private List<Director> directors;
+        private DirectorCollection directors;
 
         /// <summary>
         /// list of writers of video
         /// </summary>
-        private List<Writer> writers;
+        private WriterCollection writers;
 
         /// <summary>
         /// list of actors of video
         /// </summary>
-        private List<Actor> actors;
+        private ActorCollection actors;
 
         /// <summary>
         /// list of video streams available in video
@@ -73,7 +73,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of subtitles available in video
         /// </summary>
-        private List<SubTitleStream> subTitles;
+        private List<SubTitleStream> subTitleStreams;
 
         /// <summary>
         /// index of represented Video in "MovieCollector's Episodes and Features tab"
@@ -104,7 +104,7 @@ namespace CollectorzToKodi
             // Parameter
             this.videoStreams = new List<VideoStream>();
             this.audioStreams = new List<AudioStream>();
-            this.subTitles = new List<SubTitleStream>();
+            this.subTitleStreams = new List<SubTitleStream>();
 
             this.MediaPath.WindowsPathToDestination = string.Empty;
         }
@@ -242,17 +242,17 @@ namespace CollectorzToKodi
         {
             get
             {
-                if (this.subTitles == null)
+                if (this.subTitleStreams == null)
                 {
-                    this.subTitles = new List<SubTitleStream>();
+                    this.subTitleStreams = new List<SubTitleStream>();
                 }
 
-                return this.subTitles;
+                return this.subTitleStreams;
             }
 
             set
             {
-                this.subTitles = value;
+                this.subTitleStreams = value;
             }
         }
 

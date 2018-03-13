@@ -169,7 +169,7 @@ namespace CollectorzToKodi
         public override void WriteToLibrary()
         {
             StreamWriter nfoStreamWriter = this.NfoFile.StreamWriter;
-            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0]].StreamWriter;
+            StreamWriter bfStreamWriter = this.Configuration.ListOfBatchFiles[this.Server[0].Number].StreamWriter;
 
             nfoStreamWriter.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
             nfoStreamWriter.WriteLine("<episodedetails>");
@@ -212,7 +212,7 @@ namespace CollectorzToKodi
             // createNewMedia is only checked for series; episodes are not changed, as not generated
             if (this.Title != string.Empty)
             {
-                bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Server.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
+                bfStreamWriter.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][this.Server[0].Number.ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Server.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
                 bfStreamWriter.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Server.Filename + ".nfo\" \"" + this.Server.Filename + ".nfo\"");
 
                 // video files
@@ -402,7 +402,7 @@ namespace CollectorzToKodi
             string returnTitle = base.OverrideVideoStreamData(title);
 
             // inherit Series data
-            if (this.MediaLanguages.Count == 0)
+            if (this.MediaLanguages.MediaLanguages.Count == 0)
             {
                 this.MediaLanguages = this.Series.MediaLanguages;
             }

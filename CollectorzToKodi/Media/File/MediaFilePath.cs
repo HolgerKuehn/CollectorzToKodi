@@ -116,7 +116,7 @@ namespace CollectorzToKodi
         /// clones MediaFilePath object
         /// </summary>
         /// <returns>clone of current MediaFilePath object</returns>
-        public override MediaPath Clone()
+        public override Path Clone()
         {
             MediaFilePath mediaFilePathClone = new MediaFilePath(this.Configuration);
             mediaFilePathClone.Filename = this.Filename;

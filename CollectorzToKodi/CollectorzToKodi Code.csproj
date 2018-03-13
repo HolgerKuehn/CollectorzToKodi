@@ -67,7 +67,12 @@
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />
     <Compile Include="Media\Person\PersonCollection.cs" />
+    <Compile Include="Media\Person\Video\ActorCollection.cs" />
+    <Compile Include="Media\Person\Video\DirectorCollection.cs" />
+    <Compile Include="Media\Person\Video\SeriesActorCollection.cs" />
+    <Compile Include="Media\Person\Video\WriterCollection.cs" />
     <Compile Include="Media\Stream\MediaStream.cs" />
+    <Compile Include="Media\Stream\MediaStreamCollection.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStream.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStreamEntry.cs" />
     <Compile Include="Media\Stream\SubTitle\SubTitleStream.cs" />
@@ -115,6 +120,7 @@
     </Compile>
     <Compile Include="Media\Person\Video\Writer.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration\App.config" />
