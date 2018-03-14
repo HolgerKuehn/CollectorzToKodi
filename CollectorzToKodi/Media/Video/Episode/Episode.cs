@@ -194,10 +194,11 @@ namespace CollectorzToKodi
 
             nfoStreamWriter.WriteLine("    <set>" + this.MediaGroup + "</set>");
 
-            this.WriteGenreToLibrary();
-            this.WriteStudioToLibrary();
-            this.WriteCrewToLibrary();
-            this.WriteCastToLibrary();
+            this.Genres.WriteToLibrary();
+            this.Studios.WriteToLibrary();
+            this.Directors.WriteToLibrary();
+            this.Writers.WriteToLibrary();
+            this.Actors.WriteToLibrary();
 
             // <fileinfo>
             base.WriteToLibrary();
@@ -261,9 +262,9 @@ namespace CollectorzToKodi
             episodeClone.MediaPath = this.MediaPath.Clone();
             episodeClone.Server = this.Server;
 
-            foreach (VideoStream videoStream in this.VideoStreams)
+            foreach (VideoStream videoStream in this.VideoStreams.MediaStreams)
             {
-                episodeClone.VideoStreams.Add((VideoStream)videoStream.Clone());
+                episodeClone.VideoStreams.MediaStreams.Add((VideoStream)videoStream.Clone());
             }
 
             episodeClone.AudioStreams = this.AudioStreams;
@@ -300,9 +301,9 @@ namespace CollectorzToKodi
             // clone only relevant Attributes
             this.MPAA = series.MPAA;
 
-            foreach (VideoStream videoStream in series.VideoStreams)
+            foreach (VideoStream videoStream in series.VideoStreams.MediaStreams)
             {
-                this.VideoStreams.Add((VideoStream)videoStream.Clone());
+                this.VideoStreams.MediaStreams.Add((VideoStream)videoStream.Clone());
             }
 
             this.Rating = series.Rating;
@@ -327,9 +328,9 @@ namespace CollectorzToKodi
             // clone only relevant Attributes
             this.MPAA = episode.MPAA;
 
-            foreach (VideoStream videoStream in this.VideoStreams)
+            foreach (VideoStream videoStream in this.VideoStreams.MediaStreams)
             {
-                this.VideoStreams.Add((VideoStream)videoStream.Clone());
+                this.VideoStreams.MediaStreams.Add((VideoStream)videoStream.Clone());
             }
 
             this.Rating = episode.Rating;

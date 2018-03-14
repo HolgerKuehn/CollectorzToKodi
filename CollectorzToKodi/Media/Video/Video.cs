@@ -63,17 +63,17 @@ namespace CollectorzToKodi
         /// <summary>
         /// list of video streams available in video
         /// </summary>
-        private List<VideoStream> videoStreams;
+        private VideoStreamCollection videoStreams;
 
         /// <summary>
         /// list of audio streams available in video
         /// </summary>
-        private List<AudioStream> audioStreams;
+        private AudioStreamCollection audioStreams;
 
         /// <summary>
         /// list of subtitles available in video
         /// </summary>
-        private List<SubTitleStream> subTitleStreams;
+        private SubTitleStreamCollection subTitleStreams;
 
         /// <summary>
         /// index of represented Video in "MovieCollector's Episodes and Features tab"
@@ -169,7 +169,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of directors of video
         /// </summary>
-        public List<Director> Directors
+        public DirectorCollection Directors
         {
             get { return this.directors; }
             set { this.directors = value; }
@@ -178,7 +178,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of writers of video
         /// </summary>
-        public List<Writer> Writers
+        public WriterCollection Writers
         {
             get { return this.writers; }
             set { this.writers = value; }
@@ -187,7 +187,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of actors of video
         /// </summary>
-        public List<Actor> Actors
+        public ActorCollection Actors
         {
             get { return this.actors; }
             set { this.actors = value; }
@@ -196,13 +196,13 @@ namespace CollectorzToKodi
         /// <summary>
         /// Gets or sets list of audio streams available in video
         /// </summary>
-        public List<VideoStream> VideoStreams
+        public VideoStreamCollection VideoStreams
         {
             get
             {
                 if (this.videoStreams == null)
                 {
-                    this.videoStreams = new List<VideoStream>();
+                    this.videoStreams = new VideoStreamCollection(this.Configuration);
                 }
 
                 return this.videoStreams;
@@ -442,9 +442,13 @@ namespace CollectorzToKodi
         public void CheckForDefaultMediaLanguages()
         {
             // or MediaGroup to default
-            if (this.MediaLanguages.Count == 0)
+            if (this.MediaLanguages.MediaLanguages.Count == 0)
             {
-                this.MediaLanguages.Add("de");
+                MediaLanguage mediaLanguage = new MediaLanguage(this.Configuration);
+                mediaLanguage.Media = this;
+                mediaLanguage.Name = "de";
+
+                this.MediaLanguages.MediaLanguages.Add(mediaLanguage);
             }
         }
 

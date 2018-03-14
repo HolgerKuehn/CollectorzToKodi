@@ -71,12 +71,14 @@
     <Compile Include="Media\Person\Video\DirectorCollection.cs" />
     <Compile Include="Media\Person\Video\SeriesActorCollection.cs" />
     <Compile Include="Media\Person\Video\WriterCollection.cs" />
+    <Compile Include="Media\Stream\Audio\AudioStreamCollection.cs" />
     <Compile Include="Media\Stream\MediaStream.cs" />
     <Compile Include="Media\Stream\MediaStreamCollection.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStream.cs" />
     <Compile Include="Media\Stream\SubTitle\SrtSubTitle\SrtSubTitleStreamEntry.cs" />
     <Compile Include="Media\Stream\SubTitle\SubTitleStream.cs" />
     <Compile Include="Media\File\SubTitle\SubTitleFile.cs" />
+    <Compile Include="Media\Stream\SubTitle\SubTitleStreamCollection.cs" />
     <Compile Include="Media\Stream\SubTitle\TypeSubTitleStream.cs" />
     <Compile Include="Media\Stream\Video\VideoStream.cs" />
     <Compile Include="Media\Person\Video\Actor.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Media\Metadata\NfoFile.cs" />
     <Compile Include="Media\Person\Video\SeriesActor.cs" />
     <Compile Include="Media\File\Image\ImageFile.cs" />
+    <Compile Include="Media\Stream\Video\VideoStreamCollection.cs" />
     <Compile Include="Media\Studio.cs" />
     <Compile Include="Media\StudioCollection.cs" />
     <Compile Include="Media\Video\Episode\Episode.cs" />
