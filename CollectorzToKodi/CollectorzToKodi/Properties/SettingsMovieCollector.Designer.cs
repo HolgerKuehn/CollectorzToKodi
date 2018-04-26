@@ -12,7 +12,7 @@ namespace CollectorzToKodi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class SettingsMovieCollector : global::System.Configuration.ApplicationSettingsBase {
         
         private static SettingsMovieCollector defaultInstance = ((SettingsMovieCollector)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsMovieCollector())));
@@ -97,7 +97,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("P:\\Collectorz.com\\nfo-Konverter\\nfoConverter\\nfoConverter\\bin\\Filme.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q:\\Collectorz.com\\CollectorzToKodi\\Filme.xml")]
         public string LocalPathToXMLExport {
             get {
                 return ((string)(this["LocalPathToXMLExport"]));

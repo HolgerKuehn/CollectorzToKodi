@@ -33,7 +33,7 @@ namespace CollectorzToKodi
                     swrSH.WriteLine(string.Empty);
 
                     // Movie
-                    swrSH.WriteLine("cd /share/XBMC/Filme/");
+                    swrSH.WriteLine("cd /share/Kodi/Filme/");
 
                     foreach (Movie movie in mediaCollection.ListMovieCollectionPerServer(server))
                     {
@@ -43,7 +43,7 @@ namespace CollectorzToKodi
 
                     // series
                     swrSH.WriteLine(string.Empty);
-                    swrSH.WriteLine("cd /share/XBMC/Serien/");
+                    swrSH.WriteLine("cd /share/Kodi/Serien/");
 
                     // remove old Series without MediaGroups
                     foreach (Series series in mediaCollection.ListSeriesCollectionWithoutMediaGroupPerServer(server))

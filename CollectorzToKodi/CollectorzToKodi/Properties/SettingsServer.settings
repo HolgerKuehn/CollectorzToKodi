@@ -3,19 +3,19 @@
   <Profiles />
   <Settings>
     <Setting Name="NumberOfServer" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="ListOfServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">DOCUMENTS,YOBISOOCHI,SHIRYOUSOOCHI,JOUSETSUSOOCHI</Value>
+      <Value Profile="(Default)">DOCUMENTS,SHIRYOUSOOCHI</Value>
     </Setting>
     <Setting Name="DriveMappingOfServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">P,U,V,X</Value>
+      <Value Profile="(Default)">Q,V</Value>
     </Setting>
     <Setting Name="MappingType" Type="System.String" Scope="User">
       <Value Profile="(Default)">UNIX</Value>
     </Setting>
     <Setting Name="LocalPathOfServerForMediaStorage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video</Value>
+      <Value Profile="(Default)">/share/Kodi/SHIRYOUSOOCHI/Programme,/share/Video</Value>
     </Setting>
     <Setting Name="MovieDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">Filme</Value>
@@ -24,7 +24,7 @@
       <Value Profile="(Default)">Serien</Value>
     </Setting>
     <Setting Name="LocalPathOfServerForMediaPublication" Type="System.String" Scope="User">
-      <Value Profile="(Default)">/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC</Value>
+      <Value Profile="(Default)">/share/Kodi/SHIRYOUSOOCHI/Programme,/share/Kodi</Value>
     </Setting>
   </Settings>
 </SettingsFile>

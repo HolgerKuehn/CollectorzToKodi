@@ -2,7 +2,7 @@
 
 # Link auf SHIRYOUSOOCHI
 
-cd /share/XBMC/
+cd /share/Kodi/
 
 if [ ! -d SHIRYOUSOOCHI ];
 then
@@ -17,16 +17,16 @@ then
 	mount.cifs //192.168.2.252/Programme Programme -o user=<user>,pass=<pass>
 fi;
 
-cd /share/XBMC/
+cd /share/Kodi/
 
-#/bin/cp "/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/NFOJOUSETSUSOOCHIWin.sh" /share/XBMC/NFOUnx.sh
-/bin/tr -d '\r﻿' < /share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/NFOYOBISOOCHIWin.sh > /share/XBMC/NFOUnx.sh
+#/bin/cp "/share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/NFOJOUSETSUSOOCHIWin.sh" /share/Kodi/NFOUnx.sh
+/bin/tr -d '\r﻿' < /share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/NFOYOBISOOCHIWin.sh > /share/Kodi/NFOUnx.sh
 
-/bin/chmod 755 /share/XBMC/NFOUnx.sh
+/bin/chmod 755 /share/Kodi/NFOUnx.sh
 
-/bin/bash /share/XBMC/NFOUnx.sh
+/bin/bash /share/Kodi/NFOUnx.sh
 
 umount //192.168.2.252/Programme
-cd /share/XBMC/
+cd /share/Kodi/
 rmdir ./SHIRYOUSOOCHI/Programme 
 rmdir ./SHIRYOUSOOCHI

@@ -197,7 +197,7 @@ namespace CollectorzToKodi
                 {
                     swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                    swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
+                    swrSH.WriteLine("cd \"/share/Kodi/Serien/" + this.Filename + "\"");
                     for (int i = 0; i < this.numberOfEpisodesPerSeason.Count; i++)
                     {
                         swrSH.WriteLine("mkdir \"Season " + this.ConvertSeason(i.ToString()) + "\"");
@@ -206,13 +206,13 @@ namespace CollectorzToKodi
                     swrSH.WriteLine("mkdir \"extrafanart\"");
                     swrSH.WriteLine("mkdir \"extrathumbs\"");
 
-                    swrSH.WriteLine("cd \"/share/XBMC/Serien/" + this.Filename + "\"");
-                    swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
+                    swrSH.WriteLine("cd \"/share/Kodi/Serien/" + this.Filename + "\"");
+                    swrSH.WriteLine("/bin/cp \"/share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/" + this.Filename + ".nfo\" \"tvshow.nfo\"");
 
                     // Images
                     this.WriteImagesToSH(swrSH);
 
-                    swrSH.WriteLine("cd /share/XBMC/Serien/");
+                    swrSH.WriteLine("cd /share/Kodi/Serien/");
 
                     foreach (Episode episode in this.Episodes)
                     {

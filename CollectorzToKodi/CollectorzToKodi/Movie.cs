@@ -144,18 +144,18 @@ namespace CollectorzToKodi
                 {
                     swrSH.WriteLine("mkdir \"" + this.Filename + "\"");
 
-                    swrSH.WriteLine("cd \"/share/XBMC/Filme/" + this.Filename + "\"");
+                    swrSH.WriteLine("cd \"/share/Kodi/Filme/" + this.Filename + "\"");
                     swrSH.WriteLine("mkdir \"extrafanart\"");
 
-                    // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
-                    swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                    // swrSH.WriteLine("/bin/tr -d '\rï»¿' < \"/share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/" + this.Filename + ".nfo\" > \"" + this.Filename + ".nfo\"");
+                    swrSH.WriteLine("/bin/cp \"/share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                     // Videofiles and Images
                     this.WriteVideoFilesToSH(swrSH);
                     this.WriteImagesToSH(swrSH);
                 }
 
-                swrSH.WriteLine("cd /share/XBMC/Filme/");
+                swrSH.WriteLine("cd /share/Kodi/Filme/");
             }
         }
 

@@ -12,7 +12,7 @@ namespace CollectorzToKodi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class SettingsServer : global::System.Configuration.ApplicationSettingsBase {
         
         private static SettingsServer defaultInstance = ((SettingsServer)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsServer())));
@@ -25,7 +25,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public int NumberOfServer {
             get {
                 return ((int)(this["NumberOfServer"]));
@@ -37,7 +37,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DOCUMENTS,YOBISOOCHI,SHIRYOUSOOCHI,JOUSETSUSOOCHI")]
+        [global::System.Configuration.DefaultSettingValueAttribute("DOCUMENTS,SHIRYOUSOOCHI")]
         public string ListOfServer {
             get {
                 return ((string)(this["ListOfServer"]));
@@ -49,7 +49,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("P,U,V,X")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q,V")]
         public string DriveMappingOfServer {
             get {
                 return ((string)(this["DriveMappingOfServer"]));
@@ -73,7 +73,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/Video,/share/Video,/share/Video")]
+        [global::System.Configuration.DefaultSettingValueAttribute("/share/Kodi/SHIRYOUSOOCHI/Programme,/share/Video")]
         public string LocalPathOfServerForMediaStorage {
             get {
                 return ((string)(this["LocalPathOfServerForMediaStorage"]));
@@ -109,7 +109,7 @@ namespace CollectorzToKodi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("/share/XBMC/SHIRYOUSOOCHI/Programme,/share/XBMC,/share/XBMC,/share/XBMC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("/share/Kodi/SHIRYOUSOOCHI/Programme,/share/Kodi")]
         public string LocalPathOfServerForMediaPublication {
             get {
                 return ((string)(this["LocalPathOfServerForMediaPublication"]));

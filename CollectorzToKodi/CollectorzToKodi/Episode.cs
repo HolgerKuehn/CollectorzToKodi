@@ -192,13 +192,13 @@ namespace CollectorzToKodi
             {
                 swrSH.WriteLine("cd \"" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToLocalPathForMediaPublication][this.Server[0].ToString()] + "/" + this.Configuration.ServerSeriesDirectory + "/" + this.Series.Filename + "/Season " + this.ConvertSeason(this.actualSeason) + "\"");
 
-                swrSH.WriteLine("/bin/cp \"/share/XBMC/SHIRYOUSOOCHI/Programme/Collectorz.com/nfo-Konverter/nfoConverter/nfoConverter/bin/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
+                swrSH.WriteLine("/bin/cp \"/share/Kodi/SHIRYOUSOOCHI/Programme/Collectorz.com/CollectorzToKodi/" + this.Filename + ".nfo\" \"" + this.Filename + ".nfo\"");
 
                 // video files
                 this.WriteVideoFilesToSH(swrSH);
                 this.WriteImagesToSH(swrSH);
 
-                swrSH.WriteLine("cd /share/XBMC/Serien/");
+                swrSH.WriteLine("cd /share/Kodi/Serien/");
             }
         }
 
@@ -394,7 +394,7 @@ namespace CollectorzToKodi
                 {
                     if (!imageFile.URL.Contains("http://"))
                     {
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/XBMC/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.ElementAt(0).ToString()] + "/Kodi/Serien/" + this.Series.Filename + "/Season " + imageFile.Season + "/" + imageFile.Filename + "</thumb>");
                     }
                     else
                     {

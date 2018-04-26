@@ -857,7 +857,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb>smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/Kodi/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + imageFile.Filename + "</thumb>");
                     }
 
                     if (/* Fanart */ imageFile.ImageType == Configuration.ImageType.SeasonCover || imageFile.ImageType == Configuration.ImageType.SeasonBackdrop ||
@@ -869,7 +869,7 @@ namespace CollectorzToKodi
                             swrNFO.Write("    ");
                         }
 
-                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/XBMC/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
+                        swrNFO.WriteLine("    <thumb type=\"season\" season=\"" + imageFile.Season + "\">smb://" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][imageFile.Media.Server.ElementAt(0).ToString()] + "/Kodi/" + (imageFile.Media.GetType().ToString().Contains("Movie") ? "Filme" : "Serien") + "/" + imageFile.Media.Filename + "/" + (imageFile.Season != "-1" ? "Season " + this.ConvertSeason(imageFile.Season) + "/" : string.Empty) + imageFile.Filename + "</thumb>");
                     }
                 }
             }
