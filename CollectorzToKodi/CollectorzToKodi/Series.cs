@@ -139,6 +139,7 @@ namespace CollectorzToKodi
                 swrNFO.WriteLine("<tvshow>");
                 swrNFO.WriteLine("    <title>" + this.Title + "</title>");
                 swrNFO.WriteLine("    <showtitle>" + this.Title + "</showtitle>");
+                swrNFO.WriteLine("    <sorttitle>" + this.TitleSort + "</sorttitle>");
                 swrNFO.WriteLine("    <rating>" + this.Rating + "</rating>");
                 swrNFO.WriteLine("    <year>" + this.PublishingYear + "</year>");
                 swrNFO.WriteLine("    <plot>" + this.Content + "</plot>");
@@ -164,6 +165,7 @@ namespace CollectorzToKodi
                 this.WriteCast(swrNFO);
                 this.WriteImagesToNFO(swrNFO);
 
+                //swrNFO.WriteLine("    <namedseason number="1"></namedseason>");
                 swrNFO.WriteLine("</tvshow>");
 
                 if (this.IMDbId != string.Empty)
