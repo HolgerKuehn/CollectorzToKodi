@@ -19,14 +19,14 @@ namespace CollectorzToKodi
         {
             Configuration configuration = new Configuration();
 
-            MediaCollection mediaCollection = new MediaCollection(configuration);
+            //MediaCollection mediaCollection = new MediaCollection(configuration);
 
-            XmlDocument xmlDocument = new XmlDocument();
-            XmlNode xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, "MovieCollectorWindowsPathToXmlExport", configuration.MovieCollectorWindowsPathToXmlExport);
+            //XmlDocument xmlDocument = new XmlDocument();
+            //XmlNode xmlNode = xmlDocument.CreateNode(XmlNodeType.Element, "MovieCollectorWindowsPathToXmlExport", configuration.MovieCollectorWindowsPathToXmlExport);
 
-            mediaCollection.ReadFromXml(xmlNode);
+            //mediaCollection.ReadFromXml(xmlNode);
 
-            mediaCollection.ExportLibrary();
+            //mediaCollection.ExportLibrary();
 
             return 0;
         }

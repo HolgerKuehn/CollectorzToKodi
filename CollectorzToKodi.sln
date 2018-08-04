@@ -10,8 +10,6 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "CollectorzToKodi Dokumentat
 		{0C4F807D-7A67-4DB0-818F-9B4C8917860C} = {0C4F807D-7A67-4DB0-818F-9B4C8917860C}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rename", "Rename\Rename.csproj", "{D30808A7-0FD0-490A-9AF0-9B72466AEFFB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +24,6 @@ Global
 		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98105ED4-A281-4B96-A87E-A646DB779F7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D30808A7-0FD0-490A-9AF0-9B72466AEFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D30808A7-0FD0-490A-9AF0-9B72466AEFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D30808A7-0FD0-490A-9AF0-9B72466AEFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D30808A7-0FD0-490A-9AF0-9B72466AEFFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

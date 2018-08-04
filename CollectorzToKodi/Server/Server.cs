@@ -29,7 +29,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// windows path to destination
         /// </summary>
-        private Path path;
+        //private Path path;
 
         #endregion
         #region Constructor
@@ -44,18 +44,18 @@ namespace CollectorzToKodi
             this.configuration = configuration;
             this.media = null;
             this.number = number;
-            this.path = new Path(configuration);
+            //this.path = new Path(configuration);
 
             string driveLetter = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDriveLetter][number.ToString()];
-            this.Path.WindowsPathToDestination = driveLetter + ":\\";
+            //this.Path.WindowsPathToDestination = driveLetter + ":\\";
 
             string localPath = this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToDeviceDestinationPath][number.ToString()];
-            this.Path.DevicePathToDestination = this.Path.WindowsPathToDestination.Replace(driveLetter.Trim() + ":", localPath);
+            //this.Path.DevicePathToDestination = this.Path.WindowsPathToDestination.Replace(driveLetter.Trim() + ":", localPath);
 
-            if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
-            {
-                this.Path.DevicePathToDestination = this.Path.DevicePathToDestination.ReplaceAll("\\", "/");
-            }
+            //if (this.Configuration.ServerMappingType.StartsWith("UNIX"))
+            //{
+            //    this.Path.DevicePathToDestination = this.Path.DevicePathToDestination.ReplaceAll("\\", "/");
+            //}
         }
 
         #endregion
@@ -87,14 +87,14 @@ namespace CollectorzToKodi
             get { return this.number; }
         }
 
-        /// <summary>
-        /// Gets or sets path of server
-        /// </summary>
-        public Path Path
-        {
-            get { return this.Path; }
-            set { this.path = value; }
-        }
+        ///// <summary>
+        ///// Gets or sets path of server
+        ///// </summary>
+        //public Path Path
+        //{
+        //    get { return this.Path; }
+        //    set { this.path = value; }
+        //}
 
         #endregion
         #region Functions
@@ -108,7 +108,7 @@ namespace CollectorzToKodi
             Server serverClone = new Server(this.Configuration, this.number);
             serverClone.Configuration = this.Configuration;
             serverClone.Media = this.Media;
-            serverClone.Path = this.Path.Clone();
+            //serverClone.Path = this.Path.Clone();
 
             return serverClone;
         }

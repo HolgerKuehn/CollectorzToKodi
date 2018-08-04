@@ -26,7 +26,7 @@ namespace CollectorzToKodi
         /// <summary>
         /// path of MediaFile
         /// </summary>
-        private MediaFilePath mediaFilePath;
+        //private MediaFilePath mediaFilePath;
 
         /// <summary>
         /// media containing file
@@ -56,7 +56,7 @@ namespace CollectorzToKodi
             this.configuration = configuration;
             this.description = string.Empty;
             this.media = null;
-            this.mediaFilePath = null;
+            //this.mediaFilePath = null;
             this.server = null;
             this.fileIndex = 1;
         }
@@ -82,26 +82,26 @@ namespace CollectorzToKodi
             set { this.description = value; }
         }
 
-        /// <summary>
-        /// Gets or sets path to Media
-        /// </summary>
-        public virtual MediaFilePath MediaFilePath
-        {
-            get
-            {
-                if (this.mediaFilePath == null)
-                {
-                    this.mediaFilePath = new MediaFilePath(this.Configuration);
-                }
+        ///// <summary>
+        ///// Gets or sets path to Media
+        ///// </summary>
+        //public virtual MediaFilePath MediaFilePath
+        //{
+        //    get
+        //    {
+        //        if (this.mediaFilePath == null)
+        //        {
+        //            this.mediaFilePath = new MediaFilePath(this.Configuration);
+        //        }
 
-                return this.mediaFilePath;
-            }
+        //        return this.mediaFilePath;
+        //    }
 
-            set
-            {
-                this.mediaFilePath = value;
-            }
-        }
+        //    set
+        //    {
+        //        this.mediaFilePath = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets media containing file

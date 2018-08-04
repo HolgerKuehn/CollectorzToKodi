@@ -28,43 +28,13 @@ namespace CollectorzToKodi
 
         #endregion
         #region Properties
-
-        /// <inheritdoc/>
-        public override Server Server
-        {
-            get
-            {
-                return base.Server;
-            }
-
-            set
-            {
-                base.Server = value;
-                this.MediaFilePath.Filename = "NFO" + this.Configuration.ServerListsOfServers[(int)Configuration.ListOfServerTypes.NumberToName][this.Server.Number.ToString()] + "Win.sh";
-                this.MediaFilePath.WindowsPath = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaFilePath.Filename;
-                this.MediaFilePath.WindowsPathForPublication = this.MediaFilePath.WindowsPath;
-
-                this.StreamWriter = new StreamWriter(this.MediaFilePath.WindowsPathForPublication, false, Encoding.UTF8, 512);
-                this.WriteToLibrary();
-            }
-        }
-
         #endregion
         #region Functions
 
-        /// <inheritdoc/>
+        /// <inheritdoc/>>
         public override MediaFile Clone()
         {
-            ShFile shFileClone = new ShFile(this.Configuration);
-            shFileClone.Description = this.Description;
-            shFileClone.FileIndex = this.FileIndex;
-            shFileClone.StreamWriter = null;
-
-            shFileClone.Media = this.Media;
-            shFileClone.Server = this.Server;
-            shFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
-
-            return shFileClone;
+            throw new System.NotImplementedException();
         }
 
         /// <inheritdoc/>>

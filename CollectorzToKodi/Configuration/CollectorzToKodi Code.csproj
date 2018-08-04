@@ -26,8 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>Build\bin\Debug\CollectorzToKodi.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>
-    </CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,8 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>Build\bin\Release\CollectorzToKodi.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>
-    </CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CollectorzToKodi.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>CollectorzToKodi.Program</StartupObject>
@@ -59,10 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Configuration\BaseClassExtention.cs" />
-    <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Interfaces\ICollection.cs" />
-    <Compile Include="Interfaces\IMediaCollection.cs" />
     <Compile Include="Media\File\MediaFile.cs" />
     <Compile Include="Media\Media.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
@@ -90,16 +86,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Server\Server.cs" />
-    <Compile Include="Server\ServerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration\App.config" />
-    <None Include="Configuration\CollectorzToKodi Code.csproj.vsspell" />
-    <None Include="Configuration\CollectorzToKodi.ruleset" />
+    <None Include="CollectorzToKodi.ruleset">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="LICENSE.md" />
     <None Include="Configuration\packages.config" />
     <None Include="packages.config" />
-    <None Include="Program.puml" />
     <None Include="Properties\SettingsServer.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SettingsServer.Designer.cs</LastGenOutput>
@@ -120,6 +115,7 @@
     <None Include="Sample Files\Library.sh" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Interfaces\" />
     <Folder Include="Media\File\Image\" />
     <Folder Include="Media\File\SubTitle\" />
     <Folder Include="Media\File\Video\" />
@@ -130,9 +126,6 @@
     <Folder Include="Media\Video\Episode\" />
     <Folder Include="Media\Video\Movie\" />
     <Folder Include="Media\Video\Series\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Configuration\CollectorzToKodi Code.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

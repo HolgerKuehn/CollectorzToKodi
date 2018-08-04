@@ -915,7 +915,7 @@ namespace CollectorzToKodi
         {
             { "de", "deutsch" },
             { "en", "englisch" },
-            { "en", "japanisch" }
+            { "jp", "japanisch" }
         };
 
         #endregion

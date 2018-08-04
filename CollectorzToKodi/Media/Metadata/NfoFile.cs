@@ -29,24 +29,24 @@ namespace CollectorzToKodi
         #endregion
         #region Properties
 
-        /// <inheritdoc/>
-        public override Media Media
-        {
-            get
-            {
-                return base.Media;
-            }
+        ///// <inheritdoc/>
+        //public override Media Media
+        //{
+        //    get
+        //    {
+        //        return base.Media;
+        //    }
 
-            set
-            {
-                base.Media = value;
-                this.MediaFilePath.Filename = this.Media.MediaPath.Filename + ".nfo";
-                this.MediaFilePath.WindowsPath = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaFilePath.Filename;
-                this.MediaFilePath.WindowsPathForPublication = this.MediaFilePath.WindowsPath;
+        //    set
+        //    {
+        //        base.Media = value;
+        //        this.MediaFilePath.Filename = this.Media.MediaPath.Filename + ".nfo";
+        //        this.MediaFilePath.WindowsPath = this.Configuration.MovieCollectorWindowsPathToXmlExportPath + this.MediaFilePath.Filename;
+        //        this.MediaFilePath.WindowsPathForPublication = this.MediaFilePath.WindowsPath;
 
-                this.StreamWriter = new StreamWriter(this.MediaFilePath.WindowsPathForPublication, false, Encoding.UTF8, 512);
-            }
-        }
+        //        this.StreamWriter = new StreamWriter(this.MediaFilePath.WindowsPathForPublication, false, Encoding.UTF8, 512);
+        //    }
+        //}
 
         #endregion
         #region Functions
@@ -60,7 +60,7 @@ namespace CollectorzToKodi
 
             nfoFileClone.Media = this.Media;
             nfoFileClone.Server = this.Server;
-            nfoFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
+            //nfoFileClone.MediaFilePath = (MediaFilePath)this.MediaFilePath.Clone();
 
             return nfoFileClone;
         }
