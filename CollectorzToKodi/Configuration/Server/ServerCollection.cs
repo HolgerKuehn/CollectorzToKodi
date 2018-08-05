@@ -25,7 +25,7 @@ namespace CollectorzToKodi
         private Media media;
 
         /// <summary>
-        /// Name of mediaLanguage
+        /// list of servers
         /// </summary>
         private List<Server> servers;
 

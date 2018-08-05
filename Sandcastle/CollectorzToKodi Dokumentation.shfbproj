@@ -48,7 +48,7 @@
     <CatalogVersion>100</CatalogVersion>
     <CatalogProductId>VS</CatalogProductId>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\CollectorzToKodi\CollectorzToKodi\CollectorzToKodi Code.csproj" />
+      <DocumentationSource sourceFile="..\CollectorzToKodi\CollectorzToKodi Code.csproj" />
     </DocumentationSources>
     <BuildLogFile>Help\LastBuild.log</BuildLogFile>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, InheritedFrameworkInternalMembers, InheritedFrameworkPrivateMembers, Internals, Privates, PrivateFields, Protected, SealedProtected, ProtectedInternalAsProtected, NoPIATypes, PublicCompilerGenerated, EditorBrowsableNever, NonBrowsable</VisibleItems>

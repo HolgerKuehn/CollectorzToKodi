@@ -59,8 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\BaseClassExtention.cs" />
     <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="Configuration\Server\MediaServer.cs" />
+    <Compile Include="Configuration\Server\Path.cs" />
+    <Compile Include="Configuration\Server\Server.cs" />
+    <Compile Include="Configuration\Server\ServerCollection.cs" />
     <Compile Include="Interfaces\ICollection.cs" />
     <Compile Include="Interfaces\IMediaCollection.cs" />
     <Compile Include="Media\File\MediaFile.cs" />
@@ -69,6 +72,7 @@
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />
     <Compile Include="Media\Metadata\NfoFile.cs" />
+    <Compile Include="NetExtentions\BaseClassExtention.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SettingsServer.Designer.cs">
@@ -89,15 +93,14 @@
       <DependentUpon>SettingsMovieCollector.settings</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Server\Server.cs" />
-    <Compile Include="Server\ServerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configuration\App.config" />
-    <None Include="Configuration\CollectorzToKodi Code.csproj.vsspell" />
-    <None Include="Configuration\CollectorzToKodi.ruleset" />
     <None Include="LICENSE.md" />
-    <None Include="Configuration\packages.config" />
+    <None Include="NetExtentions\App.config" />
+    <None Include="NetExtentions\CollectorzToKodi Code.csproj.vsspell" />
+    <None Include="NetExtentions\CollectorzToKodi.ruleset" />
+    <None Include="NetExtentions\packages.config" />
+    <None Include="NetExtentions\stylecop.json" />
     <None Include="packages.config" />
     <None Include="Program.puml" />
     <None Include="Properties\SettingsServer.settings">
@@ -115,7 +118,6 @@
       <LastGenOutput>SettingsMovieCollector.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <AdditionalFiles Include="Configuration\stylecop.json" />
     <None Include="README.md" />
     <None Include="Sample Files\Library.sh" />
   </ItemGroup>
@@ -132,7 +134,7 @@
     <Folder Include="Media\Video\Series\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Configuration\CollectorzToKodi Code.csproj" />
+    <Content Include="NetExtentions\CollectorzToKodi Code.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
