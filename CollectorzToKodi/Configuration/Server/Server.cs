@@ -22,9 +22,14 @@ namespace CollectorzToKodi
         private readonly int number;
 
         /// <summary>
-        /// windows path to destination
+        /// paths to destination
         /// </summary>
         private Path path;
+
+        /// <summary>
+        /// media collection stored on this Server
+        /// </summary>
+        private MediaCollection media;
 
         #endregion
         #region Constructor
@@ -82,6 +87,15 @@ namespace CollectorzToKodi
             set { this.path = value; }
         }
 
+        /// <summary>
+        /// Gets or sets media stored on this Server
+        /// </summary>
+        public virtual MediaCollection Media
+        {
+            get { return this.media; }
+            set { this.media = value; }
+        }
+
         #endregion
         #region Functions
 
@@ -94,6 +108,7 @@ namespace CollectorzToKodi
             Server serverClone = new Server(this.Configuration, this.number);
             serverClone.Configuration = this.Configuration;
             serverClone.Path = this.Path.Clone();
+            serverClone.Media = this.Media.Clone();
 
             return serverClone;
         }

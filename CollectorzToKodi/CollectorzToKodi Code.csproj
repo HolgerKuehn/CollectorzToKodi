@@ -60,14 +60,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Configuration\Server\MediaServer.cs" />
     <Compile Include="Configuration\Server\Path.cs" />
     <Compile Include="Configuration\Server\Server.cs" />
     <Compile Include="Configuration\Server\ServerCollection.cs" />
     <Compile Include="Interfaces\ICollection.cs" />
     <Compile Include="Interfaces\IMediaCollection.cs" />
+    <Compile Include="Interfaces\IServerCollection.cs" />
     <Compile Include="Media\File\MediaFile.cs" />
     <Compile Include="Media\Media.cs" />
+    <Compile Include="Media\MediaCollection.cs" />
     <Compile Include="Media\Metadata\BatchFile\BatchFile.cs" />
     <Compile Include="Media\Metadata\BatchFile\ShFile.cs" />
     <Compile Include="Media\Metadata\MetadataFile.cs" />
