@@ -545,7 +545,7 @@ namespace CollectorzToKodi
 
                     seriesPerMediaGroup.ID = seriesBasicMember.ID;
                     seriesPerMediaGroup.Title = seriesBasicMember.MediaGroup;
-                    seriesPerMediaGroup.TitleSort = seriesBasicMember.MediaGroup;
+                    seriesPerMediaGroup.TitleSort = seriesBasicMember.TitleSort;
                     seriesPerMediaGroup.TitleOriginal = seriesBasicMember.MediaGroup;
                     seriesPerMediaGroup.MediaGroup = seriesBasicMember.MediaGroup;
                     seriesPerMediaGroup.Rating = seriesBasicMember.Rating;

@@ -243,11 +243,20 @@ namespace CollectorzToKodi
                     extension = filename.RightOfLast(".") + "." + extension;
                     filename = filename.LeftOfLast(".");
 
+                    if (extension == "forced.srt")
+                    {
+                        extension = filename.RightOfLast(".") + "." + extension;
+                        filename = filename.LeftOfLast(".");
+                    }
+
                     switch (extension)
                     {
                         case "de.srt":
                         case "en.srt":
                         case "jp.srt":
+                        case "de.forced.srt":
+                        case "en.forced.srt":
+                        case "jp.forced.srt":
                             this.Extension = "." + extension;
                             break;
                     }

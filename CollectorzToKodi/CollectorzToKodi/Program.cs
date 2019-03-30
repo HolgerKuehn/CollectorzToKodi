@@ -30,6 +30,9 @@ namespace CollectorzToKodi
                 {
                     // SH file header
                     swrSH.WriteLine("#!/bin/bash");
+                    swrSH.WriteLine("export LC_ALL=en_US.UTF-8;");
+                    swrSH.WriteLine("export LANG=en_US.UTF-8;");
+
                     swrSH.WriteLine(string.Empty);
 
                     // Movie
